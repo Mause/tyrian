@@ -20,26 +20,25 @@ class Simlang(object):
 
         token_defs_filename = self.resource(
             token_defs_filename, 'tokens.json')
-
-        grammar_filename = self.resource(
-            grammar_filename, 'Grammar_old')
-
-        grammar_mapping_filename = self.resource(
-            grammar_mapping_filename, 'GrammarMapping.json')
-
         with open(token_defs_filename) as fh:
             token_defs = json.load(fh)
 
-        self.lexer = Lexer(token_defs)
-
-        import simlang.nodes as nodes
-
-        with open(grammar_mapping_filename) as fh:
-            grammar_mapping = json.load(fh)
-
+        grammar_filename = self.resource(
+            grammar_filename, 'Grammar_old')
         with open(grammar_filename) as fh:
             raw_grammar = fh.read()
 
+        grammar_mapping_filename = self.resource(
+            grammar_mapping_filename, 'GrammarMapping.json')
+        with open(grammar_mapping_filename) as fh:
+            grammar_mapping = json.load(fh)
+
+
+        import simlang.nodes as nodes
+
+
+
+        self.lexer = Lexer(token_defs)
         self.parser = Parser(
             token_defs=token_defs,
             raw_grammar=raw_grammar,
@@ -74,7 +73,10 @@ class Simlang(object):
 
         logger.debug('Start token: {}'.format(start_token.upper()))
 
-        base_grammar = self.parser.grammar[start_token.upper()]
+        logger.debug(self.parser.grammar_parser.grammars.keys())
+
+        base_grammar = self.parser.grammar_parser.grammars[start_token.upper()]
+        print(base_grammar)
 
         index = 0
         results = []
@@ -84,9 +86,8 @@ class Simlang(object):
             assert result['result'], (result, ' '.join([x['token'] for x in lexed[index:]]))
             del result['tokens']
 
-            # what_was_consumed = ' '.join([x['token'] for x in lexed[index:index+result['consumed']]])
-            results.append((result))
-            # , what_was_consumed))
+            what_was_consumed = ' '.join([x['token'] for x in lexed[index:index+result['consumed']]])
+            results.append((result, what_was_consumed))
 
             index += result['consumed']
 
@@ -105,17 +106,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # import sys
-    # import trace
-
-    # coverdir = os.path.join(os.path.dirname(__file__), 'out')
-
-    # tracer = trace.Trace(
-    #     ignoredirs=[sys.prefix, sys.exec_prefix],
-    #     trace=0,
-    #     count=1)
-    # try:
-    #     tracer.run('main()')
-    # finally:
-    #     r = tracer.results()
-    #     r.write_results(show_missing=True, coverdir=coverdir)
