@@ -1,6 +1,6 @@
 
 # from ..nodes import ParseTree
-# from ..sl_exceptions import SimlangSyntaxError
+# from ..sl_exceptions import TyrianSyntaxError
 from .grammar_parser import GrammarParser
 
 
@@ -58,6 +58,6 @@ class Parser(object):
     #             logger.debug("NUMBER")
     #             nodes.append(NumberNode(token[1]))
     #         else:
-    #             raise SimlangSyntaxError(token)
+    #             raise TyrianSyntaxError(token)
 
     #     return ListNode(nodes)
