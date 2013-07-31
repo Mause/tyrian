@@ -4,7 +4,7 @@ import logging
 from collections import namedtuple
 
 from .utils import logger
-from .sl_exceptions import InvalidToken
+from .exceptions import InvalidToken
 
 logger = logger.getChild('Lexer')
 
@@ -46,7 +46,7 @@ class Lexer(object):
         Iterates through the supplied token_defs dictionary, creates wrappers
         for literals and compiles regex's
 
-        See simlang.grammar.GrammarParser.load_token_definitions for format
+        See tyrian.grammar.GrammarParser.load_token_definitions for format
         """
 
         for k, v in token_defs['literal'].items():
