@@ -1,0 +1,15 @@
+%start_token=list;
+
+list: OPEN_BRACKET CLOSE_BRACKET | OPEN_BRACKET members CLOSE_BRACKET;
+
+members: (list | atom)+;
+
+//members: (sexpr)+;
+
+//sexpr: list | atom;
+
+//atom: string | SYMBOL | ID | NUMBER;
+atom: (DOUBLE_QUOTE STRING DOUBLE_QUOTE) | SYMBOL | ID | NUMBER;
+
+
+//string: DOUBLE_QUOTE STRING DOUBLE_QUOTE;
