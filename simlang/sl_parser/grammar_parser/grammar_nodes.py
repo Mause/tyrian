@@ -16,38 +16,31 @@ class Node(object):
     """
     Base Node
     """
-    # self.CAPS_RE =
 
     def __repr__(self):
         raise NotImplementedError()
 
-    # @property
-    # def settings(self):
-    #     pass
-
-    # @settings.setter
-    # def set_settings(self, value):
-    #     pass
-
     def build_parse_tree(self, token):
         # if hasattr()
-        raise Exception(token)
+        raise Exception((self, token))
 
         raise Exception(self.settings['grammar_mapping'])
+
+        return token
 
     def check(self, *args, **kwargs):
         """
         Passthrough function used during testing
         """
-        # time.sleep(1.5)
-        r = self._check(*args, **kwargs)
-        assert 'parse_tree' in r
 
-        if r['result']:
-            assert r['parse_tree'], (
-                self.__qualname__,
-                r,
-                self.subs if hasattr(self, 'subs') else 'nope')
+        r = self._check(*args, **kwargs)
+        # assert 'parse_tree' in r
+
+        # if r['result']:
+        #     assert r['parse_tree'], (
+        #         self.__qualname__,
+        #         r,
+        #         self.subs if hasattr(self, 'subs') else 'nope')
         return r
 
 
@@ -74,7 +67,7 @@ class SubGrammarWrapper(Node):
         logger.debug(path)
 
         key = self.key.upper()
-        grammar = self.grammar_parser_inst.parsed_grammars[key]
+        grammar = self.grammar_parser_inst.grammars[key]
 
         return grammar.check(tokens, path)
 
@@ -107,8 +100,9 @@ class ContainerNode(Node):
 
         response = {
             'tokens': [],
-            'parse_tree': []
+            # 'parse_tree': []
         }
+
         result = True
         consumed = 0
         for node in self.subs:
@@ -119,16 +113,16 @@ class ContainerNode(Node):
             if result:
                 consumed += cur['consumed']
                 response['tokens'] += cur['tokens']
-                raise Exception(cur['parse_tree'])
-                response['parse_tree'].append(cur['parse_tree'])
+                # assert (cur['parse_tree'])
+                # response['parse_tree'].append(cur['parse_tree'])
             else:
                 logger.debug(path + ' failed')
                 break
 
         response['result'] = result
         response['consumed'] = consumed if result else 0
-        response['parse_tree'] = (
-            response['parse_tree'] if response['parse_tree'] else [])
+        # response['parse_tree'] = self.build_parse_tree(
+        #     response['parse_tree'] if response['parse_tree'] else [])
         return response
 
 
@@ -160,7 +154,7 @@ class LiteralNode(Node):
             'result': result,
             'consumed': 1 if result else 0,
             'tokens': [token] if result else [],
-            'parse_tree': self.LiteralNode(token)
+            # 'parse_tree': self.LiteralNode(token)
         }
 
 
@@ -188,7 +182,7 @@ class RENode(Node):
             'result': result,
             'consumed': 1 if result else 0,
             'tokens': [token] if result else [],
-            'parse_tree': self.RENode(token)
+            # 'parse_tree': self.RENode(token)
         }
 
 
@@ -226,7 +220,7 @@ class ORNode(Node):
             'result': False,
             'consumed': 0,
             'tokens': [],
-            'parse_tree': False
+            # 'parse_tree': False
         }
 
 
@@ -249,7 +243,7 @@ class MultiNode(Node):
 
         response = {
             'tokens': [],
-            'parse_tree': []
+            # 'parse_tree': []
         }
         consumed = 0
         while len(tokens) > consumed and tokens[consumed:]:
@@ -257,7 +251,7 @@ class MultiNode(Node):
 
             if r['result'] is True:
                 response['result'] = True
-                response['parse_tree'].append(r['parse_tree'])
+                # response['parse_tree'].append(r['parse_tree'])
             else:
                 logger.debug(path + ' failed')
                 break
@@ -268,7 +262,7 @@ class MultiNode(Node):
         response["consumed"] = consumed if response['result'] else 0
         if not response['result']:
             response['tokens'] = []
-            response['parse_tree'] = []
-        else:
-            response['parse_tree'] = self.build_parse_tree(response['parse_tree'])
+        #     response['parse_tree'] = []
+        # else:
+        #     response['parse_tree'] = self.build_parse_tree(response['parse_tree'])
         return response

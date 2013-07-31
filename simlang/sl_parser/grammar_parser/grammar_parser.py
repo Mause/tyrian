@@ -13,9 +13,9 @@ from .grammar_nodes import (
     RENode,
     ORNode
 )
-# import logging
+import logging
 logger = logger.getChild('GrammarParser')
-# logger.setLevel(logging.INFO)
+logger.setLevel(logging.INFO)
 
 
 class GrammarParser(object):
@@ -23,12 +23,15 @@ class GrammarParser(object):
     Does the grunt work of parsing the Grammar into a usable object;
     see grammar_nodes.py for more
     """
-    def __init__(self):
-        self.grammar = {}
-        self.settings = {}
-        self.token_defs = {}
-        self.grammar_mapping = {}
 
+    def __init__(self,
+                 raw_grammar=None,
+                 token_defs=None,
+                 grammar_mapping=None,
+                 nodes=None):
+
+        self.settings = {}
+        self.loaded_grammars = {}
         self.tokens_loaded = False
         self.grammar_loaded = False
         self.grammar_mapping_loaded = False
@@ -38,6 +41,16 @@ class GrammarParser(object):
             ')': ' ) ',
             '+': ' + '
         })
+
+        if grammar_mapping and nodes:
+            self.load_grammar_mapping(grammar_mapping, nodes)
+
+        if token_defs:
+            self.load_token_definitions(token_defs)
+
+        if raw_grammar:
+            self.load_grammar(raw_grammar)
+            self.parse_grammars()
 
     def load_grammar(self, content: str):
         """
@@ -60,13 +73,14 @@ class GrammarParser(object):
         a subgrammar is simply specified by name
         """
 
-        logger.debug('Loading grammar')
+        logger.info('Loading grammar')
         rules = content.split(';')
         rules = map(str.strip, rules)
         rules = filter(bool, rules)
 
+        loaded_grammars = {}
+
         for line in rules:
-            print(line)
             if line.startswith('%'):
                 line = line[1:]
 
@@ -94,12 +108,13 @@ class GrammarParser(object):
             value = map(str.strip, value)
             value = list(filter(bool, value))
 
-            self.grammar[key] = value
-
-        logger.debug('Grammars: {}'.format(self.grammar.keys()))
-        logger.debug('Grammar loaded, rules: {}'.format(len(self.grammar)))
+            loaded_grammars[key] = value
 
         self.grammar_loaded = True
+        self.loaded_grammars = loaded_grammars
+
+        logger.info('Grammars: {}'.format(', '.join(loaded_grammars.keys())))
+        logger.info('Grammar loaded, rules: {}'.format(len(loaded_grammars)))
 
     def load_token_definitions(self, defs):
         """
@@ -116,25 +131,30 @@ class GrammarParser(object):
         }
         """
 
-        logger.info('Loading token definitions')
-        self.token_defs['literal'] = {}
-        for k, v in defs['literal'].items():
-            self.token_defs['literal'][v.upper()] = k
+        token_defs = {}
 
-        self.token_defs['regex'] = {}
+        logger.info('Loading token definitions')
+        token_defs['literal'] = {}
+        for k, v in defs['literal'].items():
+            token_defs['literal'][v.upper()] = k
+
+        token_defs['regex'] = {}
         for k, v in defs['regex'].items():
-            self.token_defs['regex'][v.upper()] = k
+            token_defs['regex'][v.upper()] = k
 
         logger.info('Loaded token definitions, {} tokens'.format(
-            len(self.token_defs['literal']) + len(self.token_defs['regex'])))
+            len(token_defs['literal']) + len(token_defs['regex'])))
 
         self.tokens_loaded = True
+        self.token_defs = token_defs
 
     def load_grammar_mapping(self, grammar_mapping, nodes):
         """
         Load in a mapping between grammars and Nodes
         """
         logger.info('Loading grammar mappings')
+
+        grammar_mapping = {}
 
         def get(obj, key):
             if type(obj) == dict and key in obj:
@@ -143,10 +163,13 @@ class GrammarParser(object):
                 return getattr(obj, key)
 
         for k, v in grammar_mapping.items():
-            self.grammar_mapping[k] = get(nodes, v)
+            grammar_mapping[k] = get(nodes, v)
             logger.debug('{}: {}'.format(k, self.grammar_mapping[k]))
 
         self.grammar_mapping_loaded = True
+        self.grammar_mapping = grammar_mapping
+
+        logger.info('Grammar mappings loaded')
 
     def parse_grammars(self):
         """
@@ -156,7 +179,7 @@ class GrammarParser(object):
         assert self.grammar_loaded, 'Please load a grammar before calling this'
 
         logger.info('Parsing grammars into grammar trees')
-        logger.debug('Grammars: {}'.format(list(self.grammar.keys())))
+        logger.debug('Grammars: {}'.format(list(self.loaded_grammars.keys())))
 
         settings = {
             'grammar_mapping': self.grammar_mapping
@@ -164,10 +187,10 @@ class GrammarParser(object):
 
         parsed_grammars = {}
 
-        for grammar_key in self.grammar:
+        for grammar_key in self.loaded_grammars:
             logger.debug('Parsing {}'.format(grammar_key))
             cur, _ = self.parse_grammar(
-                self.grammar[grammar_key],
+                self.loaded_grammars[grammar_key],
                 grammar_key,
                 settings=settings)
 
@@ -178,6 +201,7 @@ class GrammarParser(object):
 
         logger.info('Grammar trees loaded')
 
+        self.grammars = parsed_grammars
         return parsed_grammars
 
     def parse_grammar(self, grammar, grammar_key, settings):
@@ -210,7 +234,7 @@ class GrammarParser(object):
                     settings=settings,
                     regex=regex))
 
-            elif token.upper() in self.grammar:
+            elif token.upper() in self.loaded_grammars:
                 # we give the sub grammar wrapper a reference to this
                 # GrammarParser instance so that it can look up the
                 # grammar when its check function is called

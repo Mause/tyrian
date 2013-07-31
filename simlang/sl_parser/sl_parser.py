@@ -10,17 +10,11 @@ class Parser(object):
     though in the future will perform parsing duties
     """
     def __init__(self, token_defs, raw_grammar, grammar_mapping, nodes):
-        self.grammar_parser = GrammarParser()
-
-        self.grammar_parser.load_grammar(raw_grammar)
-
-        self.grammar_parser.load_token_definitions(token_defs)
-
-        self.grammar = self.grammar_parser.parse_grammars()
-
-        self.grammar_parser.load_grammar_mapping(
-            grammar_mapping,
-            nodes
+        self.grammar_parser = GrammarParser(
+            raw_grammar=raw_grammar,
+            token_defs=token_defs,
+            grammar_mapping=grammar_mapping,
+            nodes=nodes
         )
 
     # def parse(self, lexed):
