@@ -2,7 +2,7 @@ import os
 import json
 from tyrian.lexer import Lexer
 from tyrian.utils import logger
-from tyrian.sl_parser import Parser
+from tyrian.typarser import Parser
 
 
 class Tyrian(object):
@@ -62,8 +62,6 @@ class Tyrian(object):
         logger.info('### kettle of fish ###')
 
         start_token = self.parser.grammar_parser.settings['start_token']
-
-        logger.debug(', '.join(self.parser.grammar_parser.grammars.keys()))
 
         base_grammar = self.parser.grammar_parser.grammars[start_token.upper()]
         print(base_grammar)
