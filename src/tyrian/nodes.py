@@ -82,7 +82,7 @@ class NumberNode(Node):
 class StringNode(Node):
     "Represents a string, per se"
     def __init__(self, string):
-        self.string = int(string)
+        self.string = string
 
     def __repr__(self):
         return '<StringNode string="{}">'.format(self.string)
