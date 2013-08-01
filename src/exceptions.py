@@ -10,3 +10,6 @@ class TyrianSyntaxError(TyrianException):
 
 class InvalidToken(TyrianException):
     pass
+
+class GrammarDefinitionError(TyrianException):
+    pass

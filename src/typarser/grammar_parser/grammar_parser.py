@@ -13,6 +13,7 @@ from .grammar_nodes import (
     RENode,
     ORNode
 )
+from ...exceptions import GrammarDefinitionError
 logger = logger.getChild('GrammarParser')
 
 
@@ -190,7 +191,6 @@ class GrammarParser(object):
         assert self.tokens_loaded, 'Please load some tokens before calling this'
 
         logger.info('Parsing grammars into grammar trees')
-        logger.debug('Grammars: {}'.format(list(self.loaded_grammars.keys())))
 
         settings = {
             'grammar_mapping': self.grammar_mapping
@@ -201,13 +201,16 @@ class GrammarParser(object):
         parsed_grammars = {}
 
         for grammar_key in self.loaded_grammars:
-            settings['grammar_key'] = grammar_key
-            settings['grammar_definition'] = self.loaded_grammars[grammar_key]
+            grammar_definition = self.loaded_grammars[grammar_key]
+            settings.update({
+                'grammar_key': grammar_key,
+                'grammar_definition': grammar_definition
+            })
 
             logger.info('Parsing {}'.format(grammar_key))
             cur, _ = self.parse_grammar(
-                self.loaded_grammars[grammar_key],
-                grammar_key,
+                grammar=grammar_definition,
+                grammar_key=grammar_key,
                 settings=settings)
 
             assert len(cur.subs) >= 1, cur.subs
@@ -231,44 +234,43 @@ class GrammarParser(object):
         comment = False
 
         while grammar:
+            # grab the first token, tell the Nodes
             token = grammar.pop(0)
-
             settings['token'] = token
-
             logger.debug('token: {}'.format(token))
+
             if token.upper() in self.token_defs['literal']:
+                # if its a literal token
                 literal = self.token_defs['literal'][token]
-                out_tokens.append(LiteralNode(
-                    settings=settings, content=literal))
+                node = LiteralNode(settings=settings, content=literal)
 
             elif token.upper() in self.token_defs['regex']:
                 regex = self.token_defs['regex'][token.upper()]
-                out_tokens.append(RENode(
-                    settings=settings,
-                    regex=regex))
+                node = RENode(settings=settings, regex=regex)
 
             elif token.upper() in self.loaded_grammars:
                 # we give the sub grammar wrapper a reference to this
                 # GrammarParser instance so that it can look up the
                 # grammar when its check function is called
-                out_tokens.append(SubGrammarWrapper(
+                node = SubGrammarWrapper(
                     settings=settings,
                     key=token,
-                    grammar_parser_inst=self))
+                    grammar_parser_inst=self)
 
             elif token == '(':
                 logger.debug('Step down')
                 sub_nodes, grammar = self.parse_grammar(
                     grammar, grammar_key, settings)
                 if sub_nodes:
-                    out_tokens.append(sub_nodes)
+                    node = sub_nodes
 
             elif token == ')':
                 logger.debug('Step up')
                 if out_tokens:
-                    return (
-                        ContainerNode(settings=settings, subs=out_tokens),
-                        grammar)
+                    node = ContainerNode(settings=settings, subs=out_tokens)
+                    return node, grammar
+                else:
+                    self.grammar_error('Empty brackets in Grammar')
 
             elif token == '|':
                 first_half = ContainerNode(settings=settings, subs=out_tokens)
@@ -276,13 +278,16 @@ class GrammarParser(object):
                 second_half, grammar = self.parse_grammar(
                     grammar, grammar_key, settings)
                 if first_half or second_half:
-                    out_tokens.append(ORNode(
-                        settings=settings, left=first_half, right=second_half))
+                    node = ORNode(settings=settings,
+                                  left=first_half,
+                                  right=second_half)
+                else:
+                    self.grammar_error('Invalid ORNode in Grammar')
 
             elif token == '+':
                 token = out_tokens.pop(-1)
                 if token:
-                    out_tokens.append(MultiNode(settings=settings, sub=token))
+                    node = MultiNode(settings=settings, sub=token)
 
             elif token == '/*':
                 while token != '*/' and grammar:
@@ -293,9 +298,17 @@ class GrammarParser(object):
                 raise Exception('In "{}" token "{}"'.format(
                     grammar_key, token))
 
+            out_tokens.append(node)
+
             if not comment:
                 logger.debug(out_tokens[-1])
             else:
                 comment = False
 
         return ContainerNode(settings=settings, subs=out_tokens), grammar
+
+    def grammar_error(self, message):
+        if self.settings.get('raise_on_error', False):
+            raise GrammarDefinitionError(message)
+        else:
+            logger.debug(message)
