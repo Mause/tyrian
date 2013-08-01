@@ -3,7 +3,7 @@ import json
 from .lexer import Lexer
 from .utils import logger
 from .typarser import Parser
-
+from .compiler import Compiler
 
 class Tyrian(object):
     """
@@ -40,6 +40,7 @@ class Tyrian(object):
             grammar_mapping=grammar_mapping,
             nodes=nodes
         )
+        self.compiler = Compiler()
 
     def resource(self, default, supplied):
         return (
@@ -57,7 +58,6 @@ class Tyrian(object):
         from pprint import pprint
 
         logger.info('### kettle of fish ###')
-
 
         results = self.parser.parse(lexed)
 
