@@ -4,8 +4,6 @@ class Node(object):
     """
     Base object for Node's
     """
-    # parent = None
-
     def disolve(self):
         pass
 
@@ -33,7 +31,7 @@ class ParseTree(object):
         if type(node) == ListNode:
             for sub_node in node.elements:
                 cur_lines += self.pprint(sub_node, indent + 1)
-                cur_lines.append('<ListNode END>{}'.format('\t' * indent))
+                cur_lines.append('{}<ListNode END>'.format('\t' * indent))
 
         return cur_lines
 
@@ -76,7 +74,7 @@ class NumberNode(Node):
         self.number = int(number)
 
     def __repr__(self):
-        return '<NumberNode number="{}">'.format(self.number)
+        return '<NumberNode number={}>'.format(self.number)
 
 
 class StringNode(Node):
