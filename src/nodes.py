@@ -80,6 +80,7 @@ class NumberNode(Node):
 class StringNode(Node):
     "Represents a string, per se"
     def __init__(self, string):
+        raise Exception()
         self.string = string
 
     def __repr__(self):

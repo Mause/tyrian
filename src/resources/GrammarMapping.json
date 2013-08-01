@@ -1,3 +1,5 @@
 {
-    "list": "ListNode"
+    "list": "ListNode",
+    "string": "StringNode"
 }
+

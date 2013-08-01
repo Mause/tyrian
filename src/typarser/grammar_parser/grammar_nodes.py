@@ -5,9 +5,9 @@ import re
 from ...utils import logger
 from collections import namedtuple
 
-import logging
+# import logging
 logger = logger.getChild('GrammerNodes')
-logger.setLevel(logging.INFO)
+# logger.setLevel(logging.INFO)
 # time.sleep = lambda x: None  # time.sleep(0.5 * x)
 # logger.debug = lambda *a, **kw: sys.stdout.write('DEBUG: {}\n'.format(a[0]))
 
@@ -21,12 +21,29 @@ class Node(object):
         raise NotImplementedError()
 
     def build_parse_tree(self, token):
-        # if hasattr()
-        raise Exception((self, token))
+        cur_token = self.settings['token'].lower()
 
-        raise Exception(self.settings['grammar_mapping'])
+        token = self.reduce(token)
 
-        return token
+        grammar_mapping = self.settings['grammar_mapping']
+
+        # raise Exception((cur_token, cur_token in grammar_mapping))
+
+        logger.debug(grammar_mapping)
+
+        if cur_token in grammar_mapping:
+            return grammar_mapping[cur_token](token)
+            raise Exception((token, cur_token))
+        else:
+            logger.debug('No mapping found for {}'.format(cur_token))
+            return token
+
+    def reduce(self, obj):
+        if type(obj) == list and len(obj) == 1:
+            return self.reduce(obj[0])
+        else:
+            return obj
+
 
     def check(self, *args, **kwargs):
         """
@@ -69,7 +86,8 @@ class SubGrammarWrapper(Node):
         key = self.key.upper()
         grammar = self.grammar_parser_inst.grammars[key]
 
-        return grammar.check(tokens, path)
+        token = grammar.check(tokens, path)
+        return self.build_parse_tree(token)
 
 
 class ContainerNode(Node):
@@ -209,12 +227,12 @@ class ORNode(Node):
         logger.debug('Left: {}'.format(f_result))
 
         if f_result['result']:
-            return f_result
+            return self.build_parse_tree(f_result)
 
         s_result = self.right.check(tokens, path)
         logger.debug('Right: {}'.format(s_result))
         if s_result['result']:
-            return s_result
+            return self.build_parse_tree(s_result)
 
         return {
             'result': False,
@@ -243,6 +261,7 @@ class MultiNode(Node):
 
         response = {
             'tokens': [],
+            'result': False,
             'parse_tree': []
         }
         consumed = 0

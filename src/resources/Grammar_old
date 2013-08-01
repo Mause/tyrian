@@ -2,14 +2,12 @@
 
 list: OPEN_BRACKET CLOSE_BRACKET | OPEN_BRACKET members CLOSE_BRACKET;
 
-members: (list | atom)+;
+members: (sexpr)+;
 
-//members: (sexpr)+;
+sexpr: list | atom;
 
-//sexpr: list | atom;
-
-//atom: string | SYMBOL | ID | NUMBER;
-atom: (DOUBLE_QUOTE STRING DOUBLE_QUOTE) | SYMBOL | ID | NUMBER;
+atom: string | SYMBOL | ID | NUMBER;
+//atom: (DOUBLE_QUOTE STRING_RE DOUBLE_QUOTE) | SYMBOL | ID | NUMBER;
 
 
-//string: DOUBLE_QUOTE STRING DOUBLE_QUOTE;
+string: DOUBLE_QUOTE STRING_RE DOUBLE_QUOTE;

@@ -19,3 +19,5 @@ if 'logger' not in globals():
         hdlr.setFormatter(formatter)
 
         logger.addHandler(hdlr)
+
+

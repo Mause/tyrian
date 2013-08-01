@@ -13,9 +13,9 @@ from .grammar_nodes import (
     RENode,
     ORNode
 )
-import logging
+# import logging
 logger = logger.getChild('GrammarParser')
-logger.setLevel(logging.INFO)
+# logger.setLevel(logging.INFO)
 
 
 class GrammarParser(object):
@@ -148,7 +148,7 @@ class GrammarParser(object):
         self.tokens_loaded = True
         self.token_defs = token_defs
 
-    def load_grammar_mapping(self, grammar_mapping, nodes):
+    def load_grammar_mapping(self, raw_grammar_mapping, nodes):
         """
         Load in a mapping between grammars and Nodes
         """
@@ -162,14 +162,14 @@ class GrammarParser(object):
             elif hasattr(obj, key):
                 return getattr(obj, key)
 
-        for k, v in grammar_mapping.items():
+        for k, v in raw_grammar_mapping.items():
             grammar_mapping[k] = get(nodes, v)
-            logger.debug('{}: {}'.format(k, self.grammar_mapping[k]))
+            logger.debug('{}: {}'.format(k, grammar_mapping[k]))
 
         self.grammar_mapping_loaded = True
         self.grammar_mapping = grammar_mapping
 
-        logger.info('Grammar mappings loaded')
+        logger.info('{} grammar mappings loaded'.format(len(grammar_mapping)))
 
     def parse_grammars(self):
         """
@@ -185,9 +185,14 @@ class GrammarParser(object):
             'grammar_mapping': self.grammar_mapping
         }
 
+        assert self.grammar_mapping, self.grammar_mapping
+
         parsed_grammars = {}
 
         for grammar_key in self.loaded_grammars:
+            settings['grammar_key'] = grammar_key
+            settings['grammar_definition'] = self.loaded_grammars[grammar_key]
+
             logger.debug('Parsing {}'.format(grammar_key))
             cur, _ = self.parse_grammar(
                 self.loaded_grammars[grammar_key],
@@ -221,6 +226,8 @@ class GrammarParser(object):
 
         while grammar:
             token = grammar.pop(0)
+
+            settings['token'] = token
 
             logger.debug('token: {}'.format(token))
             if token.upper() in self.token_defs['literal']:

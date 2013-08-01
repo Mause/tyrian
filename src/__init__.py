@@ -1,8 +1,8 @@
 import os
 import json
-from tyrian.lexer import Lexer
-from tyrian.utils import logger
-from tyrian.typarser import Parser
+from .lexer import Lexer
+from .utils import logger
+from .typarser import Parser
 
 
 class Tyrian(object):
@@ -31,7 +31,7 @@ class Tyrian(object):
         with open(grammar_mapping_filename) as fh:
             grammar_mapping = json.load(fh)
 
-        import tyrian.nodes as nodes
+        from . import nodes
 
         self.lexer = Lexer(token_defs)
         self.parser = Parser(
@@ -48,6 +48,9 @@ class Tyrian(object):
         )
 
     def run(self, filename):
+        filename = os.path.join(
+            os.path.dirname(__file__),
+            filename)
         with open(filename) as fh:
             lexed = self.lexer.lex(fh.read(), filename)
 
@@ -57,7 +60,6 @@ class Tyrian(object):
             # json.dump(lexed, fh)
 
         from pprint import pprint
-        logger.debug(self.parser.grammar_parser.grammar_mapping)
 
         logger.info('### kettle of fish ###')
 
@@ -79,7 +81,7 @@ class Tyrian(object):
 
             index += result['consumed']
 
-        pprint(results)
+        pprint(results[0][0]['parse_tree'])
 
         # parse_tree = self.parser.parse(lexed)
 
