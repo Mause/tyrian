@@ -95,6 +95,10 @@ class GrammarParser(object):
 
             key, *value = line.split(':')
             key = key.upper()
+
+            assert (key not in self.token_defs,
+                'Do not name grammars the same as tokens')
+
             value = ':'.join(value)
 
             # clean up the value a bit
@@ -136,10 +140,14 @@ class GrammarParser(object):
         logger.info('Loading token definitions')
         token_defs['literal'] = {}
         for k, v in defs['literal'].items():
+            assert (v.upper() not in self.loaded_grammars,
+                'Do not name tokens the same as grammars')
             token_defs['literal'][v.upper()] = k
 
         token_defs['regex'] = {}
         for k, v in defs['regex'].items():
+            assert (v.upper() not in self.loaded_grammars,
+                'Do not name tokens the same as grammars')
             token_defs['regex'][v.upper()] = k
 
         logger.info('Loaded token definitions, {} tokens'.format(
