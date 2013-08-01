@@ -54,31 +54,14 @@ class Tyrian(object):
         with open(filename) as fh:
             lexed = self.lexer.lex(fh.read(), filename)
 
-        # lexed = self.lexer.lex(input('> '))
-        # lexed = self.lexer.lex('(print "world")')
-        # with open('lexed.json', 'w') as fh:
-            # json.dump(lexed, fh)
-
         from pprint import pprint
 
         logger.info('### kettle of fish ###')
 
-        start_token = self.parser.grammar_parser.settings['start_token']
 
-        base_grammar = self.parser.grammar_parser.grammars[start_token.upper()]
+        results = self.parser.parse(lexed)
 
-        index = 0
-        results = []
-        while index < len(lexed):
-            result = base_grammar.check(lexed[index:], '<list>')
-
-            assert result['result'], (result, ' '.join([x['token'] for x in lexed[index:]]))
-            del result['tokens']
-
-            what_was_consumed = ' '.join([x['token'] for x in lexed[index:index+result['consumed']]])
-            results.append((result, what_was_consumed))
-
-            index += result['consumed']
+        results = results.expressions
 
         pprint(results[0][0]['parse_tree'])
 

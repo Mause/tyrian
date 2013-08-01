@@ -1,3 +1,4 @@
+import warnings
 
 
 class Node(object):
@@ -14,8 +15,9 @@ class ParseTree(object):
     """
     def __init__(self, expressions):
         # lisp is ultimately expression based
-        for expr in expressions:
-            assert type(expr) == ListNode, expr
+        warnings.warn('Type checking disabled temporarily')
+        # for expr in expressions:
+        #     assert type(expr) == ListNode, expr
         self.expressions = expressions
 
     def __repr__(self):

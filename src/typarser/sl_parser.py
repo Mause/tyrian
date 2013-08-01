@@ -1,5 +1,5 @@
 
-# from ..nodes import ParseTree
+from ..nodes import ParseTree
 # from ..sl_exceptions import TyrianSyntaxError
 from .grammar_parser import GrammarParser
 
@@ -17,18 +17,30 @@ class Parser(object):
             nodes=nodes
         )
 
-    # def parse(self, lexed):
-    #     return ParseTree(self._parse(lexed))
+    def parse(self, lexed):
+        return ParseTree(self._parse(lexed))
 
-    # def _parse(self, tokens):
-    #     nodes = []
+    def _parse(self, lexed):
+        start_token = self.grammar_parser.settings['start_token']
 
-    #     tokens = list(filter(bool, tokens))
+        base_grammar = self.grammar_parser.grammars[start_token.upper()]
 
-    #     while tokens:
-    #         token = tokens.pop(0)
+        index = 0
+        results = []
 
-    #     raise Exception()
+        while index < len(lexed):
+            result = base_grammar.check(lexed[index:], '<list>')
+
+            assert result['result'], (result, ' '.join([x['token'] for x in lexed[index:]]))
+            del result['tokens']
+
+            what_was_consumed = ' '.join([x['token'] for x in lexed[index:index+result['consumed']]])
+            results.append((result, what_was_consumed))
+
+            index += result['consumed']
+
+        return results
+
 
     # def _parse(self, tokens):
     #     nodes = []
