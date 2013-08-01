@@ -1,7 +1,8 @@
+# standard library
 import re
-# import sys
-# import pdb
-# import time
+from copy import copy
+
+# application specific
 from ...utils import logger
 from collections import namedtuple
 
@@ -18,6 +19,9 @@ class Node(object):
 
     def build_parse_tree(self, token):
         token = self.reduce(token)
+
+        if type(self) != SubGrammarWrapper:
+            return token
 
         grammar_key = self.settings['grammar_key']
         grammar_mapping = self.settings['grammar_mapping']
@@ -70,7 +74,7 @@ class SubGrammarWrapper(Node):
     """
     def __init__(self, settings, key, grammar_parser_inst):
         # these setting are for the grammar mappings and such
-        self.settings = settings
+        self.settings = copy(settings)
 
         self.key = key
         self.grammar_parser_inst = grammar_parser_inst
@@ -95,7 +99,10 @@ class ContainerNode(Node):
     """
     def __init__(self, settings, subs):
         # these setting are for the grammar mappings and such
-        self.settings = settings
+        self.settings = copy(settings)
+        if 'grammar_definition' in settings:
+            del settings['grammar_definition']
+        logger.info(settings)
 
         if len(subs) == 1 and type(subs[0]) == ContainerNode:
             subs = subs[0].subs
@@ -112,7 +119,6 @@ class ContainerNode(Node):
         return '<ContainerNode len(subs)=={}>'.format(len(self.subs))
 
     def _check(self, tokens, path):
-        # we dont log the ContainerNode, it just creates spam
         logger.debug(path + '.CN')
 
         response = {
@@ -138,8 +144,11 @@ class ContainerNode(Node):
 
         response['result'] = result
         response['consumed'] = consumed if result else 0
-        response['parse_tree'] = self.build_parse_tree(
-            response['parse_tree'] if response['parse_tree'] else [])
+        if response['parse_tree']:
+            response['parse_tree'] = self.build_parse_tree(
+                response['parse_tree'])
+        else:
+            response['parse_tree'] = []
         return response
 
 
@@ -149,7 +158,7 @@ class LiteralNode(Node):
     """
     def __init__(self, settings, content):
         # these setting are for the grammar mappings and such
-        self.settings = settings
+        self.settings = copy(settings)
 
         self.content = content
 
@@ -178,7 +187,7 @@ class LiteralNode(Node):
 class RENode(Node):
     def __init__(self, settings, regex):
         # these setting are for the grammar mappings and such
-        self.settings = settings
+        self.settings = copy(settings)
 
         self.raw_re = regex
         self.RE = re.compile(regex)
@@ -206,7 +215,7 @@ class RENode(Node):
 class ORNode(Node):
     def __init__(self, settings, left, right):
         # these setting are for the grammar mappings and such
-        self.settings = settings
+        self.settings = copy(settings)
 
         left.parent = self
         right.parent = self
@@ -252,7 +261,7 @@ class MultiNode(Node):
 
     def __init__(self, settings, sub):
         # these setting are for the grammar mappings and such
-        self.settings = settings
+        self.settings = copy(settings)
 
         sub.parent = self
         self.subs = sub

@@ -27,7 +27,8 @@ class GrammarParser(object):
                  raw_grammar=None,
                  token_defs=None,
                  grammar_mapping=None,
-                 nodes=None):
+                 nodes=None,
+                 settings=None):
 
         self.settings = {}
         self.loaded_grammars = {}
@@ -232,6 +233,7 @@ class GrammarParser(object):
         out_tokens = []
         grammar = copy(grammar)
         comment = False
+        node = None
 
         while grammar:
             # grab the first token, tell the Nodes
@@ -270,7 +272,7 @@ class GrammarParser(object):
                     node = ContainerNode(settings=settings, subs=out_tokens)
                     return node, grammar
                 else:
-                    self.grammar_error('Empty brackets in Grammar')
+                    raise GrammarDefinitionError('Empty brackets in Grammar')
 
             elif token == '|':
                 first_half = ContainerNode(settings=settings, subs=out_tokens)
@@ -282,7 +284,7 @@ class GrammarParser(object):
                                   left=first_half,
                                   right=second_half)
                 else:
-                    self.grammar_error('Invalid ORNode in Grammar')
+                    raise GrammarDefinitionError('Invalid ORNode in Grammar')
 
             elif token == '+':
                 token = out_tokens.pop(-1)
@@ -306,9 +308,3 @@ class GrammarParser(object):
                 comment = False
 
         return ContainerNode(settings=settings, subs=out_tokens), grammar
-
-    def grammar_error(self, message):
-        if self.settings.get('raise_on_error', False):
-            raise GrammarDefinitionError(message)
-        else:
-            logger.debug(message)

@@ -69,7 +69,6 @@ class Lexer(object):
             'Please call load_token_definitions before calling this function')
 
         lines = content.split('\n')
-        logger.warning('Lines: {}'.format(len(lines)))
 
         tokens = []
         for line_no, line in enumerate(lines, start=1):

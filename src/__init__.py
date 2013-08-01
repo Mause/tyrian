@@ -13,7 +13,8 @@ class Tyrian(object):
     def __init__(self,
                  token_defs_filename=None,
                  grammar_filename=None,
-                 grammar_mapping_filename=None):
+                 grammar_mapping_filename=None,
+                 settings=None):
         self.resources = os.path.join(os.path.dirname(__file__), 'resources')
 
         token_defs_filename = self.resource(
@@ -38,7 +39,8 @@ class Tyrian(object):
             token_defs=token_defs,
             raw_grammar=raw_grammar,
             grammar_mapping=grammar_mapping,
-            nodes=nodes
+            nodes=nodes,
+            settings=settings
         )
         self.compiler = Compiler()
 

@@ -43,9 +43,10 @@ class ListNode(Node):
     Represents a ()
     """
     def __init__(self, elements):
-        self.elements = elements
+        self.elements = elements if type(elements) == list else [elements]
 
     def __repr__(self):
+        raise Exception(self.elements)
         return '<ListNode len(elements)=={}>'.format(len(self.elements))
 
     def disolve(self):
@@ -82,7 +83,7 @@ class NumberNode(Node):
 class StringNode(Node):
     "Represents a string, per se"
     def __init__(self, string):
-        raise Exception()
+        raise Exception(string)
         self.string = string
 
     def __repr__(self):
