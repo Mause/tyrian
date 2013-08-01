@@ -66,7 +66,6 @@ class Tyrian(object):
         start_token = self.parser.grammar_parser.settings['start_token']
 
         base_grammar = self.parser.grammar_parser.grammars[start_token.upper()]
-        print(base_grammar)
 
         index = 0
         results = []
@@ -86,3 +85,10 @@ class Tyrian(object):
         # parse_tree = self.parser.parse(lexed)
 
         # print(parse_tree.pprint())
+
+def main():
+    import doctest
+    doctest.testmod()
+
+if __name__ == '__main__':
+    main()

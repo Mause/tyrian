@@ -5,11 +5,7 @@ import re
 from ...utils import logger
 from collections import namedtuple
 
-# import logging
 logger = logger.getChild('GrammerNodes')
-# logger.setLevel(logging.INFO)
-# time.sleep = lambda x: None  # time.sleep(0.5 * x)
-# logger.debug = lambda *a, **kw: sys.stdout.write('DEBUG: {}\n'.format(a[0]))
 
 
 class Node(object):
@@ -21,24 +17,28 @@ class Node(object):
         raise NotImplementedError()
 
     def build_parse_tree(self, token):
-        cur_token = self.settings['token'].lower()
-
         token = self.reduce(token)
 
+        grammar_key = self.settings['grammar_key']
         grammar_mapping = self.settings['grammar_mapping']
-
-        # raise Exception((cur_token, cur_token in grammar_mapping))
 
         logger.debug(grammar_mapping)
 
-        if cur_token in grammar_mapping:
-            return grammar_mapping[cur_token](token)
-            raise Exception((token, cur_token))
+        if grammar_key in grammar_mapping:
+            return grammar_mapping[grammar_key](token)
+            raise Exception((token, grammar_key))
         else:
-            logger.debug('No mapping found for {}'.format(cur_token))
+            logger.debug('No mapping found for {}'.format(grammar_key))
             return token
 
     def reduce(self, obj):
+        """
+        Flattens nested lists, like so;
+
+        >>> reduce([[[[[[[None]]]]]]])
+        None
+
+        """
         if type(obj) == list and len(obj) == 1:
             return self.reduce(obj[0])
         else:
@@ -80,14 +80,13 @@ class SubGrammarWrapper(Node):
 
     def _check(self, tokens, path):
         path += '.' + '<' + self.key + '>'
-        # self.__qualname__ +
+
         logger.debug(path)
 
         key = self.key.upper()
         grammar = self.grammar_parser_inst.grammars[key]
 
-        token = grammar.check(tokens, path)
-        return self.build_parse_tree(token)
+        return grammar.check(tokens, path)
 
 
 class ContainerNode(Node):
@@ -216,23 +215,29 @@ class ORNode(Node):
         self.right = right
 
     def __repr__(self):
-        return '<ORNode left="{}" right="{}">'.format(
+        return '<ORNode left={} right={}>'.format(
             self.left, self.right)
 
     def _check(self, tokens, path):
         path += '.ORN'
         logger.debug(path)
 
-        f_result = self.left.check(tokens, path)
-        logger.debug('Left: {}'.format(f_result))
+        left_result = self.left.check(tokens, path)
+        logger.debug('Left: {}'.format(left_result))
 
-        if f_result['result']:
-            return self.build_parse_tree(f_result)
+        if left_result['result']:
+            left_result['parse_tree'] = self.build_parse_tree(
+                left_result['parse_tree'])
+            return left_result
 
-        s_result = self.right.check(tokens, path)
-        logger.debug('Right: {}'.format(s_result))
-        if s_result['result']:
-            return self.build_parse_tree(s_result)
+        right_result = self.right.check(tokens, path)
+        right_result.__repr__()
+
+        logger.debug('Right: {}'.format(right_result))
+        if right_result['result']:
+            right_result['parse_tree'] = self.build_parse_tree(
+                right_result['parse_tree'])
+            return right_result
 
         return {
             'result': False,

@@ -13,9 +13,7 @@ from .grammar_nodes import (
     RENode,
     ORNode
 )
-# import logging
 logger = logger.getChild('GrammarParser')
-# logger.setLevel(logging.INFO)
 
 
 class GrammarParser(object):
@@ -96,7 +94,7 @@ class GrammarParser(object):
             key, *value = line.split(':')
             key = key.upper()
 
-            assert (key not in self.token_defs,
+            assert key not in self.token_defs,(
                 'Do not name grammars the same as tokens')
 
             value = ':'.join(value)
@@ -140,13 +138,13 @@ class GrammarParser(object):
         logger.info('Loading token definitions')
         token_defs['literal'] = {}
         for k, v in defs['literal'].items():
-            assert (v.upper() not in self.loaded_grammars,
+            assert v.upper() not in self.loaded_grammars, (
                 'Do not name tokens the same as grammars')
             token_defs['literal'][v.upper()] = k
 
         token_defs['regex'] = {}
         for k, v in defs['regex'].items():
-            assert (v.upper() not in self.loaded_grammars,
+            assert v.upper() not in self.loaded_grammars, (
                 'Do not name tokens the same as grammars')
             token_defs['regex'][v.upper()] = k
 
@@ -171,6 +169,7 @@ class GrammarParser(object):
                 return getattr(obj, key)
 
         for k, v in raw_grammar_mapping.items():
+            k = k.upper()
             grammar_mapping[k] = get(nodes, v)
             logger.debug('{}: {}'.format(k, grammar_mapping[k]))
 
@@ -182,9 +181,13 @@ class GrammarParser(object):
     def parse_grammars(self):
         """
         Parses loaded grammars into "check trees"
-        Simply iterates over grammars and calls parse_grammar on them.
+
+        These check tree consist of a root ContainerNode, where a list
+        of tokens can be passed into the root Node.check(<args>) function
+        and validated according to the loaded grammars.
         """
         assert self.grammar_loaded, 'Please load a grammar before calling this'
+        assert self.tokens_loaded, 'Please load some tokens before calling this'
 
         logger.info('Parsing grammars into grammar trees')
         logger.debug('Grammars: {}'.format(list(self.loaded_grammars.keys())))
@@ -201,7 +204,7 @@ class GrammarParser(object):
             settings['grammar_key'] = grammar_key
             settings['grammar_definition'] = self.loaded_grammars[grammar_key]
 
-            logger.debug('Parsing {}'.format(grammar_key))
+            logger.info('Parsing {}'.format(grammar_key))
             cur, _ = self.parse_grammar(
                 self.loaded_grammars[grammar_key],
                 grammar_key,
@@ -210,7 +213,6 @@ class GrammarParser(object):
             assert len(cur.subs) >= 1, cur.subs
 
             parsed_grammars[grammar_key] = cur
-            logger.debug('End product: {}'.format(cur))
 
         logger.info('Grammar trees loaded')
 
@@ -219,14 +221,10 @@ class GrammarParser(object):
 
     def parse_grammar(self, grammar, grammar_key, settings):
         """
-        Called by parse_grammars, 'tis recommended that you simply use that.
-
-        Returns a ContainerNode, where a list of tokens can be
-        passed into the root Node.check(<args>) function and validated
-        according to the grammar
+        See self.parse_grammars
         """
-
         assert self.grammar_loaded, 'Please load a grammar before calling this'
+        assert self.tokens_loaded, 'Please load some tokens before calling this'
 
         out_tokens = []
         grammar = copy(grammar)
