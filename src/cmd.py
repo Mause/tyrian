@@ -4,6 +4,7 @@ import logging
 from . import Tyrian
 from .utils import logger
 
+
 def main():
     if '-v' in sys.argv:
         verbosity = 1
@@ -12,8 +13,8 @@ def main():
 
     if verbosity == 0:
         logger.getChild('GrammarParser').setLevel(logging.INFO)
-        logger.getChild('GrammaNodes').setLevel(logging.INFO)
-
+        logger.getChild('GrammerNodes').setLevel(logging.INFO)
+        logger.getChild('Lexer').setLevel(logging.INFO)
 
     s = Tyrian()
 
