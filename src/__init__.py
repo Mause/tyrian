@@ -17,7 +17,6 @@ class Tyrian(object):
     def __init__(self,
                  token_defs_filename=None,
                  grammar_filename=None,
-                 grammar_mapping_filename=None,
                  settings=None):
         self.resources = os.path.join(os.path.dirname(__file__), 'resources')
 
@@ -31,18 +30,12 @@ class Tyrian(object):
         with open(grammar_filename) as fh:
             raw_grammar = fh.read()
 
-        grammar_mapping_filename = self.resource(
-            grammar_mapping_filename, 'GrammarMapping.json')
-        with open(grammar_mapping_filename) as fh:
-            grammar_mapping = json.load(fh)
-
         from . import nodes
 
         self.lexer = Lexer(token_defs)
         self.parser = Parser(
             token_defs=token_defs,
             raw_grammar=raw_grammar,
-            grammar_mapping=grammar_mapping,
             nodes=nodes,
             settings=settings
         )

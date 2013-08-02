@@ -12,13 +12,11 @@ class Parser(object):
     def __init__(self,
                  token_defs=None,
                  raw_grammar=None,
-                 grammar_mapping=None,
                  nodes=None,
                  settings=None):
         self.grammar_parser = GrammarParser(
             raw_grammar=raw_grammar,
             token_defs=token_defs,
-            grammar_mapping=grammar_mapping,
             nodes=nodes,
             settings=settings
         )

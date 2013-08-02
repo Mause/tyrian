@@ -104,3 +104,11 @@ class StringNode(Node):
 
     def __repr__(self):
         return '<StringNode string="{}">'.format(self.string)
+
+# and we define the mappings
+
+grammar_mapping = {
+    "list": ListNode,
+    "string": StringNode,
+    "id": IDNode
+}

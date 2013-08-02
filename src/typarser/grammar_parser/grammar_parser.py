@@ -2,6 +2,7 @@
 Defines the GrammarParser
 """
 # standard library
+import inspect
 from copy import copy
 
 # application specific
@@ -28,7 +29,6 @@ class GrammarParser(object):
     def __init__(self,
                  raw_grammar=None,
                  token_defs=None,
-                 grammar_mapping=None,
                  nodes=None,
                  settings=None):
 
@@ -45,8 +45,8 @@ class GrammarParser(object):
             '\n': ' '
         })
 
-        if grammar_mapping and nodes:
-            self.load_grammar_mapping(grammar_mapping, nodes)
+        if nodes:
+            self.load_grammar_mapping(nodes)
 
         if token_defs:
             self.load_token_definitions(token_defs)
@@ -158,13 +158,14 @@ class GrammarParser(object):
         self.tokens_loaded = True
         self.token_defs = token_defs
 
-    def load_grammar_mapping(self, raw_grammar_mapping, nodes):
+    def load_grammar_mapping(self, nodes):
         """
         Load in a mapping between grammars and Nodes
         """
         logger.info('Loading grammar mappings')
 
         grammar_mapping = {}
+        raw_grammar_mapping = nodes.grammar_mapping
 
         def get(obj, key):
             if type(obj) == dict and key in obj:
@@ -174,7 +175,12 @@ class GrammarParser(object):
 
         for k, v in raw_grammar_mapping.items():
             k = k.upper()
-            grammar_mapping[k] = get(nodes, v)
+
+            if inspect.isclass(v):
+                grammar_mapping[k] = v
+            else:
+                grammar_mapping[k] = get(nodes, v)
+
             logger.debug('{}: {}'.format(k, grammar_mapping[k]))
 
         self.grammar_mapping_loaded = True
