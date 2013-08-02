@@ -12,7 +12,7 @@ class Lexer(object):
     """
     Performs lexing
     """
-    def __init__(self, token_defs):
+    def __init__(self, token_defs: dict) -> None:
         self.tokens = {}
         self.TRANS = str.maketrans({
             '(': ' ( ',
@@ -26,7 +26,7 @@ class Lexer(object):
         else:
             self.tokens_loaded = False
 
-    def match_with(self, left):
+    def match_with(self, left: str) -> tuple:
         """
         Convenience function.
 
@@ -40,7 +40,7 @@ class Lexer(object):
             return left == right
         return MatchFunction(internal)
 
-    def load_token_definitions(self, token_defs):
+    def load_token_definitions(self, token_defs: dict) -> None:
         """
         Iterates through the supplied token_defs dictionary, creates wrappers
         for literals and compiles regex's
@@ -58,7 +58,7 @@ class Lexer(object):
 
         self.tokens_loaded = True
 
-    def lex(self, content: str, filename: str=None):
+    def lex(self, content: str, filename: str=None) -> list:
         """
         Takes a string to lex accourding to token definition loaded
         via load_token_definitions
@@ -76,7 +76,7 @@ class Lexer(object):
 
         return tokens
 
-    def _lex(self, line, line_no, filename):
+    def _lex(self, line: str, line_no: int, filename: str) -> [dict]:
         """
         used internally by lex, does actual lexing
         """

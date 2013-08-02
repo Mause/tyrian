@@ -1,25 +1,16 @@
-
+# application specific
 from ..utils import reduce
-from ..nodes import ParseTree, ContainerNode
-# from ..sl_exceptions import TyrianSyntaxError
 from .grammar_parser import GrammarParser
+from ..exceptions import TyrianSyntaxError
+from ..nodes import ParseTree, ContainerNode, ListNode
 
 
 class Parser(object):
     """
 
     """
-    def __init__(self,
-                 token_defs=None,
-                 raw_grammar=None,
-                 nodes=None,
-                 settings=None):
-        self.grammar_parser = GrammarParser(
-            raw_grammar=raw_grammar,
-            token_defs=token_defs,
-            nodes=nodes,
-            settings=settings
-        )
+    def __init__(self, **kwargs):
+        self.grammar_parser = GrammarParser(**kwargs)
 
     def parse(self, lexed: list) -> ParseTree:
         start_token = self.grammar_parser.settings['start_token']
@@ -32,7 +23,9 @@ class Parser(object):
         while index < len(lexed):
             result = base_grammar.check(lexed[index:], '<list>')
 
-            assert result['result'], (result, ' '.join([x['token'] for x in lexed[index:]]))
+            if not result['result']:
+                raise TyrianSyntaxError()
+                # , (result, ' '.join([x['token'] for x in lexed[index:]]))
             del result['tokens']
 
             results.append(result)
@@ -48,7 +41,7 @@ class Parser(object):
             parse_tree = result['parse_tree']
             parse_tree = reduce(parse_tree, can_return_single=True)
 
-            parse_tree = ContainerNode(parse_tree)
+            parse_tree = ListNode(parse_tree)
 
             processed.append(parse_tree)
         return ContainerNode(processed, strip=False)
