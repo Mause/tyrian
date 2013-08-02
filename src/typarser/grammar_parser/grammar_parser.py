@@ -1,10 +1,10 @@
 """
 Defines the GrammarParser
 """
-
+# standard library
 from copy import copy
 
-from ...utils import logger
+# application specific
 from .grammar_nodes import (
     SubGrammarWrapper,
     ContainerNode,
@@ -13,7 +13,9 @@ from .grammar_nodes import (
     RENode,
     ORNode
 )
+from ...utils import logger
 from ...exceptions import GrammarDefinitionError
+
 logger = logger.getChild('GrammarParser')
 
 
@@ -39,7 +41,8 @@ class GrammarParser(object):
         self.VALUE_CLEANUP_TRANSFORM = str.maketrans({
             '(': ' ( ',
             ')': ' ) ',
-            '+': ' + '
+            '+': ' + ',
+            '\n': ' '
         })
 
         if grammar_mapping and nodes:
@@ -96,7 +99,7 @@ class GrammarParser(object):
             key, *value = line.split(':')
             key = key.upper()
 
-            assert key not in self.token_defs,(
+            assert key not in self.token_defs, (
                 'Do not name grammars the same as tokens')
 
             value = ':'.join(value)
@@ -105,7 +108,6 @@ class GrammarParser(object):
             value = (value.translate(self.VALUE_CLEANUP_TRANSFORM)
                           .replace('/*', ' /* ')
                           .replace('*/', ' */ ')
-                          .replace('\n', ' ')
                           .strip()
                           .split(' '))
             # strip each segment, filters for empty fragments
