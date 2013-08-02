@@ -27,7 +27,7 @@ class Tyrian(object):
             token_defs = json.load(fh)
 
         grammar_filename = self.resource(
-            grammar_filename, 'Grammar_old')
+            grammar_filename, 'Grammar')
         with open(grammar_filename) as fh:
             raw_grammar = fh.read()
 

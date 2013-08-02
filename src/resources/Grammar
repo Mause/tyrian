@@ -1,22 +1,12 @@
 %start_token=list;
 
-s_exp: atom
-     | list
-     ;
+list: OPEN_BRACKET CLOSE_BRACKET | OPEN_BRACKET members CLOSE_BRACKET;
 
-atom: NUMBER
-    | SYMBOL
-    | STRING
-    ;
+members: (sexpr)+;
 
-list: OPEN_BRACKET CLOSE_BRACKET   /* empty list () */
-    | OPEN_BRACKET s_exp_list CLOSE_BRACKET
-    | OPEN_BRACKET s_exp_list DOT s_exp CLOSE_BRACKET
-    | SINGLE_QUOTE s_exp
-    | SHARP_QUOTE s_exp
-    | HASH s_exp
-    ;
+sexpr: list | atom;
 
-s_exp_list: s_exp
-          | s_exp_list s_exp
-          ;
+atom: string | SYMBOL | id | NUMBER;
+
+id: ID_RE;
+string: (DOUBLE_QUOTE STRING_RE DOUBLE_QUOTE);
