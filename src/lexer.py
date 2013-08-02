@@ -1,5 +1,4 @@
 import re
-import json
 import logging
 from collections import namedtuple
 
@@ -103,24 +102,3 @@ class Lexer(object):
                     if filename:
                         msg += ' of file {}'.format(filename)
                     raise InvalidToken(msg)
-
-
-def main():
-    l = Lexer()
-    with open('tokens.json') as fh:
-        l.load_token_definitions(json.load(fh))
-
-    with open('test.lisp') as fh:
-        lexed = l.lex(fh.read())
-
-    from pprint import pprint
-    pprint(lexed)
-
-
-if __name__ == '__main__':
-    # import atexit
-    # atexit.register(input)
-    # try:
-    main()
-    # except Exception as e:
-    #     pdb.post_mortem(e)
