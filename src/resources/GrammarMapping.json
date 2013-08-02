@@ -1,5 +1,6 @@
 {
     "list": "ListNode",
-    "string": "StringNode"
+    "string": "StringNode",
+    "id": "IDNode"
 }
 
