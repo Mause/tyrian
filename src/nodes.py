@@ -46,7 +46,7 @@ class ListNode(Node):
     """
     Represents a () in LISP
     """
-    def __init__(self, content, grammar_key=None, strip=True):
+    def __init__(self, content, strip=True):
         if strip:
             content = content[1:-1]
         self.content = reduce(content)
@@ -79,7 +79,7 @@ class ContainerNode(ListNode):
 
 class IDNode(Node):
     "Represents an ID"
-    def __init__(self, id, grammar_key):
+    def __init__(self, id):
         id = id.content
         self.id = id
 
@@ -89,7 +89,7 @@ class IDNode(Node):
 
 class NumberNode(Node):
     "Represents a number"
-    def __init__(self, number, grammar_key):
+    def __init__(self, number):
         self.number = int(number)
 
     def __repr__(self):
@@ -98,7 +98,7 @@ class NumberNode(Node):
 
 class StringNode(Node):
     "Represents a string, per se"
-    def __init__(self, string, grammar_key):
+    def __init__(self, string):
         string = string[1:-1][0]
         self.string = string.content
 
