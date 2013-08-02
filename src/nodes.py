@@ -1,5 +1,7 @@
 import warnings
 
+from .utils import reduce
+
 
 class Node(object):
     """
@@ -23,48 +25,62 @@ class ParseTree(object):
     def __repr__(self):
         return '<ParseTree len(expressions)=={}>'.format(len(self.expressions))
 
-    def pprint(self, node):
-        return '\n'.join(self._pprint(self))
+    def pprint(self):
+        return '\n'.join(self._pprint(self.expressions))
 
     def _pprint(self, node, indent=0):
         cur_lines = []
         cur_lines.append('{}{}'.format('\t' * indent, node))
 
-        if type(node) == ListNode:
-            for sub_node in node.elements:
-                cur_lines += self.pprint(sub_node, indent + 1)
-                cur_lines.append('{}<ListNode END>'.format('\t' * indent))
+        if type(node) in [ListNode, ContainerNode]:
+            for sub_node in node.content:
+                cur_lines += self._pprint(sub_node, indent + 1)
+            cur_lines.append('{}<{} END>'.format(
+                '\t' * indent,
+                node.__qualname__))
 
         return cur_lines
 
 
 class ListNode(Node):
     """
-    Represents a ()
+    Represents a () in LISP
     """
-    def __init__(self, elements):
-        self.elements = elements if type(elements) == list else [elements]
+    def __init__(self, content, grammar_key=None, strip=True):
+        if strip:
+            content = content[1:-1]
+        self.content = reduce(content)
 
     def __repr__(self):
-        raise Exception(self.elements)
-        return '<ListNode len(elements)=={}>'.format(len(self.elements))
+        return '<{} len(content)=={}>'.format(
+            self.__qualname__,
+            len(self.content))
 
     def disolve(self):
         print('disolving')
-        new_elements = []
-        for element in self.elements:
+        new_content = []
+        for element in self.content:
             result = element.disolve()
             if result is None:
-                new_elements.append(element)
+                new_content.append(element)
             else:
-                new_elements.append(result)
+                new_content.append(result)
 
-        self.elements = new_elements
+        self.content = new_content
+
+
+class ContainerNode(ListNode):
+    """
+    Although being functionally identical to ListNode,
+    this Node does not represent anything in the AST,
+    it simply serves as a container; hence the name
+    """
 
 
 class IDNode(Node):
     "Represents an ID"
-    def __init__(self, id):
+    def __init__(self, id, grammar_key):
+        id = id.content
         self.id = id
 
     def __repr__(self):
@@ -73,7 +89,7 @@ class IDNode(Node):
 
 class NumberNode(Node):
     "Represents a number"
-    def __init__(self, number):
+    def __init__(self, number, grammar_key):
         self.number = int(number)
 
     def __repr__(self):
@@ -82,9 +98,9 @@ class NumberNode(Node):
 
 class StringNode(Node):
     "Represents a string, per se"
-    def __init__(self, string):
-        raise Exception(string)
-        self.string = string
+    def __init__(self, string, grammar_key):
+        string = string[1:-1][0]
+        self.string = string.content
 
     def __repr__(self):
         return '<StringNode string="{}">'.format(self.string)
