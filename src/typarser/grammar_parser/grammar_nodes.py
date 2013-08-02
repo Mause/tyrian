@@ -3,7 +3,7 @@ import re
 from copy import copy
 
 # application specific
-from ...utils import logger
+from ...utils import logger, reduce
 from collections import namedtuple
 
 logger = logger.getChild('GrammerNodes')
@@ -18,36 +18,7 @@ class Node(object):
         raise NotImplementedError()
 
     def build_parse_tree(self, token):
-        token = self.reduce(token)
-
-        if type(self) != SubGrammarWrapper:
-            return token
-
-        grammar_key = self.settings['grammar_key']
-        grammar_mapping = self.settings['grammar_mapping']
-
-        logger.debug(grammar_mapping)
-
-        if grammar_key in grammar_mapping:
-            return grammar_mapping[grammar_key](token)
-            raise Exception((token, grammar_key))
-        else:
-            logger.debug('No mapping found for {}'.format(grammar_key))
-            return token
-
-    def reduce(self, obj):
-        """
-        Flattens nested lists, like so;
-
-        >>> reduce([[[[[[[None]]]]]]])
-        None
-
-        """
-        if type(obj) == list and len(obj) == 1:
-            return self.reduce(obj[0])
-        else:
-            return obj
-
+        return reduce(token, can_return_single=True)
 
     def check(self, *args, **kwargs):
         """
@@ -82,6 +53,18 @@ class SubGrammarWrapper(Node):
     def __repr__(self):
         return '<SubGrammarWrapper key="{}">'.format(self.key)
 
+    def build_parse_tree(self, token):
+        token = reduce(token)
+
+        key = self.key.upper()
+        grammar_mapping = self.settings['grammar_mapping']
+
+        if key in grammar_mapping and token:
+            return grammar_mapping[key](token)
+        else:
+            logger.debug('No mapping found for {}'.format(key))
+            return token
+
     def _check(self, tokens, path):
         path += '.' + '<' + self.key + '>'
 
@@ -90,7 +73,10 @@ class SubGrammarWrapper(Node):
         key = self.key.upper()
         grammar = self.grammar_parser_inst.grammars[key]
 
-        return grammar.check(tokens, path)
+        result = grammar.check(tokens, path)
+        result['parse_tree'] = self.build_parse_tree(result['parse_tree'])
+
+        return result
 
 
 class ContainerNode(Node):
@@ -102,7 +88,6 @@ class ContainerNode(Node):
         self.settings = copy(settings)
         if 'grammar_definition' in settings:
             del settings['grammar_definition']
-        logger.info(settings)
 
         if len(subs) == 1 and type(subs[0]) == ContainerNode:
             subs = subs[0].subs
