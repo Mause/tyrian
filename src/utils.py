@@ -21,3 +21,18 @@ if 'logger' not in globals():
         logger.addHandler(hdlr)
 
 
+def reduce(obj, can_return_single=False):
+    """
+    Flattens nested lists, like so;
+
+    >>> reduce([[[[[[[None]]]]]]])
+    None
+
+    """
+
+    if type(obj) == list and len(obj) == 1 and type(obj[0]) == list:
+        return reduce(obj[0])
+    elif type(obj) == list and len(obj) == 1 and can_return_single:
+        return obj[0]
+    else:
+        return obj
