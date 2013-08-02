@@ -27,10 +27,10 @@ class GrammarParser(object):
     """
 
     def __init__(self,
-                 raw_grammar=None,
-                 token_defs=None,
+                 raw_grammar: dict=None,
+                 token_defs: dict=None,
                  nodes=None,
-                 settings=None):
+                 settings: dict=None):
 
         self.settings = {}
         self.loaded_grammars = {}
@@ -55,7 +55,7 @@ class GrammarParser(object):
             self.load_grammar(raw_grammar)
             self.parse_grammars()
 
-    def load_grammar(self, content: str):
+    def load_grammar(self, content: str) -> None:
         """
         Load grammars from a string.
         All grammars need not be necessarily be loaded at once,
@@ -122,7 +122,7 @@ class GrammarParser(object):
         logger.info('Grammars: {}'.format(', '.join(loaded_grammars.keys())))
         logger.info('Grammar loaded, rules: {}'.format(len(loaded_grammars)))
 
-    def load_token_definitions(self, defs):
+    def load_token_definitions(self, defs: dict) -> None:
         """
         Loads token definitions.
 
@@ -188,7 +188,7 @@ class GrammarParser(object):
 
         logger.info('{} grammar mappings loaded'.format(len(grammar_mapping)))
 
-    def parse_grammars(self):
+    def parse_grammars(self) -> dict:
         """
         Parses loaded grammars into "check trees"
 
@@ -231,7 +231,10 @@ class GrammarParser(object):
         self.grammars = parsed_grammars
         return parsed_grammars
 
-    def parse_grammar(self, grammar, grammar_key, settings):
+    def parse_grammar(self,
+                      grammar: str,
+                      grammar_key: str,
+                      settings: dict) -> ContainerNode:
         """
         See self.parse_grammars
         """

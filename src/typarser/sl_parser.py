@@ -21,7 +21,7 @@ class Parser(object):
             settings=settings
         )
 
-    def parse(self, lexed):
+    def parse(self, lexed: list) -> ParseTree:
         start_token = self.grammar_parser.settings['start_token']
 
         base_grammar = self.grammar_parser.grammars[start_token.upper()]
@@ -42,7 +42,7 @@ class Parser(object):
         processed = self._process(results)
         return ParseTree(processed)
 
-    def _process(self, parsed):
+    def _process(self, parsed: list) -> ContainerNode:
         processed = []
         for result in parsed:
             parse_tree = result['parse_tree']

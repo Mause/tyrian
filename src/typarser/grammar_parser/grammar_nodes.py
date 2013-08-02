@@ -14,11 +14,8 @@ class Node(object):
     Base Node
     """
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         raise NotImplementedError()
-
-    def build_parse_tree(self, token):
-        return reduce(token, can_return_single=True)
 
     def check(self, *args, **kwargs):
         """
@@ -43,17 +40,17 @@ class SubGrammarWrapper(Node):
     Serves to ensure that we need not copy the subgrammar,
     and that we need not parse the grammars in any particular order.
     """
-    def __init__(self, settings, key, grammar_parser_inst):
+    def __init__(self, settings: dict, key: str, grammar_parser_inst) -> None:
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
 
         self.key = key
         self.grammar_parser_inst = grammar_parser_inst
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<SubGrammarWrapper key="{}">'.format(self.key)
 
-    def build_parse_tree(self, token):
+    def build_parse_tree(self, token: str):
         token = reduce(token)
 
         key = self.key.upper()
@@ -65,7 +62,7 @@ class SubGrammarWrapper(Node):
             logger.debug('No mapping found for {}'.format(key))
             return token
 
-    def _check(self, tokens, path):
+    def _check(self, tokens: list, path: str) -> dict:
         path += '.' + '<' + self.key + '>'
 
         logger.debug(path)
@@ -83,7 +80,7 @@ class ContainerNode(Node):
     """
     Serves as a container for one or more sub Nodes
     """
-    def __init__(self, settings, subs):
+    def __init__(self, settings: dict, subs: list) -> None:
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
         if 'grammar_definition' in settings:
@@ -100,10 +97,10 @@ class ContainerNode(Node):
             my_subs.append(sub)
         self.subs = subs
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<ContainerNode len(subs)=={}>'.format(len(self.subs))
 
-    def _check(self, tokens, path):
+    def _check(self, tokens: list, path: str) -> dict:
         logger.debug(path + '.CN')
 
         response = {
@@ -114,14 +111,13 @@ class ContainerNode(Node):
         result = True
         consumed = 0
         for node in self.subs:
-            # time.sleep(2)
             cur = node.check(tokens[consumed:], path)
 
             result = result and cur['result']
             if result:
                 consumed += cur['consumed']
                 response['tokens'] += cur['tokens']
-                assert (cur['parse_tree'])
+
                 response['parse_tree'].append(cur['parse_tree'])
             else:
                 logger.debug(path + ' failed')
@@ -129,11 +125,8 @@ class ContainerNode(Node):
 
         response['result'] = result
         response['consumed'] = consumed if result else 0
-        if response['parse_tree']:
-            response['parse_tree'] = self.build_parse_tree(
-                response['parse_tree'])
-        else:
-            response['parse_tree'] = []
+        response['parse_tree'] = reduce(
+            response['parse_tree'], can_return_single=True)
         return response
 
 
@@ -141,7 +134,7 @@ class LiteralNode(Node):
     """
     Compares a token directly against a string
     """
-    def __init__(self, settings, content):
+    def __init__(self, settings: dict, content):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
 
@@ -149,10 +142,10 @@ class LiteralNode(Node):
 
         self.LiteralNode = namedtuple('LiteralNode', 'content')
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<LiteralNode content={}>'.format(repr(self.content))
 
-    def _check(self, tokens, path):
+    def _check(self, tokens: list, path: str) -> dict:
         logger.debug(path + '.LN<' + self.content + '>')
 
         if tokens:
@@ -170,7 +163,7 @@ class LiteralNode(Node):
 
 
 class RENode(Node):
-    def __init__(self, settings, regex):
+    def __init__(self, settings: dict, regex):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
 
@@ -179,10 +172,10 @@ class RENode(Node):
 
         self.RENode = namedtuple('RENode', 'content')
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<RENode regex="{}">'.format(self.raw_re)
 
-    def _check(self, tokens, path):
+    def _check(self, tokens: list, path: str) -> dict:
 
         token = tokens[0]['token']
 
@@ -198,7 +191,7 @@ class RENode(Node):
 
 
 class ORNode(Node):
-    def __init__(self, settings, left, right):
+    def __init__(self, settings: dict, left, right):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
 
@@ -208,11 +201,11 @@ class ORNode(Node):
         self.left = left
         self.right = right
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<ORNode left={} right={}>'.format(
             self.left, self.right)
 
-    def _check(self, tokens, path):
+    def _check(self, tokens: list, path: str) -> dict:
         path += '.ORN'
         logger.debug(path)
 
@@ -220,8 +213,8 @@ class ORNode(Node):
         logger.debug('Left: {}'.format(left_result))
 
         if left_result['result']:
-            left_result['parse_tree'] = self.build_parse_tree(
-                left_result['parse_tree'])
+            left_result['parse_tree'] = reduce(
+                left_result['parse_tree'], can_return_single=True)
             return left_result
 
         right_result = self.right.check(tokens, path)
@@ -229,8 +222,8 @@ class ORNode(Node):
 
         logger.debug('Right: {}'.format(right_result))
         if right_result['result']:
-            right_result['parse_tree'] = self.build_parse_tree(
-                right_result['parse_tree'])
+            right_result['parse_tree'] = reduce(
+                right_result['parse_tree'], can_return_single=True)
             return right_result
 
         return {
@@ -244,17 +237,17 @@ class ORNode(Node):
 class MultiNode(Node):
     debugging = False
 
-    def __init__(self, settings, sub):
+    def __init__(self, settings: dict, sub):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
 
         sub.parent = self
         self.subs = sub
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<MultiNode token={}>'.format(self.subs)
 
-    def _check(self, tokens, path):
+    def _check(self, tokens: list, path: str) -> dict:
         path += '.MN'
         logger.debug(path)
 
@@ -282,5 +275,6 @@ class MultiNode(Node):
             response['tokens'] = []
             response['parse_tree'] = []
         else:
-            response['parse_tree'] = self.build_parse_tree(response['parse_tree'])
+            response['parse_tree'] = reduce(
+                response['parse_tree'], can_return_single=True)
         return response
