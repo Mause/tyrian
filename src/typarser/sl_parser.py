@@ -1,13 +1,13 @@
 
-from ..nodes import ParseTree
+from ..utils import reduce
+from ..nodes import ParseTree, ContainerNode
 # from ..sl_exceptions import TyrianSyntaxError
 from .grammar_parser import GrammarParser
 
 
 class Parser(object):
     """
-    At the moment simply a wrapper for GrammarParser,
-    though in the future will perform parsing duties
+
     """
     def __init__(self,
                  token_defs=None,
@@ -24,9 +24,6 @@ class Parser(object):
         )
 
     def parse(self, lexed):
-        return ParseTree(self._parse(lexed))
-
-    def _parse(self, lexed):
         start_token = self.grammar_parser.settings['start_token']
 
         base_grammar = self.grammar_parser.grammars[start_token.upper()]
@@ -40,42 +37,20 @@ class Parser(object):
             assert result['result'], (result, ' '.join([x['token'] for x in lexed[index:]]))
             del result['tokens']
 
-            what_was_consumed = ' '.join([x['token'] for x in lexed[index:index+result['consumed']]])
-            results.append((result, what_was_consumed))
+            results.append(result)
 
             index += result['consumed']
 
-        return results
+        processed = self._process(results)
+        return ParseTree(processed)
 
+    def _process(self, parsed):
+        processed = []
+        for result in parsed:
+            parse_tree = result['parse_tree']
+            parse_tree = reduce(parse_tree, can_return_single=True)
 
-    # def _parse(self, tokens):
-    #     nodes = []
+            parse_tree = ContainerNode(parse_tree)
 
-    #     tokens = list(filter(bool, tokens))
-
-    #     while tokens:
-    #         token = tokens.pop(0)
-
-    #         possible = self.determine_possible(tokens)
-    #         if possible:
-    #             logger.debug('possible: {}'.format(possible))
-    #         raise Exception()
-
-    #         if token[0] == 'OPEN_BRACKET':
-    #             logger.debug("LISTNODE START")
-    #             nodes.append(self._parse(tokens))
-    #         elif token[0] == 'CLOSE_BRACKET':
-    #             logger.debug('LISTNODE END')
-    #             return ListNode(nodes)
-
-    #         elif token[0] == 'ID':
-    #             logger.debug('IDNODE')
-    #             nodes.append(IDNode(token[1]))
-
-    #         elif token[0] == 'NUMBER':
-    #             logger.debug("NUMBER")
-    #             nodes.append(NumberNode(token[1]))
-    #         else:
-    #             raise TyrianSyntaxError(token)
-
-    #     return ListNode(nodes)
+            processed.append(parse_tree)
+        return ContainerNode(processed, strip=False)
