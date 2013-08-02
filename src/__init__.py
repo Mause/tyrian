@@ -1,9 +1,13 @@
+# standard library
 import os
 import json
+
+# application specific
 from .lexer import Lexer
 from .utils import logger
 from .typarser import Parser
 from .compiler import Compiler
+
 
 class Tyrian(object):
     """
@@ -57,19 +61,12 @@ class Tyrian(object):
         with open(filename) as fh:
             lexed = self.lexer.lex(fh.read(), filename)
 
-        from pprint import pprint
-
         logger.info('### kettle of fish ###')
 
-        results = self.parser.parse(lexed)
+        parse_tree = self.parser.parse(lexed)
 
-        results = results.expressions
+        print(parse_tree.pprint())
 
-        pprint(results[0][0]['parse_tree'])
-
-        # parse_tree = self.parser.parse(lexed)
-
-        # print(parse_tree.pprint())
 
 def main():
     import doctest
