@@ -1,8 +1,8 @@
 import sys
 import logging
 
-from . import Tyrian
 from .utils import logger
+from .tyrian import Tyrian
 
 
 def main():
@@ -21,7 +21,8 @@ def main():
     if 'dr' not in sys.argv:
         # s.run('resources/lisp/lambda.lisp')
         # s.run('resources/lisp/wizards_game.lisp')
-        s.run('resources/lisp/test.lisp')
+        # s.run('resources/lisp/test.lisp')
+        s.run('resources/lisp/simple_test.lisp')
 
 if __name__ == '__main__':
     main()
