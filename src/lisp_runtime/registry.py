@@ -1,4 +1,4 @@
-from main import logger
+from ..utils import logger
 
 logger = logger.getChild('LispRegistry')
 
@@ -14,7 +14,7 @@ def lisp_function(name):
     assert name
 
     def decorator(func):
-        logger.debug('Registering function with name: {}'.format(name))
+        # logger.debug('Registering function with name: {}'.format(name))
         func.lisp_name = name
         lisp_registry[name] = func
         return func

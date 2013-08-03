@@ -44,4 +44,4 @@ class Parser(object):
             parse_tree = ListNode(parse_tree)
 
             processed.append(parse_tree)
-        return ContainerNode(processed, strip=False)
+        return processed
