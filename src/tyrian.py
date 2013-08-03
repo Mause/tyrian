@@ -11,7 +11,7 @@ from .compiler import Compiler
 
 class Tyrian(object):
     """
-    Primary interface
+    Primary Tyrian interface
     """
 
     def __init__(self,
@@ -20,16 +20,17 @@ class Tyrian(object):
                  settings=None):
         self.resources = os.path.join(os.path.dirname(__file__), 'resources')
 
-        token_defs_filename = self.resource(
-            token_defs_filename, 'tokens.json')
+        # read in the tokens
+        token_defs_filename = self.resource(token_defs_filename, 'tokens.json')
         with open(token_defs_filename) as fh:
             token_defs = json.load(fh)
 
-        grammar_filename = self.resource(
-            grammar_filename, 'Grammar')
+        # read in the Grammar
+        grammar_filename = self.resource(grammar_filename, 'Grammar')
         with open(grammar_filename) as fh:
             raw_grammar = fh.read()
 
+        # load up the appropriate Nodes for the parser
         from . import nodes
 
         self.lexer = Lexer(token_defs)
@@ -59,6 +60,17 @@ class Tyrian(object):
         parse_tree = self.parser.parse(lexed)
 
         print(parse_tree.pprint())
+
+        bytecode = self.compiler.compile(filename, parse_tree)
+
+        print(bytecode)
+        from dis import dis
+
+        dis(bytecode.code())
+
+        logger.info('Running')
+
+        eval(bytecode.code())
 
 
 def main():
