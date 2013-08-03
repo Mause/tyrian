@@ -20,8 +20,6 @@ class Lexer(object):
             '"': ' " ',
             "'": " ' ",
         })
-        self.MatchTuple = namedtuple(
-            'MatchTuple', 'match')
 
         if token_defs:
             self.load_token_definitions(token_defs)
@@ -32,13 +30,13 @@ class Lexer(object):
         """
         Convenience function.
 
-        returns an collections.namedtuple with a match function that compares
-        left with the supplied right
+        returns an obj with a match function that compares left with
+        the supplied right
         """
 
         def internal(right):
             return left == right
-        return self.MatchTuple(internal)
+        return type('obj', (object,), {'match': internal})
 
     def load_token_definitions(self, token_defs: dict) -> None:
         """
