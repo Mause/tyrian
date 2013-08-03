@@ -12,7 +12,7 @@ class Lexer(object):
     """
     Performs lexing
     """
-    def __init__(self, token_defs: dict) -> None:
+    def __init__(self, token_defs: dict):
         self.tokens = {}
         self.TRANS = str.maketrans({
             '(': ' ( ',
@@ -20,6 +20,8 @@ class Lexer(object):
             '"': ' " ',
             "'": " ' ",
         })
+        self.MatchTuple = namedtuple(
+            'MatchTuple', 'match')
 
         if token_defs:
             self.load_token_definitions(token_defs)
@@ -34,11 +36,9 @@ class Lexer(object):
         left with the supplied right
         """
 
-        MatchFunction = namedtuple('MatchFunction', 'match')
-
         def internal(right):
             return left == right
-        return MatchFunction(internal)
+        return self.MatchTuple(internal)
 
     def load_token_definitions(self, token_defs: dict) -> None:
         """
@@ -62,8 +62,8 @@ class Lexer(object):
         """
         Takes a string to lex accourding to token definition loaded
         via load_token_definitions
-
         """
+
         assert self.tokens_loaded, (
             'Please call load_token_definitions before calling this function')
 
@@ -76,7 +76,7 @@ class Lexer(object):
 
         return tokens
 
-    def _lex(self, line: str, line_no: int, filename: str) -> [dict]:
+    def _lex(self, line: str, line_no: int, filename: str):
         """
         used internally by lex, does actual lexing
         """
