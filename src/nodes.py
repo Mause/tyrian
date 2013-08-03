@@ -3,23 +3,12 @@ import warnings
 from .utils import reduce
 
 
-class Node(object):
-    """
-    Base object for Node's
-    """
-    def disolve(self):
-        pass
-
-
 class ParseTree(object):
     """
     Is the overruling object returned from the parser
     """
     def __init__(self, expressions):
         # lisp is ultimately expression based
-        warnings.warn('Type checking disabled temporarily')
-        # for expr in expressions:
-        #     assert type(expr) == ListNode, expr
         self.expressions = expressions
 
     def __repr__(self):
@@ -32,14 +21,27 @@ class ParseTree(object):
         cur_lines = []
         cur_lines.append('{}{}'.format('\t' * indent, node))
 
-        if type(node) in [ListNode, ContainerNode]:
-            for sub_node in node.content:
-                cur_lines += self._pprint(sub_node, indent + 1)
-            cur_lines.append('{}<{} END>'.format(
+        if type(node) in [ListNode, ContainerNode, list]:
+            if issubclass(type(node), Node):
+                for sub_node in node.content:
+                    cur_lines += self._pprint(sub_node, indent + 1)
+            else:
+                for sub_node in node:
+                    cur_lines += self._pprint(sub_node, indent + 1)
+            name = node.__qualname__ if hasattr(node, '__qualname__') else node
+            cur_lines.append('{}</{}>'.format(
                 '\t' * indent,
-                node.__qualname__))
+                name))
 
         return cur_lines
+
+
+class Node(object):
+    """
+    Base object for Node's
+    """
+    def disolve(self):
+        pass
 
 
 class ListNode(Node):
@@ -79,31 +81,31 @@ class ContainerNode(ListNode):
 
 class IDNode(Node):
     "Represents an ID"
-    def __init__(self, id):
-        id = id.content
-        self.id = id
+    def __init__(self, content):
+        content = content.content
+        self.content = content
 
     def __repr__(self):
-        return '<IDNode id="{}">'.format(self.id)
+        return '<IDNode content="{}">'.format(self.content)
 
 
 class NumberNode(Node):
     "Represents a number"
-    def __init__(self, number):
-        self.number = int(number)
+    def __init__(self, content):
+        self.content = int(content)
 
     def __repr__(self):
-        return '<NumberNode number={}>'.format(self.number)
+        return '<NumberNode content={}>'.format(self.content)
 
 
 class StringNode(Node):
     "Represents a string, per se"
-    def __init__(self, string):
-        string = string[1:-1][0]
-        self.string = string.content
+    def __init__(self, content):
+        content = content[1:-1][0]
+        self.content = content.content
 
     def __repr__(self):
-        return '<StringNode string="{}">'.format(self.string)
+        return '<StringNode content="{}">'.format(self.content)
 
 # and we define the mappings
 
