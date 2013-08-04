@@ -1,3 +1,11 @@
+"""
+Simple command line interface to Tyrian.
+call like so;
+
+python -m src.cmd <options>
+"""
+
+
 import sys
 import logging
 
