@@ -13,9 +13,12 @@ class Parser(object):
         self.grammar_parser = GrammarParser(**kwargs)
 
     def parse(self, lexed: list) -> ParseTree:
-        start_token = self.grammar_parser.settings['start_token']
+        start_token = self.grammar_parser.settings['start_token'].upper()
 
-        base_grammar = self.grammar_parser.grammars[start_token.upper()]
+        assert start_token in self.grammar_parser.grammars, (
+            'No such grammar as "{}"'.format(start_token))
+
+        base_grammar = self.grammar_parser.grammars[start_token]
 
         index = 0
         results = []
