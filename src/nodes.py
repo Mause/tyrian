@@ -1,5 +1,3 @@
-import warnings
-
 from .utils import reduce
 
 
@@ -40,8 +38,6 @@ class Node(object):
     """
     Base object for Node's
     """
-    def disolve(self):
-        pass
 
 
 class ListNode(Node):
@@ -57,18 +53,6 @@ class ListNode(Node):
         return '<{} len(content)=={}>'.format(
             self.__qualname__,
             len(self.content))
-
-    def disolve(self):
-        print('disolving')
-        new_content = []
-        for element in self.content:
-            result = element.disolve()
-            if result is None:
-                new_content.append(element)
-            else:
-                new_content.append(result)
-
-        self.content = new_content
 
 
 class ContainerNode(ListNode):
