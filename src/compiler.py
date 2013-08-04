@@ -17,6 +17,10 @@ class Compiler(object):
         for element in parse_tree.expressions:
             op = self._compile(filename, element)
             c(op)
+
+        c.LOAD_CONST(None)
+        c.RETURN_VALUE()
+
         return c
 
     def _compile(self, filename, element):
@@ -34,8 +38,8 @@ class Compiler(object):
     def call_function(self, filename, element):
         name, *args = element.content
 
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
 
         proper_args = []
         for arg in args:
@@ -61,14 +65,11 @@ class Compiler(object):
 
         logger.debug('Definition: {}({})'.format(name.content, args.content))
 
-        return name.content, None
+        func_code = Code()
+        func_code.co_filename = filename
+        for body_frag in body:
+            func_code(self._compile(filename, body_frag))
 
-        c = Code()
-        c.co_filename = filename
+        func = Function(func_code)
 
-        # func = Function()
-
-        # func = Code()
-        print(name, args, body)
-        # func.
-        raise Exception(element.content)
+        return func
