@@ -8,3 +8,9 @@ a third party parser and lexer instead of writing my own.
 
 # What are the inputs and outputs of the system?
 
+The inputs are as follows;
+ * a path to a valid lisp program
+ * a small range
+
+Output:
+
