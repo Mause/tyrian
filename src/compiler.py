@@ -36,19 +36,16 @@ class Compiler(object):
 
     def inject_function(self, obj, function, name=None):
         name = name if name else function.__name__
-        print('injecting function:', name, function)
+        print('injecting function: "{}" -> {}'.format(name, function))
         obj.LOAD_CONST(function.__code__)
         obj.LOAD_CONST(name)
         obj.MAKE_FUNCTION(0)
-        obj.STORE_FAST(name)
+        # obj.STORE_FAST(name)
+        obj.STORE_GLOBAL(name)
 
         return obj
 
     def bootstrap_obj(self, obj):
-        # from .lisp_runtime.bootstrap import run_bootstrap
-        # obj = self.inject_function(obj, run_bootstrap)
-        # obj.CALL_FUNCTION()
-
         from .lisp_runtime.registry import lisp_registry
         assert lisp_registry
 

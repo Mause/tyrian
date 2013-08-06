@@ -7,4 +7,5 @@ def defparameter(*args, **kwargs):
     allows you to define a parameter...
     i presume this is essentially a variable
     """
-    raise NotImplementedError()
+    globals()[args[0]] = args[1]
+    assert args[0] in globals()
