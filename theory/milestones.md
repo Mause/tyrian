@@ -8,3 +8,8 @@ ported BytecodeAssembler from py2k to py3k
 
 6/08 : 11:01AM - Got code object written to file and executing
 6/08 : 7:20PM - Got runtime function injection working... :D
+
+# Future milestones;
+ * variables
+ * defining functions
+ * importing?
