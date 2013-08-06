@@ -64,13 +64,19 @@ class Tyrian(object):
         bytecode = self.compiler.compile(filename, parse_tree)
 
         print(bytecode)
-        from dis import dis
+        from dis import dis, show_code, disco
+
+        # show_code(bytecode.code())
 
         dis(bytecode.code())
 
-        logger.info('Running')
+        with open('output.pyc', 'wb') as fh:
+            self.compiler.write_code_to_file(
+                bytecode.code(), fh)
 
-        eval(bytecode.code())
+        # logger.info('Running')
+
+        # eval(bytecode.code())
 
 
 def main():
