@@ -6,7 +6,8 @@ members: (sexpr)+;
 
 sexpr: list | atom;
 
-atom: string | SYMBOL | id | NUMBER;
+atom: string | id | symbol | NUMBER;
 
+symbol: SYMBOL_RE;
 id: ID_RE;
 string: (DOUBLE_QUOTE STRING_RE DOUBLE_QUOTE);

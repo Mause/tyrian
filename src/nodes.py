@@ -91,10 +91,20 @@ class StringNode(Node):
     def __repr__(self):
         return '<StringNode content="{}">'.format(self.content)
 
-# and we define the mappings
 
+class SymbolNode(Node):
+    "Represents a mathematical symbol"
+    def __init__(self, content):
+        self.content = content.content
+
+    def __repr__(self):
+        return '<SymbolNode content="{}">'.format(self.content)
+
+
+# and we define the mappings
 grammar_mapping = {
     "list": ListNode,
     "string": StringNode,
-    "id": IDNode
+    "id": IDNode,
+    "symbol": SymbolNode
 }
