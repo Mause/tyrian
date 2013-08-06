@@ -12,8 +12,7 @@ from dis import (
 from opcode import opmap, cmp_op, HAVE_ARGUMENT
 from types import CodeType, FunctionType
 from peak.util.symbols import Symbol
-# from .decorators import decorate_assignment
-# , decorate
+from .decorators import decorate_assignment, decorate
 import sys
 import collections
 
@@ -89,85 +88,89 @@ class Node(tuple):
     __slots__ = []
 
 
-# def nodetype(*mixins, **kw):
+def nodetype(*mixins, **kw):
 
-#     def callback(frame, name, func, old_locals):
-#         def __new__(cls, *args, **kw):
-#             result = func(*args, **kw)
-#             if type(result) is tuple:
-#                 return tuple.__new__(cls, (cls,) + result)
-#             else:
-#                 return result
+    def callback(frame, name, func, old_locals):
+        def __new__(cls, *args, **kw):
+            result = func(*args, **kw)
+            if type(result) is tuple:
+                return tuple.__new__(cls, (cls,) + result)
+            else:
+                return result
 
-#         def __repr__(self):
-#             r = self.__class__.__name__ + tuple.__repr__(self[1:])
-#             if len(self) == 2:
-#                 return r[:-2] + ')'  # nix trailing ','
-#             return r
+        def __repr__(self):
+            r = self.__class__.__name__ + tuple.__repr__(self[1:])
+            if len(self) == 2:
+                return r[:-2] + ')'  # nix trailing ','
+            return r
 
-#         def __call__(self, code):
-#             return func(*(self[1:] + (code,)))
+        def __call__(self, code):
+            return func(*(self[1:] + (code,)))
 
-#         import inspect
-#         args = inspect.getargspec(func)[0]
+        import inspect
+        args = inspect.getargspec(func)[0]
 
-#         d = dict(
-#             __new__=__new__, __repr__=__repr__, __doc__=func.__doc__,
-#             __module__=func.__module__, __args__=args, __slots__=[],
-#             __call__=__call__
-#         )
-#         for p, a in enumerate(args[:-1]):    # skip 'code' argument
-#             if isinstance(a, str):
-#                 d[a] = property(lambda self, p=p + 1: self[p])
+        d = {
+            '__new__': __new__,
+            '__repr__': __repr__,
+            '__doc__': func.__doc__,
+            '__module__': func.__module__,
+            '__args__': args,
+            '__slots__': [],
+            '__call__': __call__
+        }
+        for p, a in enumerate(args[:-1]):    # skip 'code' argument
+            if isinstance(a, str):
+                d[a] = property(lambda self, p=p + 1: self[p])
 
-#         d.update(kw)
-#         return type(name, mixins + (Node,), d)
+        d.update(kw)
+        return type(name, mixins + (Node,), d)
 
-#     return decorate_assignment(callback)
-
-
-def nodetype(func):
-    name = func.__name__
-
-    def __new__(cls, *args, **kw):
-        result = func(*args, **kw)
-        if type(result) is tuple:
-            return tuple.__new__(cls, (cls,) + result)
-        else:
-            return result
-
-    def __repr__(self):
-        r = self.__class__.__name__ + tuple.__repr__(self[1:])
-        if len(self) == 2:
-            return r[:-2] + ')'  # nix trailing ','
-        return r
-
-    def __call__(self, code):
-        return func(*(self[1:] + (code,)))
-
-    import inspect
-    args = inspect.getargspec(func)[0]
-
-    d = dict(
-        __new__=__new__, __repr__=__repr__, __doc__=func.__doc__,
-        __module__=func.__module__, __args__=args, __slots__=[],
-        __call__=__call__
-    )
-    for p, a in enumerate(args[:-1]):    # skip 'code' argument
-        if isinstance(a, str):
-            d[a] = property(lambda self, p=p + 1: self[p])
-
-    return type(name, () + (Node,), d)
+    return decorate_assignment(callback)
 
 
-@nodetype
+# def nodetype(func):
+#     name = func.__name__
+
+#     def __new__(cls, *args, **kw):
+#         result = func(*args, **kw)
+#         if type(result) is tuple:
+#             return tuple.__new__(cls, (cls,) + result)
+#         else:
+#             return result
+
+#     def __repr__(self):
+#         r = self.__class__.__name__ + tuple.__repr__(self[1:])
+#         if len(self) == 2:
+#             return r[:-2] + ')'  # nix trailing ','
+#         return r
+
+#     def __call__(self, code):
+#         return func(*(self[1:] + (code,)))
+
+#     import inspect
+#     args = inspect.getargspec(func)[0]
+
+#     d = dict(
+#         __new__=__new__, __repr__=__repr__, __doc__=func.__doc__,
+#         __module__=func.__module__, __args__=args, __slots__=[],
+#         __call__=__call__
+#     )
+#     for p, a in enumerate(args[:-1]):    # skip 'code' argument
+#         if isinstance(a, str):
+#             d[a] = property(lambda self, p=p + 1: self[p])
+
+#     return type(name, () + (Node,), d)
+
+
+nodetype()
 def Global(name, code=None):
     if code is None:
         return name,
     code.LOAD_GLOBAL(name)
 
 
-@nodetype
+nodetype()
 def Local(name, code=None):
     if code is None:
         return name,
@@ -179,7 +182,7 @@ def Local(name, code=None):
         return code.LOAD_NAME(name)
 
 
-@nodetype
+nodetype()
 def Return(value=None, code=None):
     if code is None:
         return value,
@@ -195,7 +198,7 @@ class _Pass(Symbol):
 Pass = _Pass('Pass', __name__)
 
 
-@nodetype
+nodetype()
 def Getattr(ob, name, code=None):
     try:
         name = const_value(name)
@@ -207,7 +210,7 @@ def Getattr(ob, name, code=None):
     code.LOAD_ATTR(name)
 
 
-@nodetype
+nodetype()
 def Call(func, args=(), kwargs=(), star=None, dstar=None, fold=True, code=None):
     if code is None:
         data = (
@@ -240,7 +243,7 @@ def Call(func, args=(), kwargs=(), star=None, dstar=None, fold=True, code=None):
             return code.CALL_FUNCTION(argc, kwargc)
 
 
-@nodetype
+nodetype()
 def TryExcept(body, handlers, else_=Pass, code=None):
     if code is None:
         return body, tuple(handlers), else_
@@ -267,7 +270,7 @@ def TryExcept(body, handlers, else_=Pass, code=None):
     code(okay, else_, done)
 
 
-@nodetype
+nodetype()
 def Suite(body, code=None):
     if code is None:
         if body:
@@ -276,7 +279,7 @@ def Suite(body, code=None):
     code(*body)
 
 
-@nodetype
+nodetype()
 def TryFinally(body, handler, code=None):
     if code is None:
         return body, handler
@@ -285,7 +288,7 @@ def TryFinally(body, handler, code=None):
     )
 
 
-@nodetype
+nodetype()
 def LocalAssign(name, code=None):
     if code is None:
         return name,
@@ -297,7 +300,7 @@ def LocalAssign(name, code=None):
         return code.STORE_NAME(name)
 
 
-@nodetype
+nodetype()
 def UnpackSequence(nodes, code=None):
     if code is None:
         return tuple(nodes),
@@ -305,7 +308,7 @@ def UnpackSequence(nodes, code=None):
     return code(*nodes)
 
 
-@nodetype
+nodetype()
 def For(iterable, assign, body=Pass, code=None):
     if code is None:
         return iterable, assign, body
@@ -316,7 +319,7 @@ def For(iterable, assign, body=Pass, code=None):
     )
 
 
-@nodetype
+nodetype()
 def YieldStmt(value=None, code=None):
     if code is None:
         return value,
@@ -326,7 +329,7 @@ def YieldStmt(value=None, code=None):
     return r
 
 
-@nodetype
+nodetype()
 def ListComp(body, code=None):
     if code is None:
         return body,
@@ -345,7 +348,7 @@ def ListComp(body, code=None):
     return r
 
 
-@nodetype
+nodetype()
 def LCAppend(value, code=None):
     if code is None:
         return value,
@@ -362,7 +365,7 @@ def LCAppend(value, code=None):
     return r
 
 
-@nodetype
+nodetype()
 def If(cond, then, else_=Pass, code=None):
     if code is None:
         return cond, then, else_
@@ -374,7 +377,7 @@ def If(cond, then, else_=Pass, code=None):
     code(else_clause, Code.POP_TOP, else_, end_if)
 
 
-@nodetype
+nodetype()
 def Function(body, name='<lambda>', args=(), var=None, kw=None, defaults=(), code=None):
     if code is None:
         return body, name, ntuple(args), var, kw, tuple(defaults)
@@ -404,7 +407,7 @@ def ntuple(seq):
     return tuple(map(ntuple, seq))
 
 
-@nodetype
+nodetype()
 def Compare(expr, ops, code=None):
     if code is None:
         return fold_args(Compare, expr, tuple(ops))
@@ -436,10 +439,10 @@ fast_to_deref = {
     opmap['STORE_FAST']: opmap['STORE_DEREF'],
 }
 
-deref_to_deref = dict([(k, k) for k in hasfree])
+deref_to_deref = {k: k for k in hasfree}
 
 
-@nodetype
+nodetype()
 def And(values, code=None):
     if code is None:
         return fold_args(And, tuple(values))
@@ -455,7 +458,7 @@ def And(values, code=None):
     code(values[-1], end)
 
 
-@nodetype
+nodetype()
 def Or(values, code=None):
     if code is None:
         return fold_args(Or, tuple(values))
@@ -706,6 +709,8 @@ class Code(object):
 
     def stackchange(self, xxx_todo_changeme):
         (inputs, outputs) = xxx_todo_changeme
+        # print('stack changes: {}, cur {}'.format(
+        #     xxx_todo_changeme, self.stack_size))
         if self._ss is None:
             raise AssertionError("Unknown stack size at this location")
         self.stack_size -= inputs   # check underflow
@@ -873,6 +878,7 @@ class Code(object):
         last = None
         for ob in args:
             if isinstance(ob, collections.Callable):
+                # print('db', ob, self)
                 last = ob(self)
             else:
                 try:
@@ -886,11 +892,13 @@ class Code(object):
     def return_(self, ob=None):
         return self(ob, Code.RETURN_VALUE)
 
-    @classmethod
+    # @classmethod
+    decorate(classmethod)
     def from_function(cls, function, copy_lineno=False):
         return cls.from_code(function.__code__, copy_lineno)
 
-    @classmethod
+    # @classmethod
+    decorate(classmethod)
     def from_code(cls, code, copy_lineno=False):
         import inspect
         self = cls.from_spec(code.co_name, *inspect.getargs(code))
@@ -900,7 +908,8 @@ class Code(object):
         self.co_freevars = code.co_freevars     # XXX untested!
         return self
 
-    @classmethod
+    # @classmethod
+    decorate(classmethod)
     def from_spec(cls, name='<lambda>', args=(), var=None, kw=None):
         self = cls()
         self.co_name = name
@@ -987,19 +996,23 @@ class Code(object):
             if self.co_freevars:
                 self._patch(
                     deref_to_deref,
-                    dict([(
-                        n + cc, n + cc + nc)for n in range(len(self.co_freevars))])
+                    {
+                        n + cc: n + cc + nc
+                        for n in range(len(self.co_freevars))
+                    }
                 )
             self._locals_to_cells()
 
     def _locals_to_cells(self):
-        freemap = dict(
-            [(n, p) for p, n in enumerate(self.co_cellvars + self.co_freevars)]
-        )
-        argmap = dict(
-            [(p, freemap[n]) for p, n in enumerate(self.co_varnames)
-                if n in freemap]
-        )
+        freemap = {
+            n: p
+            for p, n in enumerate(self.co_cellvars + self.co_freevars)
+        }
+        argmap = {
+            p: freemap[n]
+            for p, n in enumerate(self.co_varnames)
+            if n in freemap
+        }
         if argmap:
             for ofs, op, arg in self:
                 if op == opmap['DELETE_FAST'] and arg in argmap:
@@ -1224,13 +1237,13 @@ def iter_code(codestring):
         start = ptr
 
 argtype = {}
-for name, group in list(dict(
-    co_consts=hasconst,
-    co_names=hasname,
-    co_varnames=haslocal,
-    free=hasfree,
-    cmp_ops=hascompare,
-).items()):
+for name, group in list({
+    'co_consts': hasconst,
+    'co_names': hasname,
+    'co_varnames': haslocal,
+    'free': hasfree,
+    'cmp_ops': hascompare,
+}.items()):
     for op in group:
         argtype[op] = name
 

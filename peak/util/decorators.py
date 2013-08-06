@@ -82,28 +82,28 @@ def decorate_assignment(callback, depth=2, frame=None):
     return do_decorate
 
 
-# def decorate(*decorators):
-#     """Use Python 2.4 decorators w/Python 2.3+
+def decorate(*decorators):
+    """Use Python 2.4 decorators w/Python 2.3+
 
-#     Example::
+    Example::
 
-#         class Foo(object):
-#             decorate(classmethod)
-#             def something(cls,etc):
-#                 \"""This is a classmethod\"""
+        class Foo(object):
+            decorate(classmethod)
+            def something(cls,etc):
+                \"""This is a classmethod\"""
 
-#     You can pass in more than one decorator, and they are applied in the same
-#     order that would be used for ``@`` decorators in Python 2.4.
+    You can pass in more than one decorator, and they are applied in the same
+    order that would be used for ``@`` decorators in Python 2.4.
 
-#     This function can be used to write decorator-using code that will work with
-#     both Python 2.3 and 2.4 (and up).
-#     """
-#     if len(decorators) > 1:
-#         decorators = list(decorators)
-#         decorators.reverse()
+    This function can be used to write decorator-using code that will work with
+    both Python 2.3 and 2.4 (and up).
+    """
+    if len(decorators) > 1:
+        decorators = list(decorators)
+        decorators.reverse()
 
-#     def callback(frame, k, v, old_locals):
-#         for d in decorators:
-#             v = d(v)
-#         return v
-#     return decorate_assignment(callback)
+    def callback(frame, k, v, old_locals):
+        for d in decorators:
+            v = d(v)
+        return v
+    return decorate_assignment(callback)
