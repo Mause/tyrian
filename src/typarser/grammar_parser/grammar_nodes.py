@@ -56,8 +56,13 @@ class SubGrammarWrapper(Node):
         key = self.key.upper()
         grammar_mapping = self.settings['grammar_mapping']
 
-        if key in grammar_mapping and token:
-            return grammar_mapping[key](token)
+        if key in grammar_mapping:
+            if token:
+                return grammar_mapping[key](token)
+            else:
+                logger.debug(
+                    'Mapping found for {}, but token is empty: "{}"'.format(key,
+                        token))
         else:
             logger.debug('No mapping found for {}'.format(key))
             return token
@@ -71,7 +76,8 @@ class SubGrammarWrapper(Node):
         grammar = self.grammar_parser_inst.grammars[key]
 
         result = grammar.check(tokens, path)
-        result['parse_tree'] = self.build_parse_tree(result['parse_tree'])
+        if result['result'] is True:
+            result['parse_tree'] = self.build_parse_tree(result['parse_tree'])
 
         return result
 
@@ -163,14 +169,15 @@ class LiteralNode(Node):
 
 
 class RENode(Node):
-    def __init__(self, settings: dict, regex):
+    def __init__(self, settings: dict, regex, name):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
+        self.name = name
 
         self.raw_re = regex
         self.RE = re.compile(regex)
 
-        self.RENode = namedtuple('RENode', 'content')
+        self.RENode = namedtuple('RENode', 'content,name')
 
     def __repr__(self) -> str:
         return '<RENode regex="{}">'.format(self.raw_re)
@@ -182,11 +189,23 @@ class RENode(Node):
         logger.debug(path + '.REN<' + self.raw_re + '><' + token + '>')
         match = self.RE.match(token)
         result = bool(match)
+
+        if result:
+            try:
+                match = match.groups()[0]
+                match = float(match)
+            except:
+                pass
+        parse_tree = (
+            self.RENode(match, self.name)
+            if result else None
+        )
+
         return {
             'result': result,
             'consumed': 1 if result else 0,
             'tokens': [token] if result else [],
-            'parse_tree': self.RENode(token)
+            'parse_tree': parse_tree
         }
 
 

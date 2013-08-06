@@ -259,7 +259,7 @@ class GrammarParser(object):
 
             elif token.upper() in self.token_defs['regex']:
                 regex = self.token_defs['regex'][token.upper()]
-                node = RENode(settings=settings, regex=regex)
+                node = RENode(settings=settings, regex=regex, name=token)
 
             elif token.upper() in self.loaded_grammars:
                 # we give the sub grammar wrapper a reference to this
