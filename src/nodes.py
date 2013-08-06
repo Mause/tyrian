@@ -5,15 +5,15 @@ class ParseTree(object):
     """
     Is the overruling object returned from the parser
     """
-    def __init__(self, expressions):
+    def __init__(self, content):
         # lisp is ultimately expression based
-        self.expressions = expressions
+        self.content = content
 
     def __repr__(self):
-        return '<ParseTree len(expressions)=={}>'.format(len(self.expressions))
+        return '<ParseTree len(content)=={}>'.format(len(self.content))
 
     def pprint(self):
-        return '\n'.join(self._pprint(self.expressions))
+        return '\n'.join(self._pprint(self.content))
 
     def _pprint(self, node, indent=0):
         cur_lines = []
@@ -76,6 +76,7 @@ class IDNode(Node):
 class NumberNode(Node):
     "Represents a number"
     def __init__(self, content):
+        content = content.content
         self.content = int(content)
 
     def __repr__(self):
@@ -105,6 +106,7 @@ class SymbolNode(Node):
 grammar_mapping = {
     "list": ListNode,
     "string": StringNode,
+    "number": NumberNode,
     "id": IDNode,
-    "symbol": SymbolNode
+    "symbol": SymbolNode,
 }
