@@ -9,7 +9,7 @@ if 'lisp_registry' not in globals():
 
 def lisp_function(name):
     """
-    Registers decoratored function in the lisp_registry
+    Registers decorated function in the lisp_registry
     """
     assert name
 
