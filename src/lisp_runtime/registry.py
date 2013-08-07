@@ -1,3 +1,4 @@
+# application specific
 from ..utils import logger
 
 logger = logger.getChild('LispRegistry')
@@ -15,7 +16,8 @@ def lisp_function(name):
 
     def decorator(func):
         # logger.debug('Registering function with name: {}'.format(name))
-        func.lisp_name = name
+        assert name not in lisp_registry, (
+            'Function "{}" already exists'.format(name))
         lisp_registry[name] = func
         return func
     return decorator
