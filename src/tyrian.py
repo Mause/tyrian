@@ -18,7 +18,8 @@ class Tyrian(object):
                  token_defs_filename=None,
                  grammar_filename=None,
                  settings=None):
-        self.resources = os.path.join(os.path.dirname(__file__), 'resources')
+        self.resources = os.path.join(
+            os.path.dirname(__file__), 'resources\\Grammar')
 
         # read in the tokens
         token_defs_filename = self.resource(token_defs_filename, 'tokens.json')
@@ -63,10 +64,7 @@ class Tyrian(object):
 
         bytecode = self.compiler.compile(filename, parse_tree)
 
-        print(bytecode)
-        from dis import dis, show_code, disco
-
-        # show_code(bytecode.code())
+        from dis import dis
 
         dis(bytecode.code())
 

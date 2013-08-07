@@ -1,7 +1,8 @@
+# standard library
 import re
 import logging
-from collections import namedtuple
 
+# application specific
 from .utils import logger
 from .exceptions import InvalidToken
 

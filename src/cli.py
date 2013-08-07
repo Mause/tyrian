@@ -5,10 +5,12 @@ call like so;
 python -m src.cmd <options>
 """
 
-
+# standard library
 import sys
+sys.setrecursionlimit(115)
 import logging
 
+# application specific
 from .utils import logger
 from .tyrian import Tyrian
 

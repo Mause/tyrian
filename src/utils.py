@@ -1,6 +1,7 @@
-if 'logger' not in globals():
-    import logging
+import logging
 
+
+if 'logger' not in globals():
     logger = logging.getLogger('Main')
     logger.setLevel(logging.DEBUG)
 

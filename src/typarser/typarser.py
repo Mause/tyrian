@@ -7,7 +7,7 @@ from ..nodes import ParseTree, ContainerNode, ListNode
 
 class Parser(object):
     """
-
+    Simplifies parsing
     """
     def __init__(self, **kwargs):
         self.grammar_parser = GrammarParser(**kwargs)
