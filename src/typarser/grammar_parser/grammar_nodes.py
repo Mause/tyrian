@@ -10,9 +10,9 @@ from ...exceptions import NoSuchGrammar
 logger = logger.getChild('GrammerNodes')
 
 
-class Node(object):
+class GrammarNode(object):
     """
-    Base Node
+    Base GrammarNode
     """
 
     def __repr__(self) -> str:
@@ -34,7 +34,7 @@ class Node(object):
         return r
 
 
-class SubGrammarWrapper(Node):
+class SubGrammarWrapper(GrammarNode):
     """
     Acts as proxy for subgrammar.
 
@@ -87,7 +87,7 @@ class SubGrammarWrapper(Node):
         return result
 
 
-class ContainerNode(Node):
+class ContainerNode(GrammarNode):
     """
     Serves as a container for one or more sub Nodes
     """
@@ -141,7 +141,7 @@ class ContainerNode(Node):
         return response
 
 
-class LiteralNode(Node):
+class LiteralNode(GrammarNode):
     """
     Compares a token directly against a string
     """
@@ -173,7 +173,7 @@ class LiteralNode(Node):
         }
 
 
-class RENode(Node):
+class RENode(GrammarNode):
     def __init__(self, settings: dict, regex, name):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
@@ -214,7 +214,7 @@ class RENode(Node):
         }
 
 
-class ORNode(Node):
+class ORNode(GrammarNode):
     def __init__(self, settings: dict, left, right):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
@@ -258,7 +258,7 @@ class ORNode(Node):
         }
 
 
-class MultiNode(Node):
+class MultiNode(GrammarNode):
     debugging = False
 
     def __init__(self, settings: dict, sub):
