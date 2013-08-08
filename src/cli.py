@@ -7,7 +7,8 @@ python -m src.cmd <options>
 
 # standard library
 import sys
-sys.setrecursionlimit(115)
+# sys.setrecursionlimit(115)
+# sys.setrecursionlimit(1000000)
 import logging
 
 # application specific
