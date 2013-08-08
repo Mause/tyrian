@@ -74,7 +74,6 @@ class Compiler(object):
 
         if isinstance(element, ParseTree):
             for element in element.content:
-                print('element:', element, element.content)
                 lineno += 1
                 codeobject.set_lineno(lineno)
 
@@ -147,8 +146,6 @@ class Compiler(object):
             else:
                 raise Exception(arg)
 
-        # if name == 'pprint':
-        #     raise Exception(args)
         codeobject.CALL_FUNCTION(len(args))
 
         return codeobject
@@ -166,7 +163,6 @@ class Compiler(object):
 
         func_code = codeobject.nested(name)
         func_code.co_filename = filename
-        print('func_code:', func_code)
 
         if body:
             *body, return_func = body
