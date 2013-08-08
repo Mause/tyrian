@@ -1,89 +1,67 @@
 # standard libary
 import os
+import types
 import marshal
+from types import CodeType
 from py_compile import wr_long, MAGIC
 
 # application specific
 from .nodes import (
+    Node,
     IDNode,
-    SymbolNode
+    SymbolNode,
+    ListNode,
+    NumberNode,
+    StringNode,
+    ParseTree
+)
+from .utils import logger, enforce_types
+
+# third party
+from peak.util.assembler import (
+    Code,
+    Global,
+    Call,
+    Const,
+    # Function,
+    # Suite
 )
 
-from peak.util.assembler import *
-from .utils import logger
-
 logger = logger.getChild('Compiler')
-
-
-# def function_from_python_land(code, func, name):
-#     c = func.__code__
-#     if c.co_freevars:
-#         frees = c.co_freevars
-#         for name in frees:
-#             code.LOAD_CLOSURE(name)
-#         if sys.version >= '2.5':
-#             code.BUILD_TUPLE(len(frees))
-#         code.LOAD_CONST(c)
-#         return code.MAKE_CLOSURE(len(defaults), len(frees))
-#     else:
-#         code.LOAD_CONST(c)
-#         return code.MAKE_FUNCTION(0)
 
 
 class Compiler(object):
     def __init__(self):
         self.called = False
 
-    def inject_function(self, obj, function, name=None):
+    @enforce_types
+    def inject_function(self,
+                        codeobject: Code,
+                        function: types.FunctionType,
+                        name: str=None) -> Code:
         name = name if name else function.__name__
-        print('injecting function: "{}" -> {}'.format(name, function))
-        obj.LOAD_CONST(function.__code__)
-        obj.LOAD_CONST(name)
-        obj.MAKE_FUNCTION(0)
-        # obj.STORE_FAST(name)
-        obj.STORE_GLOBAL(name)
+        # logger.debug('injecting function: "{}" -> {}'.format(name, function))
+        codeobject = self.inject_function_code(
+            codeobject=codeobject,
+            function_codeobj=function.__code__,
+            name=name)
 
-        return obj
+        return codeobject
 
-    def bootstrap_obj(self, obj):
-        from .lisp_runtime.registry import lisp_registry
-        assert lisp_registry
+    @enforce_types
+    def inject_function_code(self,
+                             codeobject: Code,
+                             function_codeobj: CodeType,
+                             name: str=None) -> Code:
+        codeobject.LOAD_CONST(function_codeobj)
+        codeobject.LOAD_CONST(name)
+        codeobject.MAKE_FUNCTION(0)
+        codeobject.STORE_GLOBAL(name)
 
-        for name, function in lisp_registry.items():
-            obj = self.inject_function(obj, function, name)
+        return codeobject
 
-        return obj
-
-    def compile(self, filename, parse_tree):
-        assert not self.called
-        self.called = True
-        lineno = -1
-
-        code = Code()
-        code.set_lineno(lineno)
-        code = self.bootstrap_obj(code)
-
-        lineno += 1
-
-        print('base_code:', code)
-        filename = os.path.abspath(filename)
-        code.co_filename = filename
-
-        for element in parse_tree.expressions:
-            lineno += 1
-            code.set_lineno(lineno)
-
-            op = self._compile(filename, element)
-            code(op)
-
-        lineno += 1
-        code.set_lineno(lineno)
-
-        code.return_(None)
-
-        return code
-
-    def write_code_to_file(self, codeobject, fh):
+    @enforce_types
+    def write_code_to_file(self, codeobject: Code, fh):
 
         st = os.stat(__file__)
         size = st.st_size & 0xFFFFFFFF
@@ -97,60 +75,173 @@ class Compiler(object):
         fh.seek(0, 0)
         fh.write(MAGIC)
 
-        return
+    @enforce_types
+    def bootstrap_obj(self, codeobject: Code) -> Code:
+        from .lisp_runtime.registry import lisp_registry
+        assert lisp_registry
 
-    def _compile(self, filename, element):
-        if type(element.content[0]) in (IDNode, SymbolNode):
+        for name, function in lisp_registry.items():
+            obj = self.inject_function(codeobject, function, name)
+
+        return obj
+
+    @enforce_types
+    def compile(self, filename: str, parse_tree) -> Code:
+        assert not self.called
+        self.called = True
+        filename = os.path.abspath(filename)
+
+        lineno = -1
+
+        code = Code()
+        code.set_lineno(lineno)
+        code = self.bootstrap_obj(code)
+        lineno += 1
+
+        code.co_filename = filename
+        lineno, code = self._compile(
+            codeobject=code,
+            element=parse_tree,
+            lineno=lineno,
+            filename=filename)
+
+        lineno += 1
+        code.set_lineno(lineno)
+
+        code.return_(None)
+        return code
+
+    @enforce_types
+    def _compile(self,
+                 codeobject: Code,
+                 element: (Node, object),
+                 lineno: int,
+                 filename: str) -> tuple:
+        if isinstance(element, ParseTree):
+            for element in element.content:
+                print('element:', element, element.content)
+                lineno += 1
+                codeobject.set_lineno(lineno)
+
+                codeobject = self._compile_single(
+                    codeobject=codeobject,
+                    filename=filename,
+                    element=element,
+                    lineno=lineno,
+                    result_required=False)
+
+        else:
+            codeobject = self._compile_single(
+                codeobject=codeobject,
+                filename=filename,
+                element=element,
+                lineno=lineno,
+                result_required=True)
+
+        return lineno, codeobject
+
+    @enforce_types
+    def _compile_single(self,
+                        codeobject: Code,
+                        filename: str,
+                        element: Node,
+                        lineno: int,
+                        result_required: bool):
+        if isinstance(element.content[0], (IDNode, SymbolNode)):
             if element.content[0].content == 'defun':
                 # wahey! creating a function!
-                op = self.compile_function(filename, element)
+                codeobject = self.compile_function(
+                    codeobject,
+                    filename,
+                    element,
+                    lineno)
             else:
                 # whahey! calling a function!
-                op = self.call_function(filename, element)
+                codeobject = self.call_function(codeobject, filename, element, lineno)
+                if not result_required:
+                    codeobject.POP_TOP()
         else:
-            raise Exception(element)
+            raise Exception('{} -> {}'.format(element, element.content))
 
-        return op
+        return codeobject
 
-    def call_function(self, filename, element):
+    @enforce_types
+    def call_function(self,
+                      codeobject: Code,
+                      filename: str,
+                      element: Node,
+                      lineno: int) -> Code:
         name, *args = element.content
 
-        proper_args = []
+        name = name.content
+        codeobject(Global(name))
+
         for arg in args:
             if isinstance(arg, (IDNode, SymbolNode)):
                 # proper_args.append(Local(arg.content))
-                proper_args.append(Global(arg.content))
+                codeobject(Global(arg.content))
+            elif isinstance(arg, ListNode):
+                logger.debug('subcall: {} -> {}'.format(arg, arg.content))
+                _, codeobject = self._compile(
+                    codeobject,
+                    arg,
+                    lineno,
+                    filename)
+            elif isinstance(arg, (NumberNode, StringNode)):
+                codeobject(Const(arg.content))
             else:
-                proper_args.append(Const(arg.content))
+                raise Exception(arg)
 
-        name = name.content
+        # if name == 'pprint':
+        #     raise Exception(args)
+        codeobject.CALL_FUNCTION(len(args))
 
-        c = Call(Global(name), proper_args, (), (), ())
+        return codeobject
 
-        # logger.debug('Call: {}({}) -> {}'.format(name, args, c))
-
-        return c
-
-    def compile_function(self, filename, element):
+    @enforce_types
+    def compile_function(self,
+                         codeobject: Code,
+                         filename: str,
+                         element: Node,
+                         lineno: int) -> Code:
         _, name, args, *body = element.content
 
         name = name.content
         args = args.content
 
-        # print('args:', type(args), args)
-        # for arg in args.content:
-        #     print('args:', arg)
-
-        func_code = Code()
+        func_code = codeobject.nested(name)
         func_code.co_filename = filename
         print('func_code:', func_code)
-        for body_frag in body:
-            body_frag = self._compile(filename, body_frag)
-            func_code(body_frag)
 
-        func = Function(
-            body=func_code,
-            name=name,
-            args=args)
+        if body:
+            *body, return_func = body
 
-        return func
+            # compile all but the last statement
+            for body_frag in body:
+                print('compiling: {}:{} -> {}'.format(
+                    body_frag,
+                    id(body_frag),
+                    body_frag.content))
+                func_code = self._compile_single(
+                    codeobject=func_code,
+                    filename=filename,
+                    element=body_frag,
+                    lineno=lineno,
+                    result_required=False)
+
+            func_code = self._compile_single(
+                codeobject=func_code,
+                filename=filename,
+                element=return_func,
+                lineno=lineno,
+                result_required=True)
+            func_code.RETURN_VALUE()
+        else:
+            func_code.return_()
+
+        codeobject = self.inject_function_code(
+            codeobject=codeobject,
+            function_codeobj=func_code.code(codeobject),
+            name=name)
+
+        return codeobject
