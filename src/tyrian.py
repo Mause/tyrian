@@ -66,9 +66,6 @@ class Tyrian(object):
             lexed = self.lexer.lex(
                 input_filename_content, input_filename)
 
-        with open('test.json', 'w') as fh:
-            json.dump(lexed, fh)
-
         logger.info('### kettle of fish ###')
 
         parse_tree = self.parser.parse(lexed)

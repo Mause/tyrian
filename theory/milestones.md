@@ -7,9 +7,9 @@ ported BytecodeAssembler from py2k to py3k
 3/08 - Started fleshing out the compiler - disappointingly, this might be easier than i first expected
 
 6/08 : 11:01AM - Got code object written to file and executing
-6/08 : 7:20PM - Got runtime function injection working... :D
+6/08 : 7:20PM  - Got runtime function injection working... :D
+8/08           - Got basic function definitions working :D
 
 # Future milestones;
  * variables
- * defining functions
  * importing?
