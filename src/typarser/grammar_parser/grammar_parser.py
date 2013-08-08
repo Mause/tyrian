@@ -162,6 +162,8 @@ class GrammarParser(object):
         """
         Load in a mapping between grammars and Nodes
         """
+        assert self.loaded_grammars, (
+            'Please load the grammars before calling this')
         logger.info('Loading grammar mappings')
 
         grammar_mapping = {}

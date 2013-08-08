@@ -1,5 +1,5 @@
 # application specific
-from .utils import reduce
+from .utils import flatten
 
 
 class ParseTree(object):
@@ -48,7 +48,7 @@ class ListNode(Node):
     def __init__(self, content, strip=True):
         if strip:
             content = content[1:-1]
-        self.content = reduce(content)
+        self.content = flatten(content)
 
     def __repr__(self):
         return '<{} len(content)=={}>'.format(

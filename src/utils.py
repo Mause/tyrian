@@ -1,5 +1,5 @@
 import logging
-
+from functools import wraps
 
 if 'logger' not in globals():
     logger = logging.getLogger('Main')
@@ -22,18 +22,51 @@ if 'logger' not in globals():
         logger.addHandler(hdlr)
 
 
-def reduce(obj, can_return_single=False):
+def flatten(obj, can_return_single=False):
     """
     Flattens nested lists, like so;
 
-    >>> reduce([[[[[[[None]]]]]]])
+    >>> flatten([[[[[[[None]]]]]]], can_return_single=True)
     None
+
+    >>> flatten([[[[[[[None]]]]]]], can_return_single=False)
+    [None]
 
     """
 
     if type(obj) == list and len(obj) == 1 and type(obj[0]) == list:
-        return reduce(obj[0])
+        return flatten(obj[0])
     elif type(obj) == list and len(obj) == 1 and can_return_single:
         return obj[0]
     else:
         return obj
+
+
+def check_type(*args):
+    param, value, assert_type = args
+    if not (isinstance(value, assert_type) or
+            issubclass(type(value), assert_type) or
+            type(value) == assert_type):
+        raise AssertionError(
+            'Check failed - parameter {0} = {1} not {2}.'
+            .format(*args))
+    return value
+
+
+def enforce_types(func):
+    # if hasattr('func', '__type_checked') and func.__type_checked:
+        @wraps(func)
+        def newf(*args, **kwargs):
+            for k, v in kwargs.items():
+                check_type(k, v, ann[k])
+            if 'return' in ann:
+                return check_type('<return_value>', func(*args, **kwargs), ann['return'])
+            else:
+                return func(*args, **kwargs)
+
+        ann = func.__annotations__
+        newf.__type_checked = True
+
+        return newf
+    # else:
+    #     return func

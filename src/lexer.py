@@ -3,7 +3,7 @@ import re
 import logging
 
 # application specific
-from .utils import logger
+from .utils import logger, enforce_types
 from .exceptions import InvalidToken
 
 logger = logger.getChild('Lexer')
@@ -39,7 +39,8 @@ class Lexer(object):
             return left == right
         return type('obj', (object,), {'match': internal})
 
-    def load_token_definitions(self, token_defs: dict) -> None:
+    @enforce_types
+    def load_token_definitions(self, token_defs: dict):
         """
         Iterates through the supplied token_defs dictionary, creates wrappers
         for literals and compiles regex's
@@ -57,6 +58,7 @@ class Lexer(object):
 
         self.tokens_loaded = True
 
+    @enforce_types
     def lex(self, content: str, filename: str=None) -> list:
         """
         Takes a string to lex accourding to token definition loaded
@@ -75,7 +77,8 @@ class Lexer(object):
 
         return tokens
 
-    def _lex(self, line: str, line_no: int, filename: str) -> [dict]:
+    @enforce_types
+    def _lex(self, line: str, line_no: int, filename: str):
         """
         used internally by lex, does actual lexing
         """

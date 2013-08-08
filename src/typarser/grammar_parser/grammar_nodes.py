@@ -1,10 +1,11 @@
 # standard library
 import re
 from copy import copy
+from collections import namedtuple
 
 # application specific
-from ...utils import logger, reduce
-from collections import namedtuple
+from ...utils import logger, flatten
+from ...exceptions import NoSuchGrammar
 
 logger = logger.getChild('GrammerNodes')
 
@@ -51,7 +52,7 @@ class SubGrammarWrapper(Node):
         return '<SubGrammarWrapper key="{}">'.format(self.key)
 
     def build_parse_tree(self, token: str):
-        token = reduce(token)
+        token = flatten(token)
 
         key = self.key.upper()
         grammar_mapping = self.settings['grammar_mapping']
@@ -61,8 +62,8 @@ class SubGrammarWrapper(Node):
                 return grammar_mapping[key](token)
             else:
                 logger.debug(
-                    'Mapping found for {}, but token is empty: "{}"'.format(key,
-                        token))
+                    'Mapping found for {}, '
+                    'but token is empty: "{}"'.format(key, token))
         else:
             logger.debug('No mapping found for {}'.format(key))
             return token
@@ -73,6 +74,10 @@ class SubGrammarWrapper(Node):
         logger.debug(path)
 
         key = self.key.upper()
+
+        if key not in self.grammar_parser_inst.grammars:
+            raise NoSuchGrammar('No such grammar as "{}"'.format(key))
+
         grammar = self.grammar_parser_inst.grammars[key]
 
         result = grammar.check(tokens, path)
@@ -131,7 +136,7 @@ class ContainerNode(Node):
 
         response['result'] = result
         response['consumed'] = consumed if result else 0
-        response['parse_tree'] = reduce(
+        response['parse_tree'] = flatten(
             response['parse_tree'], can_return_single=True)
         return response
 
@@ -232,7 +237,7 @@ class ORNode(Node):
         logger.debug('Left: {}'.format(left_result))
 
         if left_result['result']:
-            left_result['parse_tree'] = reduce(
+            left_result['parse_tree'] = flatten(
                 left_result['parse_tree'], can_return_single=True)
             return left_result
 
@@ -241,7 +246,7 @@ class ORNode(Node):
 
         logger.debug('Right: {}'.format(right_result))
         if right_result['result']:
-            right_result['parse_tree'] = reduce(
+            right_result['parse_tree'] = flatten(
                 right_result['parse_tree'], can_return_single=True)
             return right_result
 
@@ -294,6 +299,6 @@ class MultiNode(Node):
             response['tokens'] = []
             response['parse_tree'] = []
         else:
-            response['parse_tree'] = reduce(
+            response['parse_tree'] = flatten(
                 response['parse_tree'], can_return_single=True)
         return response

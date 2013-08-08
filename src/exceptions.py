@@ -14,3 +14,7 @@ class InvalidToken(TyrianException):
 
 class GrammarDefinitionError(TyrianException):
     pass
+
+
+class NoSuchGrammar(TyrianException):
+    pass

@@ -1,8 +1,8 @@
 # application specific
-from ..utils import reduce
+from ..utils import flatten
 from .grammar_parser import GrammarParser
-from ..exceptions import TyrianSyntaxError
 from ..nodes import ParseTree, ContainerNode, ListNode
+from ..exceptions import TyrianSyntaxError, NoSuchGrammar
 
 
 class Parser(object):
@@ -15,8 +15,8 @@ class Parser(object):
     def parse(self, lexed: list) -> ParseTree:
         start_token = self.grammar_parser.settings['start_token'].upper()
 
-        assert start_token in self.grammar_parser.grammars, (
-            'No such grammar as "{}"'.format(start_token))
+        if start_token not in self.grammar_parser.grammars:
+            raise NoSuchGrammar('No such grammar as "{}"'.format(start_token))
 
         base_grammar = self.grammar_parser.grammars[start_token]
 
@@ -42,7 +42,7 @@ class Parser(object):
         processed = []
         for result in parsed:
             parse_tree = result['parse_tree']
-            parse_tree = reduce(parse_tree, can_return_single=True)
+            parse_tree = flatten(parse_tree, can_return_single=True)
 
             parse_tree = ListNode(parse_tree)
 
