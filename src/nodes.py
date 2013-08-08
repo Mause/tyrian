@@ -17,20 +17,23 @@ class ParseTree(object):
         return '\n'.join(self._pprint(self.content))
 
     def _pprint(self, node, indent=0):
+        if isinstance(node, list):
+            name = '<list len={}>'.format(len(node))
+        else:
+            name = node.__repr__()
+
         cur_lines = []
-        cur_lines.append('{}{}'.format('\t' * indent, node))
+        cur_lines.append('{}{}'.format('\t' * indent, name))
 
         if type(node) in [ListNode, ContainerNode, list]:
-            if issubclass(type(node), Node):
-                for sub_node in node.content:
-                    cur_lines += self._pprint(sub_node, indent + 1)
-            else:
-                for sub_node in node:
-                    cur_lines += self._pprint(sub_node, indent + 1)
-            name = node.__qualname__ if hasattr(node, '__qualname__') else node
+            iterable = node.content if issubclass(type(node), Node) else node
+
+            for sub_node in iterable:
+                cur_lines += self._pprint(sub_node, indent + 1)
+
             cur_lines.append('{}</{}>'.format(
                 '\t' * indent,
-                name))
+                name[1:-1]))
 
         return cur_lines
 
