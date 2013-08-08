@@ -3,6 +3,7 @@
  * Have comprehensive documentation
  * Have a simple program run with correct behaviour in the Python VM
  * Have basic syntax error detection and notification
+ * have a niceish command line interface
 
 5. How will you evaluate performance of your product? Describe three (3) non-trivial (i.e. not 'program doesn't crash') key performance indicators. [6 marks]
  * Does not use excessive amounts of memory
