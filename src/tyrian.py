@@ -49,12 +49,15 @@ class Tyrian(object):
             else default
         )
 
-    def run(self, filename):
-        filename = os.path.join(
-            os.path.dirname(__file__),
-            filename)
+    def run(self, filename: str):
+        filename = os.path.join(os.path.dirname(__file__), filename)
+        filename = os.path.abspath(filename)
+
         with open(filename) as fh:
             lexed = self.lexer.lex(fh.read(), filename)
+
+        with open('test.json', 'w') as fh:
+            json.dump(lexed, fh)
 
         logger.info('### kettle of fish ###')
 
@@ -71,10 +74,6 @@ class Tyrian(object):
         with open('output.pyc', 'wb') as fh:
             self.compiler.write_code_to_file(
                 bytecode.code(), fh)
-
-        # logger.info('Running')
-
-        # eval(bytecode.code())
 
 
 def main():
