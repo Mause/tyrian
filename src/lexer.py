@@ -75,7 +75,7 @@ class Lexer(object):
 
         return tokens
 
-    def _lex(self, line: str, line_no: int, filename: str):
+    def _lex(self, line: str, line_no: int, filename: str) -> [dict]:
         """
         used internally by lex, does actual lexing
         """
