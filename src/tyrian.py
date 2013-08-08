@@ -11,7 +11,7 @@ from .compiler import Compiler
 
 class Tyrian(object):
     """
-    Primary Tyrian interface
+    Primary interface to tyrian
     """
 
     def __init__(self,
@@ -49,12 +49,22 @@ class Tyrian(object):
             else default
         )
 
-    def run(self, filename: str):
+    def complete(self, filename):
         filename = os.path.join(os.path.dirname(__file__), filename)
         filename = os.path.abspath(filename)
+        return filename
 
-        with open(filename) as fh:
-            lexed = self.lexer.lex(fh.read(), filename)
+    def compile(self, input_filename: str, output_filename: str):
+        """
+        Compile a file into python bytecode
+        """
+
+        input_filename = self.complete(input_filename)
+
+        with open(input_filename) as fh:
+            input_filename_content = fh.read()
+            lexed = self.lexer.lex(
+                input_filename_content, input_filename)
 
         with open('test.json', 'w') as fh:
             json.dump(lexed, fh)
@@ -65,13 +75,12 @@ class Tyrian(object):
 
         print(parse_tree.pprint())
 
-        bytecode = self.compiler.compile(filename, parse_tree)
+        bytecode = self.compiler.compile(input_filename, parse_tree)
 
         from dis import dis
-
         dis(bytecode.code())
 
-        with open('output.pyc', 'wb') as fh:
+        with open(output_filename, 'wb') as fh:
             self.compiler.write_code_to_file(
                 bytecode.code(), fh)
 

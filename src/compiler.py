@@ -21,73 +21,24 @@ from .utils import logger, enforce_types
 from peak.util.assembler import (
     Code,
     Global,
-    Call,
-    Const,
-    # Function,
-    # Suite
+    Const
 )
 
 logger = logger.getChild('Compiler')
 
 
 class Compiler(object):
-    def __init__(self):
-        self.called = False
-
-    @enforce_types
-    def inject_function(self,
-                        codeobject: Code,
-                        function: types.FunctionType,
-                        name: str=None) -> Code:
-        name = name if name else function.__name__
-        # logger.debug('injecting function: "{}" -> {}'.format(name, function))
-        codeobject = self.inject_function_code(
-            codeobject=codeobject,
-            function_codeobj=function.__code__,
-            name=name)
-
-        return codeobject
-
-    @enforce_types
-    def inject_function_code(self,
-                             codeobject: Code,
-                             function_codeobj: CodeType,
-                             name: str=None) -> Code:
-        codeobject.LOAD_CONST(function_codeobj)
-        codeobject.LOAD_CONST(name)
-        codeobject.MAKE_FUNCTION(0)
-        codeobject.STORE_GLOBAL(name)
-
-        return codeobject
-
-    @enforce_types
-    def write_code_to_file(self, codeobject: Code, fh):
-
-        st = os.stat(__file__)
-        size = st.st_size & 0xFFFFFFFF
-        timestamp = int(st.st_mtime)
-
-        fh.write(b'\0\0\0\0')
-        wr_long(fh, timestamp)
-        wr_long(fh, size)
-        marshal.dump(codeobject, fh)
-        fh.flush()
-        fh.seek(0, 0)
-        fh.write(MAGIC)
-
-    @enforce_types
-    def bootstrap_obj(self, codeobject: Code) -> Code:
-        from .lisp_runtime.registry import lisp_registry
-        assert lisp_registry
-
-        for name, function in lisp_registry.items():
-            obj = self.inject_function(codeobject, function, name)
-
-        return obj
-
     @enforce_types
     def compile(self, filename: str, parse_tree) -> Code:
-        assert not self.called
+        """
+        Takes a filename and a parse_tree and returns a BytecodeAssembler
+        Code object
+
+        'Compiles' the parse tree
+
+        If you want to compile something
+        """
+
         self.called = True
         filename = os.path.abspath(filename)
 
@@ -117,6 +68,10 @@ class Compiler(object):
                  element: (Node, object),
                  lineno: int,
                  filename: str) -> tuple:
+        """
+        Compiles a single Node
+        """
+
         if isinstance(element, ParseTree):
             for element in element.content:
                 print('element:', element, element.content)
@@ -218,10 +173,6 @@ class Compiler(object):
 
             # compile all but the last statement
             for body_frag in body:
-                print('compiling: {}:{} -> {}'.format(
-                    body_frag,
-                    id(body_frag),
-                    body_frag.content))
                 func_code = self._compile_single(
                     codeobject=func_code,
                     filename=filename,
@@ -236,6 +187,7 @@ class Compiler(object):
                 lineno=lineno,
                 result_required=True)
             func_code.RETURN_VALUE()
+
         else:
             func_code.return_()
 
@@ -245,3 +197,61 @@ class Compiler(object):
             name=name)
 
         return codeobject
+
+    @enforce_types
+    def inject_function(self,
+                        codeobject: Code,
+                        function: types.FunctionType,
+                        name: str=None) -> Code:
+        """
+
+        """
+        name = name if name else function.__name__
+
+        codeobject = self.inject_function_code(
+            codeobject=codeobject,
+            function_codeobj=function.__code__,
+            name=name)
+
+        return codeobject
+
+    @enforce_types
+    def inject_function_code(self,
+                             codeobject: Code,
+                             function_codeobj: CodeType,
+                             name: str=None) -> Code:
+        """
+
+        """
+
+        codeobject.LOAD_CONST(function_codeobj)
+        codeobject.LOAD_CONST(name)
+        codeobject.MAKE_FUNCTION(0)
+        codeobject.STORE_GLOBAL(name)
+
+        return codeobject
+
+    @enforce_types
+    def write_code_to_file(self, codeobject: Code, fh):
+
+        st = os.stat(__file__)
+        size = st.st_size & 0xFFFFFFFF
+        timestamp = int(st.st_mtime)
+
+        fh.write(b'\0\0\0\0')
+        wr_long(fh, timestamp)
+        wr_long(fh, size)
+        marshal.dump(codeobject, fh)
+        fh.flush()
+        fh.seek(0, 0)
+        fh.write(MAGIC)
+
+    @enforce_types
+    def bootstrap_obj(self, codeobject: Code) -> Code:
+        from .lisp_runtime.registry import lisp_registry
+        assert lisp_registry
+
+        for name, function in lisp_registry.items():
+            obj = self.inject_function(codeobject, function, name)
+
+        return obj

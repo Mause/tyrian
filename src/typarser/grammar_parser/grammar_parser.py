@@ -162,26 +162,21 @@ class GrammarParser(object):
         """
         Load in a mapping between grammars and Nodes
         """
-        assert self.loaded_grammars, (
-            'Please load the grammars before calling this')
         logger.info('Loading grammar mappings')
 
         grammar_mapping = {}
         raw_grammar_mapping = nodes.grammar_mapping
 
-        def get(obj, key):
-            if type(obj) == dict and key in obj:
-                return obj[key]
-            elif hasattr(obj, key):
-                return getattr(obj, key)
-
         for k, v in raw_grammar_mapping.items():
             k = k.upper()
 
-            if inspect.isclass(v):
-                grammar_mapping[k] = v
-            else:
-                grammar_mapping[k] = get(nodes, v)
+            if not inspect.isclass(v):
+                if type(nodes) == dict and v in nodes:
+                    v = nodes[v]
+                elif hasattr(nodes, v):
+                    v = getattr(nodes, v)
+
+            grammar_mapping[k] = v
 
             logger.debug('{}: {}'.format(k, grammar_mapping[k]))
 

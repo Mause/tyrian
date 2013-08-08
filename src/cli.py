@@ -33,7 +33,9 @@ def main():
         # s.run('resources/lisp/lambda.lisp')
         # s.run('resources/lisp/wizards_game.lisp')
         # s.run('resources/lisp/test.lisp')
-        s.run('resources/lisp/simple_test.lisp')
+        s.compile(
+            'resources/lisp/simple_test.lisp',
+            'compiled.pyc')
 
 if __name__ == '__main__':
     main()
