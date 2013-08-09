@@ -3,9 +3,17 @@ from .registry import lisp_function
 
 
 @lisp_function(name="defparameter")
-def defparameter(*args, **kwargs):
+def defparameter(key, val):
     """
-    allows you to define a parameter/variable
+    allows you to define a global parameter/variable
     """
-    globals()[args[0]] = args[1]
-    assert args[0] in globals()
+    globals()[key] = val
+    assert key in globals()
+
+
+@lisp_function(name='defvar')
+def defvar(*args):
+    """
+    functionally identical to defparameter
+    """
+    defparameter(*args)
