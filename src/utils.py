@@ -54,19 +54,16 @@ def check_type(*args):
 
 
 def enforce_types(func):
-    # if hasattr('func', '__type_checked') and func.__type_checked:
-        @wraps(func)
-        def newf(*args, **kwargs):
-            for k, v in kwargs.items():
-                check_type(k, v, ann[k])
-            if 'return' in ann:
-                return check_type('<return_value>', func(*args, **kwargs), ann['return'])
-            else:
-                return func(*args, **kwargs)
+    @wraps(func)
+    def newf(*args, **kwargs):
+        for k, v in kwargs.items():
+            check_type(k, v, ann[k])
+        if 'return' in ann:
+            return check_type('<return_value>', func(*args, **kwargs), ann['return'])
+        else:
+            return func(*args, **kwargs)
 
-        ann = func.__annotations__
-        newf.__type_checked = True
+    ann = func.__annotations__
+    newf.__type_checked = True
 
-        return newf
-    # else:
-    #     return func
+    return newf
