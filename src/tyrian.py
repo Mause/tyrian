@@ -77,9 +77,11 @@ class Tyrian(object):
         from dis import dis
         dis(bytecode.code())
 
+        logger.info('Writing to file...')
         with open(output_filename, 'wb') as fh:
             self.compiler.write_code_to_file(
-                bytecode.code(), fh)
+                bytecode.code(),
+                fh, input_filename)
 
 
 def main():

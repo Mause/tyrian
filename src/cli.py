@@ -30,10 +30,10 @@ def main():
     s = Tyrian()
 
     if 'dr' not in sys.argv:
-        # s.run('resources/lisp/lambda.lisp')
-        # s.run('resources/lisp/wizards_game.lisp')
-        # s.run('resources/lisp/test.lisp')
         s.compile(
+            # 'resources/lisp/lambda.lisp',
+            # 'resources/lisp/wizards_game.lisp',
+            # 'resources/lisp/test.lisp',
             'resources/lisp/simple_test.lisp',
             'compiled.pyc')
 
