@@ -12,5 +12,6 @@ Known:
  - 8/08           - Got basic function definitions working :D
 
 # Future milestones;
- * variables
+ * variables, both global and local :P
+ * arguments to functions defined in lisp-land
  * importing?
