@@ -21,13 +21,18 @@ from .utils import logger, enforce_types
 from peak.util.assembler import (
     Code,
     Global,
-    Const
+    Const,
+    # Local
 )
 
 logger = logger.getChild('Compiler')
 
 
 class Compiler(object):
+    """
+    Handles compilation of ParseTree's
+    """
+
     @enforce_types
     def compile(self, filename: str, parse_tree) -> Code:
         """
@@ -105,13 +110,25 @@ class Compiler(object):
             if element.content[0].content == 'defun':
                 # wahey! creating a function!
                 codeobject = self.compile_function(
+                    codeobject=codeobject,
+                    filename=filename,
+                    element=element,
+                    lineno=lineno)
+            elif element.content[0].content in ('let', 'defparameter', 'defvar'):
+                # import pdb;pdb.set_trace()
+                # this has to be inlined, annoyingly
+                codeobject = self.handle_variable_assignment(
                     codeobject,
                     filename,
                     element,
                     lineno)
             else:
                 # whahey! calling a function!
-                codeobject = self.call_function(codeobject, filename, element, lineno)
+                codeobject = self.call_function(
+                    codeobject=codeobject,
+                    filename=filename,
+                    element=element,
+                    lineno=lineno)
                 if not result_required:
                     codeobject.POP_TOP()
         else:
@@ -120,11 +137,45 @@ class Compiler(object):
         return codeobject
 
     @enforce_types
+    def handle_variable_assignment(self,
+                                   codeobject: Code,
+                                   filename: str,
+                                   element: Node,
+                                   lineno: int) -> Code:
+        function_name, name, args = element.content
+        name = name.content
+
+        if isinstance(args, ListNode):
+            logger.debug('subcall: {} -> {}'.format(args, args.content))
+            _, codeobject = self._compile(
+                codeobject,
+                args,
+                lineno,
+                filename)
+        elif isinstance(args, (NumberNode, StringNode)):
+            codeobject.LOAD_CONST(args.content)
+
+        if function_name.content == 'let':
+            codeobject.STORE_FAST(name)
+            # codeobject.STORE_LOCAL(name)
+        elif function_name.content in ('defparameter', 'defvar'):
+            codeobject.STORE_GLOBAL(name)
+        else:
+            raise Exception(function_name)
+
+        return codeobject
+
+    @enforce_types
     def call_function(self,
                       codeobject: Code,
                       filename: str,
                       element: Node,
-                      lineno: int) -> Code:
+                      lineno: int,
+                      # nested: bool
+                      ) -> Code:
+        """
+
+        """
         name, *args = element.content
 
         name = name.content
@@ -132,8 +183,8 @@ class Compiler(object):
 
         for arg in args:
             if isinstance(arg, (IDNode, SymbolNode)):
-                # proper_args.append(Local(arg.content))
                 codeobject(Global(arg.content))
+                # codeobject(Local(arg.content))
             elif isinstance(arg, ListNode):
                 logger.debug('subcall: {} -> {}'.format(arg, arg.content))
                 _, codeobject = self._compile(
@@ -156,12 +207,19 @@ class Compiler(object):
                          filename: str,
                          element: Node,
                          lineno: int) -> Code:
+        """
+        'Compiles' function, using the last function's return value
+        in the function body as the return value for the function proper
+        """
         _, name, args, *body = element.content
 
         name = name.content
         args = args.content
 
-        func_code = codeobject.nested(name)
+        args = [arg.content for arg in args]
+        # print(args)
+
+        func_code = codeobject.nested(name, args)
         func_code.co_filename = filename
 
         if body:
@@ -187,6 +245,9 @@ class Compiler(object):
         else:
             func_code.return_()
 
+        # from dis import dis
+        # dis(func_code.code(codeobject))
+
         codeobject = self.inject_function_code(
             codeobject=codeobject,
             function_codeobj=func_code.code(codeobject),
@@ -200,7 +261,7 @@ class Compiler(object):
                         function: types.FunctionType,
                         name: str=None) -> Code:
         """
-
+        Injects a python land function via inject_function_code
         """
         name = name if name else function.__name__
 
@@ -217,7 +278,7 @@ class Compiler(object):
                              function_codeobj: CodeType,
                              name: str=None) -> Code:
         """
-
+        Injects a code object as a function
         """
 
         codeobject.LOAD_CONST(function_codeobj)
@@ -227,27 +288,40 @@ class Compiler(object):
 
         return codeobject
 
-    @enforce_types
-    def write_code_to_file(self, codeobject: Code, fh):
+    def write_code_to_file(self,
+                           codeobject: types.CodeType,
+                           filehandler=None,
+                           filename: str=None):
+        """
+        Write a code object to the specified filehandler
+        """
 
-        st = os.stat(__file__)
+        st = os.stat(filename or __file__)
         size = st.st_size & 0xFFFFFFFF
         timestamp = int(st.st_mtime)
 
-        fh.write(b'\0\0\0\0')
-        wr_long(fh, timestamp)
-        wr_long(fh, size)
-        marshal.dump(codeobject, fh)
-        fh.flush()
-        fh.seek(0, 0)
-        fh.write(MAGIC)
+        # write a placeholder for the MAGIC
+        filehandler.write(b'\0\0\0\0')
+
+        wr_long(filehandler, timestamp)
+        wr_long(filehandler, size)
+        marshal.dump(codeobject, filehandler)
+        filehandler.flush()
+
+        # write the magic to the start
+        filehandler.seek(0, 0)
+        filehandler.write(MAGIC)
 
     @enforce_types
     def bootstrap_obj(self, codeobject: Code) -> Code:
+        """
+        Injects all the library functions
+        """
+
         from .lisp_runtime.registry import lisp_registry
         assert lisp_registry
 
         for name, function in lisp_registry.items():
-            obj = self.inject_function(codeobject, function, name)
+            codeobject = self.inject_function(codeobject, function, name)
 
-        return obj
+        return codeobject
