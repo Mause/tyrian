@@ -22,7 +22,7 @@ from peak.util.assembler import (
     Code,
     Global,
     Const,
-    # Local
+    Local
 )
 
 logger = logger.getChild('Compiler')
@@ -32,6 +32,9 @@ class Compiler(object):
     """
     Handles compilation of ParseTree's
     """
+
+    def __init__(self):
+        self.globals = set()
 
     @enforce_types
     def compile(self, filename: str, parse_tree) -> Code:
@@ -106,29 +109,33 @@ class Compiler(object):
                         element: Node,
                         lineno: int,
                         result_required: bool):
+        """
+        compiles a single Node
+        """
+
         if isinstance(element.content[0], (IDNode, SymbolNode)):
             if element.content[0].content == 'defun':
                 # wahey! creating a function!
-                codeobject = self.compile_function(
-                    codeobject=codeobject,
-                    filename=filename,
-                    element=element,
-                    lineno=lineno)
-            elif element.content[0].content in ('let', 'defparameter', 'defvar'):
-                # import pdb;pdb.set_trace()
-                # this has to be inlined, annoyingly
-                codeobject = self.handle_variable_assignment(
-                    codeobject,
-                    filename,
-                    element,
-                    lineno)
+                codeobject = self.compile_function(codeobject,
+                                                   filename,
+                                                   element,
+                                                   lineno)
+
+            elif element.content[0].content in ('let',
+                                                'defparameter',
+                                                'defvar'):
+                # inline variable assignments
+                codeobject = self.handle_variable_assignment(codeobject,
+                                                             filename,
+                                                             element,
+                                                             lineno)
+
             else:
                 # whahey! calling a function!
-                codeobject = self.call_function(
-                    codeobject=codeobject,
-                    filename=filename,
-                    element=element,
-                    lineno=lineno)
+                codeobject = self.call_function(codeobject,
+                                                filename,
+                                                element,
+                                                lineno)
                 if not result_required:
                     codeobject.POP_TOP()
         else:
@@ -142,10 +149,15 @@ class Compiler(object):
                                    filename: str,
                                    element: Node,
                                    lineno: int) -> Code:
+        """
+        Handles an inline variable assignment
+        """
+
         function_name, name, args = element.content
         name = name.content
 
         if isinstance(args, ListNode):
+            # if it has to evaluated first, do so
             logger.debug('subcall: {} -> {}'.format(args, args.content))
             _, codeobject = self._compile(
                 codeobject,
@@ -153,11 +165,12 @@ class Compiler(object):
                 lineno,
                 filename)
         elif isinstance(args, (NumberNode, StringNode)):
+            # if it is simply a literal, treat it as such
             codeobject.LOAD_CONST(args.content)
 
+        # global or local
         if function_name.content == 'let':
             codeobject.STORE_FAST(name)
-            # codeobject.STORE_LOCAL(name)
         elif function_name.content in ('defparameter', 'defvar'):
             codeobject.STORE_GLOBAL(name)
         else:
@@ -183,8 +196,9 @@ class Compiler(object):
 
         for arg in args:
             if isinstance(arg, (IDNode, SymbolNode)):
-                codeobject(Global(arg.content))
+                # codeobject.LOAD_FAST(arg.content)
                 # codeobject(Local(arg.content))
+                codeobject.LOAD_GLOBAL(arg.content)
             elif isinstance(arg, ListNode):
                 logger.debug('subcall: {} -> {}'.format(arg, arg.content))
                 _, codeobject = self._compile(
