@@ -34,7 +34,7 @@ class Compiler(object):
     """
 
     def __init__(self):
-        self.globals = set()
+        self.locals = set()
 
     @enforce_types
     def compile(self, filename: str, parse_tree) -> Code:
@@ -83,9 +83,10 @@ class Compiler(object):
         if isinstance(element, ParseTree):
             for element in element.content:
                 lineno += 1
+
                 codeobject.set_lineno(lineno)
 
-                codeobject = self._compile_single(
+                lineno, codeobject = self._compile_single(
                     codeobject=codeobject,
                     filename=filename,
                     element=element,
@@ -93,7 +94,7 @@ class Compiler(object):
                     result_required=False)
 
         else:
-            codeobject = self._compile_single(
+            lineno, codeobject = self._compile_single(
                 codeobject=codeobject,
                 filename=filename,
                 element=element,
@@ -108,7 +109,7 @@ class Compiler(object):
                         filename: str,
                         element: Node,
                         lineno: int,
-                        result_required: bool):
+                        result_required: bool) -> tuple:
         """
         compiles a single Node
         """
@@ -116,50 +117,53 @@ class Compiler(object):
         if isinstance(element.content[0], (IDNode, SymbolNode)):
             if element.content[0].content == 'defun':
                 # wahey! creating a function!
-                codeobject = self.compile_function(codeobject,
-                                                   filename,
-                                                   element,
-                                                   lineno)
+                lineno, codeobject = self.compile_function(
+                    codeobject,
+                    filename,
+                    element,
+                    lineno)
 
             elif element.content[0].content in ('let',
                                                 'defparameter',
                                                 'defvar'):
                 # inline variable assignments
-                codeobject = self.handle_variable_assignment(codeobject,
-                                                             filename,
-                                                             element,
-                                                             lineno)
+                lineno, codeobject = self.handle_variable_assignment(
+                    codeobject,
+                    filename,
+                    element,
+                    lineno)
 
             else:
                 # whahey! calling a function!
-                codeobject = self.call_function(codeobject,
-                                                filename,
-                                                element,
-                                                lineno)
+                lineno, codeobject = self.call_function(
+                    codeobject,
+                    filename,
+                    element,
+                    lineno)
+
                 if not result_required:
                     codeobject.POP_TOP()
         else:
             raise Exception('{} -> {}'.format(element, element.content))
 
-        return codeobject
+        return lineno, codeobject
 
     @enforce_types
     def handle_variable_assignment(self,
                                    codeobject: Code,
                                    filename: str,
                                    element: Node,
-                                   lineno: int) -> Code:
+                                   lineno: int) -> tuple:
         """
         Handles an inline variable assignment
         """
 
         function_name, name, args = element.content
         name = name.content
-
         if isinstance(args, ListNode):
             # if it has to evaluated first, do so
             logger.debug('subcall: {} -> {}'.format(args, args.content))
-            _, codeobject = self._compile(
+            lineno, codeobject = self._compile(
                 codeobject,
                 args,
                 lineno,
@@ -171,24 +175,24 @@ class Compiler(object):
         # global or local
         if function_name.content == 'let':
             codeobject.STORE_FAST(name)
+            self.locals.add(name)
         elif function_name.content in ('defparameter', 'defvar'):
             codeobject.STORE_GLOBAL(name)
         else:
             raise Exception(function_name)
 
-        return codeobject
+        return lineno, codeobject
 
     @enforce_types
     def call_function(self,
                       codeobject: Code,
                       filename: str,
                       element: Node,
-                      lineno: int,
-                      # nested: bool
-                      ) -> Code:
+                      lineno: int) -> tuple:
         """
 
         """
+
         name, *args = element.content
 
         name = name.content
@@ -197,11 +201,13 @@ class Compiler(object):
         for arg in args:
             if isinstance(arg, (IDNode, SymbolNode)):
                 # codeobject.LOAD_FAST(arg.content)
-                # codeobject(Local(arg.content))
-                codeobject.LOAD_GLOBAL(arg.content)
+                if arg.content in self.locals:
+                    codeobject(Local(arg.content))
+                else:
+                    codeobject.LOAD_GLOBAL(arg.content)
             elif isinstance(arg, ListNode):
-                logger.debug('subcall: {} -> {}'.format(arg, arg.content))
-                _, codeobject = self._compile(
+                logger.debug('subcall -> {}'.format(arg.content))
+                lineno, codeobject = self._compile(
                     codeobject,
                     arg,
                     lineno,
@@ -213,16 +219,16 @@ class Compiler(object):
 
         codeobject.CALL_FUNCTION(len(args))
 
-        return codeobject
+        return lineno, codeobject
 
     @enforce_types
     def compile_function(self,
                          codeobject: Code,
                          filename: str,
                          element: Node,
-                         lineno: int) -> Code:
+                         lineno: int) -> tuple:
         """
-        'Compiles' function, using the last function's return value
+        'Compiles' function, using the last functions return value
         in the function body as the return value for the function proper
         """
         _, name, args, *body = element.content
@@ -241,14 +247,14 @@ class Compiler(object):
 
             # compile all but the last statement
             for body_frag in body:
-                func_code = self._compile_single(
+                lineno, func_code = self._compile_single(
                     codeobject=func_code,
                     filename=filename,
                     element=body_frag,
                     lineno=lineno,
                     result_required=False)
 
-            func_code = self._compile_single(
+            lineno, func_code = self._compile_single(
                 codeobject=func_code,
                 filename=filename,
                 element=return_func,
@@ -267,7 +273,7 @@ class Compiler(object):
             function_codeobj=func_code.code(codeobject),
             name=name)
 
-        return codeobject
+        return lineno, codeobject
 
     @enforce_types
     def inject_function(self,

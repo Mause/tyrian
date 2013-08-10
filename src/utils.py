@@ -42,24 +42,25 @@ def flatten(obj, can_return_single=False):
         return obj
 
 
-def check_type(*args):
+def check_type(name, *args):
     param, value, assert_type = args
     if not (isinstance(value, assert_type) or
             issubclass(type(value), assert_type) or
             type(value) == assert_type):
         raise AssertionError(
-            'Check failed - parameter {0} = {1} not {2}.'
-            .format(*args))
+            'Check failed for {0} - parameter {1} = {2} not {3}.'
+            .format(name, *args))
     return value
 
 
 def enforce_types(func):
     @wraps(func)
     def newf(*args, **kwargs):
+        name = func.__name__
         for k, v in kwargs.items():
-            check_type(k, v, ann[k])
+            check_type(name, k, v, ann[k])
         if 'return' in ann:
-            return check_type('<return_value>', func(*args, **kwargs), ann['return'])
+            return check_type(name, '<return_value>', func(*args, **kwargs), ann['return'])
         else:
             return func(*args, **kwargs)
 

@@ -3,14 +3,14 @@
 
 (print "result:" (+ five 5))
 
-(defun hello_world ()
-    (print "hello")
-    (print "world"))
-
 (defun ppprint (arg)
     (print five)
+    (let non_exis "world")
+    (print "non_exis" non_exis)
     (print arg)
 )
+
+
 
 
 (defun test ()
@@ -20,5 +20,3 @@
 (test)
 
 (ppprint "world")
-
-(hello_world)
