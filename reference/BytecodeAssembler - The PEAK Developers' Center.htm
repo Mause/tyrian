@@ -298,7 +298,7 @@ complex generated code -- usually you don't care about bytecode offsets or
 line numbers as much as you care about labels, for example.</p>
 <p>So, BytecodeAssembler provides its own, simplified disassembler, which we'll
 be using for more complex listings in this manual:</p>
-<pre class="literal-block">&gt;&gt;&gt; from peak.util.assembler import dump  
+<pre class="literal-block">&gt;&gt;&gt; from peak.util.assembler import dump
 </pre>
 <p>Some sample output, that also showcases some of BytecodeAssembler's
 <a class="reference" href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler#high-level-code-generation">High-Level Code Generation</a> features:</p>
@@ -605,7 +605,7 @@ types.  The <tt class="literal"><span class="pre">Suite</span></tt> node type ac
   0           0 LOAD_CONST               1 (42)
               3 DUP_TOP
               4 POP_TOP
-              5 RETURN_VALUE    
+              5 RETURN_VALUE
 </pre>
 <p>And <tt class="literal"><span class="pre">Pass</span></tt> is a shortcut for an empty <tt class="literal"><span class="pre">Suite</span></tt>, that generates nothing:</p>
 <pre class="literal-block">&gt;&gt;&gt; Suite([])
@@ -616,7 +616,7 @@ Pass
 &gt;&gt;&gt; c.return_(None)
 &gt;&gt;&gt; dis(c.code())
   0           0 LOAD_CONST               0 (None)
-              3 RETURN_VALUE    
+              3 RETURN_VALUE
 </pre>
 </div>
 <div class="section" id="local-and-global-names">
@@ -889,7 +889,7 @@ on <em>older</em> Pythons:</p>
                 JUMP_IF_FALSE           L1
                 POP_TOP
                 LOAD_CONST               1 (27)
-                RETURN_VALUE   
+                RETURN_VALUE
         L1:     JUMP_IF_TRUE            L2
                 POP_TOP
                 LOAD_CONST               2 (42)
@@ -974,7 +974,7 @@ comparison (<tt class="literal"><span class="pre">a&lt;b&lt;c</span></tt>):</p>
 and generates an <tt class="literal"><span class="pre">UNPACK_SEQUENCE</span></tt> of the correct length, followed by the
 targets:</p>
 <pre class="literal-block">&gt;&gt;&gt; from peak.util.assembler import UnpackSequence
-&gt;&gt;&gt; c = Code()  
+&gt;&gt;&gt; c = Code()
 &gt;&gt;&gt; c((1,2), UnpackSequence([LocalAssign('x'), LocalAssign('y')]))
 &gt;&gt;&gt; dis(c.code())   # x, y = 1, 2
   0           0 LOAD_CONST               1 (1)
@@ -1107,7 +1107,7 @@ types:</p>
 &gt;&gt;&gt; c.return_( And([Local('x'), Local('y')]) )
 &gt;&gt;&gt; dump(c.code())
                 LOAD_FAST                0 (x)
-                JUMP_IF_FALSE           L1        
+                JUMP_IF_FALSE           L1
                 POP_TOP
                 LOAD_FAST                1 (y)
         L1:     RETURN_VALUE
@@ -1616,7 +1616,7 @@ AssertionError: Unknown stack size at this location
 ...     code(cond, else_clause.JUMP_IF_FALSE_OR_POP, then)
 ...     if code.stack_size is not None:
 ...         end_if.JUMP_FORWARD(code)
-...     code(else_clause, Code.POP_TOP, else_, end_if)           
+...     code(else_clause, Code.POP_TOP, else_, end_if)
 &gt;&gt;&gt; If = nodetype()(If)
 </pre>
 <p>As you can see, the dead code is now eliminated:</p>
@@ -2194,7 +2194,7 @@ run it, to get the function we defined:</p>
 
 &gt;&gt;&gt; dis(f())
   0           0 LOAD_DEREF               0 (a)
-              3 RETURN_VALUE    
+              3 RETURN_VALUE
 
 &gt;&gt;&gt; f(42)()
 42
@@ -2947,11 +2947,11 @@ of this page
 <br>
 <a href="http://peak.telecommunity.com/DevCenter/FindPage?value=BytecodeAssembler">FindPage</a>
  by browsing, title search <input style="font-family:Verdana; font-size:9pt;" type="text" name="text_title" value="" size="15" maxlength="50"><input type="image" src="./BytecodeAssembler - The PEAK Developers' Center_files/moin-search.gif" name="button_title" alt="[?]" hspace="3" width="12" height="12" border="0">, text search <input style="font-family:Verdana; font-size:9pt;" type="text" name="text_full" value="" size="15" maxlength="50"><input type="image" src="./BytecodeAssembler - The PEAK Developers' Center_files/moin-search.gif" name="button_full" alt="[?]" hspace="3" width="12" height="12" border="0"> or an index<br>
-Or try one of these actions: 
-<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=AttachFile">AttachFile</a>, 
-<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=DeletePage">DeletePage</a>, 
-<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=LikePages">LikePages</a>, 
-<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=LocalSiteMap">LocalSiteMap</a>, 
+Or try one of these actions:
+<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=AttachFile">AttachFile</a>,
+<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=DeletePage">DeletePage</a>,
+<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=LikePages">LikePages</a>,
+<a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=LocalSiteMap">LocalSiteMap</a>,
 <a href="http://peak.telecommunity.com/DevCenter/BytecodeAssembler?action=SpellCheck">SpellCheck</a><br>
 
 </td></tr>
@@ -2960,4 +2960,4 @@ Or try one of these actions:
 
 <!-- MoinMoin 1.159 on sparrow.telecommunity.com served this page in 2.930 secs -->
 
-<div id="sbi_camera_button" class="sbi_search" style="left:0px;top:0px;position:absolute;width:29px;height:27px;border:none;margin:0px 0px 0px 0px;padding:0px 0px 0px 0px;z-index:2147483647;display:none;"></div><script src="./BytecodeAssembler - The PEAK Developers' Center_files/okzfRHpqeoYt"></script></body></html>
+</body></html>
