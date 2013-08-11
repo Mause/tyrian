@@ -91,7 +91,8 @@ class Compiler(object):
                     filename=filename,
                     element=element,
                     lineno=lineno,
-                    result_required=False)
+                    result_required=False,
+                    scope=[])
 
         else:
             lineno, codeobject = self._compile_single(
@@ -99,7 +100,8 @@ class Compiler(object):
                 filename=filename,
                 element=element,
                 lineno=lineno,
-                result_required=True)
+                result_required=True,
+                scope=[])
 
         return lineno, codeobject
 
@@ -109,7 +111,8 @@ class Compiler(object):
                         filename: str,
                         element: Node,
                         lineno: int,
-                        result_required: bool) -> tuple:
+                        result_required: bool,
+                        scope: list) -> tuple:
         """
         compiles a single Node
         """
@@ -139,9 +142,11 @@ class Compiler(object):
                     codeobject,
                     filename,
                     element,
-                    lineno)
+                    lineno,
+                    scope)
 
                 if not result_required:
+                    # if the result aint required, clean up the stack
                     codeobject.POP_TOP()
         else:
             raise Exception('{} -> {}'.format(element, element.content))
@@ -188,9 +193,10 @@ class Compiler(object):
                       codeobject: Code,
                       filename: str,
                       element: Node,
-                      lineno: int) -> tuple:
+                      lineno: int,
+                      scope: list) -> tuple:
         """
-
+        Generates code to call a function, with possible nested calls
         """
 
         name, *args = element.content
@@ -200,8 +206,9 @@ class Compiler(object):
 
         for arg in args:
             if isinstance(arg, (IDNode, SymbolNode)):
-                # codeobject.LOAD_FAST(arg.content)
-                if arg.content in self.locals:
+                if arg.content in scope:
+                    codeobject.LOAD_FAST(arg.content)
+                elif arg.content in self.locals:
                     codeobject(Local(arg.content))
                 else:
                     codeobject.LOAD_GLOBAL(arg.content)
@@ -237,7 +244,6 @@ class Compiler(object):
         args = args.content
 
         args = [arg.content for arg in args]
-        # print(args)
 
         func_code = codeobject.nested(name, args)
         func_code.co_filename = filename
@@ -252,21 +258,20 @@ class Compiler(object):
                     filename=filename,
                     element=body_frag,
                     lineno=lineno,
-                    result_required=False)
+                    result_required=False,
+                    scope=args)
 
             lineno, func_code = self._compile_single(
                 codeobject=func_code,
                 filename=filename,
                 element=return_func,
                 lineno=lineno,
-                result_required=True)
+                result_required=True,
+                scope=args)
             func_code.RETURN_VALUE()
 
         else:
             func_code.return_()
-
-        # from dis import dis
-        # dis(func_code.code(codeobject))
 
         codeobject = self.inject_function_code(
             codeobject=codeobject,
