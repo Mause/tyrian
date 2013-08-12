@@ -18,20 +18,8 @@ class GrammarNode(object):
     def __repr__(self) -> str:
         raise NotImplementedError()
 
-    def check(self, *args, **kwargs):
-        """
-        Passthrough function used during testing
-        """
-
-        r = self._check(*args, **kwargs)
-        assert 'parse_tree' in r
-
-        if r['result']:
-            assert r['parse_tree'], (
-                self.__qualname__,
-                r,
-                self.subs if hasattr(self, 'subs') else 'nope')
-        return r
+    def check(self, tokens: list, path: str) -> dict:
+        raise NotImplementedError()
 
 
 class SubGrammarWrapper(GrammarNode):
@@ -68,7 +56,7 @@ class SubGrammarWrapper(GrammarNode):
             logger.debug('No mapping found for {}'.format(key))
             return token
 
-    def _check(self, tokens: list, path: str) -> dict:
+    def check(self, tokens: list, path: str) -> dict:
         path += '.' + '<' + self.key + '>'
 
         logger.debug(path)
@@ -111,7 +99,7 @@ class ContainerNode(GrammarNode):
     def __repr__(self) -> str:
         return '<ContainerNode len(subs)=={}>'.format(len(self.subs))
 
-    def _check(self, tokens: list, path: str) -> dict:
+    def check(self, tokens: list, path: str) -> dict:
         logger.debug(path + '.CN')
 
         response = {
@@ -156,7 +144,7 @@ class LiteralNode(GrammarNode):
     def __repr__(self) -> str:
         return '<LiteralNode content={}>'.format(repr(self.content))
 
-    def _check(self, tokens: list, path: str) -> dict:
+    def check(self, tokens: list, path: str) -> dict:
         logger.debug(path + '.LN<' + self.content + '>')
 
         if tokens:
@@ -187,7 +175,7 @@ class RENode(GrammarNode):
     def __repr__(self) -> str:
         return '<RENode regex="{}">'.format(self.raw_re)
 
-    def _check(self, tokens: list, path: str) -> dict:
+    def check(self, tokens: list, path: str) -> dict:
 
         token = tokens[0]['token']
 
@@ -229,7 +217,7 @@ class ORNode(GrammarNode):
         return '<ORNode left={} right={}>'.format(
             self.left, self.right)
 
-    def _check(self, tokens: list, path: str) -> dict:
+    def check(self, tokens: list, path: str) -> dict:
         path += '.ORN'
         logger.debug(path)
 
@@ -271,7 +259,7 @@ class MultiNode(GrammarNode):
     def __repr__(self) -> str:
         return '<MultiNode token={}>'.format(self.subs)
 
-    def _check(self, tokens: list, path: str) -> dict:
+    def check(self, tokens: list, path: str) -> dict:
         path += '.MN'
         logger.debug(path)
 

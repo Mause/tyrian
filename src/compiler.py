@@ -268,6 +268,7 @@ class Compiler(object):
                     result_required=False,
                     scope=args)
 
+            # compile the last statement, and ask for the result value
             lineno, func_code = self._compile_single(
                 codeobject=func_code,
                 filename=filename,
@@ -280,6 +281,7 @@ class Compiler(object):
         else:
             func_code.return_()
 
+        # inject the function into the codeobject
         codeobject = self.inject_function_code(
             codeobject=codeobject,
             function_codeobj=func_code.code(codeobject),

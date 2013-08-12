@@ -74,6 +74,7 @@ class Tyrian(object):
 
         bytecode = self.compiler.compile(input_filename, parse_tree)
 
+        print('end product;')
         from dis import dis
         dis(bytecode.code())
 
