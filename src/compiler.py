@@ -134,7 +134,8 @@ class Compiler(object):
                     codeobject,
                     filename,
                     element,
-                    lineno)
+                    lineno,
+                    scope)
 
             else:
                 # whahey! calling a function!
@@ -158,7 +159,8 @@ class Compiler(object):
                                    codeobject: Code,
                                    filename: str,
                                    element: Node,
-                                   lineno: int) -> tuple:
+                                   lineno: int,
+                                   scope: list) -> tuple:
         """
         Handles an inline variable assignment
         """
@@ -167,12 +169,15 @@ class Compiler(object):
         name = name.content
         if isinstance(args, ListNode):
             # if it has to evaluated first, do so
-            logger.debug('subcall: {} -> {}'.format(args, args.content))
-            lineno, codeobject = self._compile(
-                codeobject,
-                args,
-                lineno,
-                filename)
+            logger.debug('subcall: {} -> {}, with scope {}'.format(
+                args, args.content, scope))
+            lineno, codeobject = self._compile_single(
+                codeobject=codeobject,
+                filename=filename,
+                element=args,
+                lineno=lineno,
+                result_required=True,
+                scope=scope)
         elif isinstance(args, (NumberNode, StringNode)):
             # if it is simply a literal, treat it as such
             codeobject.LOAD_CONST(args.content)
@@ -213,12 +218,15 @@ class Compiler(object):
                 else:
                     codeobject.LOAD_GLOBAL(arg.content)
             elif isinstance(arg, ListNode):
-                logger.debug('subcall -> {}'.format(arg.content))
-                lineno, codeobject = self._compile(
-                    codeobject,
-                    arg,
-                    lineno,
-                    filename)
+                logger.debug('subcall -> {}, with scope {}'.format(
+                    arg.content, scope))
+                lineno, codeobject = self._compile_single(
+                    codeobject=codeobject,
+                    filename=filename,
+                    element=arg,
+                    lineno=lineno,
+                    result_required=True,
+                    scope=scope)
             elif isinstance(arg, (NumberNode, StringNode)):
                 codeobject(Const(arg.content))
             else:
@@ -246,10 +254,9 @@ class Compiler(object):
         args = [arg.content for arg in args]
 
         func_code = codeobject.nested(name, args)
-        func_code.co_filename = filename
 
-        if body:
-            *body, return_func = body
+        if body and any(el.content for el in body):
+            *body, return_func = [el for el in body if el.content]
 
             # compile all but the last statement
             for body_frag in body:
