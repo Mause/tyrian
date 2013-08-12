@@ -48,6 +48,8 @@ class ListNode(Node):
     """
     Represents a () in LISP
     """
+    __spec_name = 'LN'
+
     def __init__(self, content, strip=True):
         if strip:
             content = content[1:-1]
@@ -55,7 +57,7 @@ class ListNode(Node):
 
     def __repr__(self):
         return '<{} len(content)=={}>'.format(
-            self.__qualname__,
+            self.__spec_name,
             len(self.content))
 
 
@@ -65,6 +67,7 @@ class ContainerNode(ListNode):
     this Node does not represent anything in the AST,
     it simply serves as a container; hence the name
     """
+    __spec_name = 'CN'
 
 
 class IDNode(Node):
