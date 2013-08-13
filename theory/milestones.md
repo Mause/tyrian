@@ -13,4 +13,5 @@ Known:
  - 11/09 : 11:12PM - Got lisp function arguments working, afaict
 
 # Future milestones;
+ * proper scope! atm locals can "carry over"
  * importing?
