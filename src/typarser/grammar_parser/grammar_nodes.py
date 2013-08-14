@@ -203,6 +203,9 @@ class RENode(GrammarNode):
 
 
 class ORNode(GrammarNode):
+    """
+    checks between two possible sets of subnodes
+    """
     def __init__(self, settings: dict, left, right):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
@@ -247,8 +250,9 @@ class ORNode(GrammarNode):
 
 
 class MultiNode(GrammarNode):
-    debugging = False
-
+    """
+    checks for multiple instances of a set of subnodes
+    """
     def __init__(self, settings: dict, sub):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
