@@ -27,9 +27,10 @@ class Parser(object):
             result = base_grammar.check(lexed[index:], '<list>')
 
             if not result['result']:
-                raise TyrianSyntaxError()
-                # , (result, ' '.join([x['token'] for x in lexed[index:]]))
-            del result['tokens']
+                raise TyrianSyntaxError(
+                    'error found near line {} in file {}'.format(
+                        lexed[index]['line_no'],
+                        lexed[index]['filename']))
 
             results.append(result)
 
