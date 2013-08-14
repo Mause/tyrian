@@ -4,8 +4,9 @@ list: OPEN_BRACKET CLOSE_BRACKET | OPEN_BRACKET members CLOSE_BRACKET;
 
 members: (member)+;
 
-member: ACCENT sexpr | sexpr;
+member: quoted_sexpr | sexpr;
 
+quoted_sexpr: ACCENT sexpr;
 sexpr: list | atom;
 
 atom: string | id | symbol | number;

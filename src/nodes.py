@@ -93,7 +93,9 @@ class NumberNode(Node):
 class StringNode(Node):
     "Represents a string, per se"
     def __init__(self, content):
+        # remove the quotes, grab the content
         content = content[1:-1][0]
+
         self.content = content.content
 
     def __repr__(self):
@@ -109,6 +111,10 @@ class SymbolNode(Node):
         return '<SymbolNode content="{}">'.format(self.content)
 
 
+class QuotedSexpr(Node):
+    def __init__(self, *args, **kwargs):
+        raise NotImplementedError()
+
 # and we define the mappings
 grammar_mapping = {
     "list": ListNode,
@@ -116,4 +122,5 @@ grammar_mapping = {
     "number": NumberNode,
     "id": IDNode,
     "symbol": SymbolNode,
+    "quoted_sexpr": QuotedSexpr
 }
