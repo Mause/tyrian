@@ -71,11 +71,11 @@ class Compiler(object):
         return code
 
     @enforce_types
-    def _compile(self,
-                 codeobject: Code,
-                 parse_tree: ParseTree,
-                 lineno: int,
-                 filename: str) -> tuple:
+    def _compile_parse_tree(self,
+                            codeobject: Code,
+                            parse_tree: ParseTree,
+                            lineno: int,
+                            filename: str) -> tuple:
         """
         Compiles a single ParseTree
         """
