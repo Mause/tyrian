@@ -58,9 +58,9 @@ class Compiler(object):
         lineno += 1
 
         code.co_filename = filename
-        lineno, code = self._compile(
+        lineno, code = self._compile_parse_tree(
             codeobject=code,
-            element=parse_tree,
+            parse_tree=parse_tree,
             lineno=lineno,
             filename=filename)
 
@@ -73,34 +73,25 @@ class Compiler(object):
     @enforce_types
     def _compile(self,
                  codeobject: Code,
-                 element: (Node, object),
+                 parse_tree: ParseTree,
                  lineno: int,
                  filename: str) -> tuple:
         """
-        Compiles a single Node
+        Compiles a single ParseTree
         """
+        assert isinstance(parse_tree, ParseTree)
 
-        if isinstance(element, ParseTree):
-            for element in element.content:
-                lineno += 1
+        for element in element.content:
+            lineno += 1
 
-                codeobject.set_lineno(lineno)
+            codeobject.set_lineno(lineno)
 
-                lineno, codeobject = self._compile_single(
-                    codeobject=codeobject,
-                    filename=filename,
-                    element=element,
-                    lineno=lineno,
-                    result_required=False,
-                    scope=[])
-
-        else:
             lineno, codeobject = self._compile_single(
                 codeobject=codeobject,
                 filename=filename,
                 element=element,
                 lineno=lineno,
-                result_required=True,
+                result_required=False,
                 scope=[])
 
         return lineno, codeobject
