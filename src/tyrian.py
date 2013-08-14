@@ -54,7 +54,7 @@ class Tyrian(object):
         filename = os.path.abspath(filename)
         return filename
 
-    def compile(self, input_filename: str, output_filename: str):
+    def compile(self, input_filename: str):
         """
         Compile a file into python bytecode
         """
@@ -74,15 +74,7 @@ class Tyrian(object):
 
         bytecode = self.compiler.compile(input_filename, parse_tree)
 
-        print('end product;')
-        from dis import dis
-        dis(bytecode.code())
-
-        logger.info('Writing to file...')
-        with open(output_filename, 'wb') as fh:
-            self.compiler.write_code_to_file(
-                bytecode.code(),
-                fh, input_filename)
+        return bytecode
 
 
 def main():
