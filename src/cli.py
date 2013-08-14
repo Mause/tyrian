@@ -2,15 +2,25 @@
 Simple command line interface to Tyrian.
 call like so;
 
-python -m src.cmd <options>
+python cli.py <options>
 """
 
 # standard library
 import logging
+from dis import dis
 
 # application specific
 from .utils import logger
 from .tyrian import Tyrian
+
+_verbosity_map = [
+    (logging.NOTSET, 'NOTSET'),
+    (logging.DEBUG, 'DEBUG'),
+    (logging.INFO, 'INFO'),
+    (logging.WARNING, 'WARNING'),
+    (logging.ERROR, 'ERROR'),
+    (logging.FATAL, 'FATAL')
+]
 
 
 def main():
@@ -22,34 +32,21 @@ def main():
     parser.add_argument('output_filename', type=str)
 
     parser.add_argument('-v', '--verbose', action='count')
-    parser.add_argument('-q', '--quiet', action='count')
 
     args = parser.parse_args()
-    print(args)
 
-    verbosity = (
-        args.verbose if args.verbose else 0 -
-        args.quiet if args.quiet else 0
-    )
+    verbosity = 5 - (args.verbose if args.verbose else 0)
 
-    verbosity_map = [
-        logging.NOTSET,
-        logging.DEBUG,
-        logging.INFO,
-        logging.WARNING,
-        logging.ERROR,
-        logging.FATAL
-    ]
-
-    logger.setLevel(verbosity_map[verbosity])
+    if 0 <= verbosity <= 5:
+        logger.setLevel(_verbosity_map[verbosity][0])
+    else:
+        logger.setLevel(logging.FATAL)
 
     inst = Tyrian()
-
     bytecode = inst.compile(args.input_filename)
 
-    print('end product;')
-    from dis import dis
-    dis(bytecode.code())
+    if _verbosity_map[verbosity][0] <= logging.INFO:
+        dis(bytecode.code())
 
     logger.info('Writing to file...')
     with open(args.output_filename, 'wb') as fh:
