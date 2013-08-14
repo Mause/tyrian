@@ -81,7 +81,7 @@ class Compiler(object):
         """
         assert isinstance(parse_tree, ParseTree)
 
-        for element in element.content:
+        for element in parse_tree.content:
             lineno += 1
 
             codeobject.set_lineno(lineno)
