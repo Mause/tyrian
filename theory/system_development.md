@@ -8,6 +8,7 @@
 5. How will you evaluate performance of your product? Describe three (3) non-trivial (i.e. not 'program doesn't crash') key performance indicators. [6 marks]
  * Does not use excessive amounts of memory
  * Runs a simple program within a decent timeframe
+ * compile a program within a decent timeframe
 
 6. Create a set of Data Flow Diagrams for your project (at least the Context Diagram and Level 0 DFD - Level 1 if required). [10 marks]
 
