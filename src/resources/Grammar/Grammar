@@ -2,7 +2,9 @@
 
 list: OPEN_BRACKET CLOSE_BRACKET | OPEN_BRACKET members CLOSE_BRACKET;
 
-members: (sexpr)+;
+members: (member)+;
+
+member: ACCENT sexpr | sexpr;
 
 sexpr: list | atom;
 
