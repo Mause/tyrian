@@ -1,7 +1,7 @@
 # Tyrian
 
 ## Contents
-[Quickstart](/quickstart)
+[Quickstart](quickstart.md)
 
 ## Intro
 
