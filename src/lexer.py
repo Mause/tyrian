@@ -1,3 +1,7 @@
+"""
+Code to perform lexing accourding to token definitions
+"""
+
 # standard library
 import re
 import logging
@@ -11,7 +15,7 @@ logger = logger.getChild('Lexer')
 
 class Lexer(object):
     """
-    Performs lexing
+    Code to perform lexing accourding to token definitions
     """
     def __init__(self, token_defs: dict):
         self.tokens = {}
@@ -45,7 +49,7 @@ class Lexer(object):
         Iterates through the supplied token_defs dictionary, creates wrappers
         for literals and compiles regex's
 
-        See tyrian.grammar.GrammarParser.load_token_definitions for format
+        See GrammarParser.load_token_definitions for format
         """
 
         for k, v in token_defs['literal'].items():

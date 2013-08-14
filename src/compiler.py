@@ -44,7 +44,8 @@ class Compiler(object):
 
         'Compiles' the parse tree
 
-        If you want to compile something
+        If you want to compile something, this is probably the function you want
+        to use
         """
 
         self.called = True
@@ -192,7 +193,8 @@ class Compiler(object):
                       lineno: int,
                       scope: list) -> tuple:
         """
-        Generates code to call a function, with possible nested calls
+        Generates code to call a function, with possible nested calls as
+        function arguments
         """
 
         name, *args = element.content
