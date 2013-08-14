@@ -31,11 +31,11 @@ def main():
     parser.add_argument('input_filename', type=str)
     parser.add_argument('output_filename', type=str)
 
-    parser.add_argument('-v', '--verbose', action='count')
+    parser.add_argument('-v', '--verbose', action='count', default=0)
 
     args = parser.parse_args()
 
-    verbosity = 5 - (args.verbose if args.verbose else 0)
+    verbosity = 5 - args.verbose
 
     if 0 <= verbosity <= 5:
         logger.setLevel(_verbosity_map[verbosity][0])
