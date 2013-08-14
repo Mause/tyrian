@@ -63,8 +63,6 @@ class Tyrian(object):
 
         parse_tree = self.parser.parse(lexed)
 
-        print(parse_tree.pprint())
-
         bytecode = self.compiler.compile(input_filename, parse_tree)
 
         return bytecode
