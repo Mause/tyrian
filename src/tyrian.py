@@ -49,17 +49,10 @@ class Tyrian(object):
             else default
         )
 
-    def complete(self, filename):
-        filename = os.path.join(os.path.dirname(__file__), filename)
-        filename = os.path.abspath(filename)
-        return filename
-
     def compile(self, input_filename: str):
         """
         Compile a file into python bytecode
         """
-
-        input_filename = self.complete(input_filename)
 
         with open(input_filename) as fh:
             input_filename_content = fh.read()
