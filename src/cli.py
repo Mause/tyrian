@@ -6,7 +6,6 @@ python -m src.cmd <options>
 """
 
 # standard library
-import sys
 import logging
 
 # application specific
@@ -15,25 +14,49 @@ from .tyrian import Tyrian
 
 
 def main():
-    if '-v' in sys.argv:
-        verbosity = 1
-    else:
-        verbosity = 0
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Tyrian is lisp to python bytecode compiler')
 
-    if verbosity == 0:
-        logger.getChild('GrammarParser').setLevel(logging.INFO)
-        logger.getChild('GrammerNodes').setLevel(logging.INFO)
-        logger.getChild('Lexer').setLevel(logging.INFO)
+    parser.add_argument('input_filename', type=str)
+    parser.add_argument('output_filename', type=str)
 
-    s = Tyrian()
+    parser.add_argument('-v', '--verbose', action='count')
+    parser.add_argument('-q', '--quiet', action='count')
 
-    if 'dr' not in sys.argv:
-        s.compile(
-            # 'resources/lisp/lambda.lisp',
-            # 'resources/lisp/wizards_game.lisp',
-            # 'resources/lisp/test.lisp',
-            'resources/lisp/simple_test.lisp',
-            'compiled.pyc')
+    args = parser.parse_args()
+    print(args)
+
+    verbosity = (
+        args.verbose if args.verbose else 0 -
+        args.quiet if args.quiet else 0
+    )
+
+    verbosity_map = [
+        logging.NOTSET,
+        logging.DEBUG,
+        logging.INFO,
+        logging.WARNING,
+        logging.ERROR,
+        logging.FATAL
+    ]
+
+    logger.setLevel(verbosity_map[verbosity])
+
+    inst = Tyrian()
+
+    bytecode = inst.compile(args.input_filename)
+
+    print('end product;')
+    from dis import dis
+    dis(bytecode.code())
+
+    logger.info('Writing to file...')
+    with open(args.output_filename, 'wb') as fh:
+        inst.compiler.write_code_to_file(
+            bytecode.code(),
+            fh, args.input_filename)
+
 
 if __name__ == '__main__':
     main()

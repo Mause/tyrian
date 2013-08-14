@@ -7,7 +7,7 @@ This article will allow you to get started with Tyrian quickly. Ease is not guar
 ```
 
 ```sh
-$ python -m src.cli hello_world.lisp output.pyc
+$ python cli.py hello_world.lisp output.pyc
 <debug output>
 Writing to file...
 
