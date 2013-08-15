@@ -34,13 +34,11 @@ def main():
     parser.add_argument('-v', '--verbose', action='count', default=0)
 
     args = parser.parse_args()
-
     verbosity = 5 - args.verbose
 
-    if 0 <= verbosity <= 5:
-        logger.setLevel(_verbosity_map[verbosity][0])
-    else:
-        logger.setLevel(logging.FATAL)
+    assert verbosity in range(0, 6), 'Bad verbosity'
+
+    logger.setLevel(_verbosity_map[verbosity][0])
 
     inst = Tyrian()
     bytecode = inst.compile(args.input_filename)

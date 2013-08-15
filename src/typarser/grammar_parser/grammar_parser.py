@@ -85,6 +85,7 @@ class GrammarParser(object):
 
         for line in rules:
             if line.startswith('%'):
+                # handle settings
                 line = line[1:]
 
                 assert '=' in line, 'Invalid setting'
@@ -94,6 +95,7 @@ class GrammarParser(object):
                 self.settings[key] = value
                 continue
             elif line.startswith('//'):
+                # ignore comments
                 continue
 
             key, *value = line.split(':')
@@ -189,8 +191,8 @@ class GrammarParser(object):
         """
         Parses loaded grammars into "check trees"
 
-        These check tree consist of a root ContainerNode, where a list
-        of tokens can be passed into the root Node.check(<args>) function
+        These check trees consist of a root ContainerNode, where a list
+        of tokens can be passed into the root GrammarNode.check(<args>) function
         and validated according to the loaded grammars.
         """
         assert self.grammar_loaded, 'Please load a grammar before calling this'
