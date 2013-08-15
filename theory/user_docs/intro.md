@@ -2,6 +2,7 @@
 
 ## Contents
 [Quickstart](quickstart.md)
+[Language rundown](language_rundown.md)
 
 ## Intro
 
