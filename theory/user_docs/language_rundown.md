@@ -17,4 +17,5 @@ implementation, many features have been left out, such as macros. However,
 the truly core features are present;
  * variables
  * a standard library
- *
+ * function calling (of course)
+ * lisp land function definitions
