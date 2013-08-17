@@ -7,6 +7,16 @@ language, in that all data manipulation is done via functions;
 (defvar word "word")
 
 (print word (+ 5 5))
+
+(defun add_five (num)
+    (return (+ num 5))
+)
+
+(print (add_five 5))
+
+(let q 5)
+(let q (add_five q))
+
 ```
 
 functions are called via the Polish notation, er, notation.
