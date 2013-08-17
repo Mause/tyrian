@@ -1,3 +1,3 @@
-from src import cli
+from tyrian import cli
 
 cli.main()
