@@ -12,5 +12,5 @@ The standard library functions are to be written in python for simplicitys sake.
 Basic usage is as follows;
 
 ```sh
-$ python -m src.cli
+$ python cli.py <input_filename> <output_filename>
 ```
