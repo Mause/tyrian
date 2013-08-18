@@ -17,7 +17,7 @@ BytecodeAssembler had been originally written for py2k, and as such, i ported it
 
 11. Create user documentation. Describe how to use your product, list your features and what they do, describe known bugs/issues and outline I/O formats. Remember you are communicating with users not developers so use appropriate terminology. [3 marks]
 
-    You're looking at it!
+    Right here: :doc:`../user_docs/index`
 
 12. As you progress through this project, keep a developer diary on what you have achieved. This does not need to be a period-by-period account, but when you have complete a milestone, run into (or conquered) a particularly nasty bug or had to redesign a facet of your project because reality didn't mesh with how you envisioned it, write it down. The diary itself is only [2 marks] but will form the basis for your presentation. Don't overlook it!
 
