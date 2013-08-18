@@ -1,4 +1,4 @@
-tyrian.typarser.grammar_parser.grammar_nodes
+grammar_parser.grammar_nodes
 ============================================
 
     .. automodule:: tyrian.typarser.grammar_parser.grammar_nodes
