@@ -6,8 +6,10 @@
 Welcome to tyrian's documentation!
 ==================================
 
-Tyrian is a simplistic `LISP <http://en.wikipedia.org/wiki/Common_Lisp>` implementation, with only the most basic of features implemented.
-The standard library functions are to be written in python for simplicitys sake.
+Tyrian is a simplistic `LISP`_ implementation, with only the most basic of features implemented.
+The standard library functions are to be written in python for simplicitys sake, see :doc:`user_docs/standard_library`
+
+.. _LISP: http://en.wikipedia.org/wiki/Common_Lisp
 
 Basic usage is as follows;
 
@@ -23,8 +25,11 @@ Contents:
    :maxdepth: 2
 
    theory/index.rst
+
    user_docs/index.rst
+
    dev_docs/index.rst
+
 
 
 Indices and tables
