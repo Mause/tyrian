@@ -59,7 +59,7 @@ class Compiler(object):
         lineno += 1
 
         code.co_filename = filename
-        lineno, code = self._compile_parse_tree(
+        lineno, code = self.compile_parse_tree(
             codeobject=code,
             parse_tree=parse_tree,
             lineno=lineno,
@@ -72,11 +72,11 @@ class Compiler(object):
         return code
 
     @enforce_types
-    def _compile_parse_tree(self,
-                            codeobject: Code,
-                            parse_tree: ParseTree,
-                            lineno: int,
-                            filename: str) -> tuple:
+    def compile_parse_tree(self,
+                           codeobject: Code,
+                           parse_tree: ParseTree,
+                           lineno: int,
+                           filename: str) -> tuple:
         """
         Compiles a single ParseTree
         """
@@ -87,7 +87,7 @@ class Compiler(object):
 
             codeobject.set_lineno(lineno)
 
-            lineno, codeobject = self._compile_single(
+            lineno, codeobject = self.compile_single(
                 codeobject=codeobject,
                 filename=filename,
                 element=element,
@@ -98,13 +98,13 @@ class Compiler(object):
         return lineno, codeobject
 
     @enforce_types
-    def _compile_single(self,
-                        codeobject: Code,
-                        filename: str,
-                        element: Node,
-                        lineno: int,
-                        result_required: bool,
-                        scope: list) -> tuple:
+    def compile_single(self,
+                       codeobject: Code,
+                       filename: str,
+                       element: Node,
+                       lineno: int,
+                       result_required: bool,
+                       scope: list) -> tuple:
         """
         compiles a single Node
         """
@@ -163,7 +163,7 @@ class Compiler(object):
             # if it has to evaluated first, do so
             logger.debug('subcall: {} -> {}, with scope {}'.format(
                 args, args.content, scope))
-            lineno, codeobject = self._compile_single(
+            lineno, codeobject = self.compile_single(
                 codeobject=codeobject,
                 filename=filename,
                 element=args,
@@ -213,7 +213,7 @@ class Compiler(object):
             elif isinstance(arg, ListNode):
                 logger.debug('subcall -> {}, with scope {}'.format(
                     arg.content, scope))
-                lineno, codeobject = self._compile_single(
+                lineno, codeobject = self.compile_single(
                     codeobject=codeobject,
                     filename=filename,
                     element=arg,
@@ -253,7 +253,7 @@ class Compiler(object):
 
             # compile all but the last statement
             for body_frag in body:
-                lineno, func_code = self._compile_single(
+                lineno, func_code = self.compile_single(
                     codeobject=func_code,
                     filename=filename,
                     element=body_frag,
@@ -262,7 +262,7 @@ class Compiler(object):
                     scope=args)
 
             # compile the last statement, and ask for the result value
-            lineno, func_code = self._compile_single(
+            lineno, func_code = self.compile_single(
                 codeobject=func_code,
                 filename=filename,
                 element=return_func,
