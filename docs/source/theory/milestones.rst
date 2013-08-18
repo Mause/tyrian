@@ -15,6 +15,8 @@ Known:
  - 11/08 : 11:12PM - Got lisp function arguments working, afaict
  - 14/08 : 07:30PM - Got a basic command line interface implemented
 
-# Future milestones;
+Future milestones
+=================
+
  * proper scope! atm locals can "carry over"... or can they? i don't know, will have to test
  * importing?
