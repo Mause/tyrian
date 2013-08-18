@@ -4,7 +4,7 @@ Project Definition
 What is the purpose of your project?
 ------------------------------------
 To create a small language, with custom parser and lexer,
-than com/transpiles into Python Bytecode
+that com/transpiles into Python Bytecode
 
 What software already exists that either partly solves this problem or can assist you in supporting it?
 -------------------------------------------------------------------------------------------------------
