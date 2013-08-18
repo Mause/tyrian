@@ -19,7 +19,7 @@ What are the inputs and outputs of the system?
 The inputs are as follows;
  * a input filename for a valid lisp program
  * an output filename
+ * various options
 
 Output:
  * a .pyc file
-
