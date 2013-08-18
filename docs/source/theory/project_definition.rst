@@ -1,3 +1,6 @@
+Project Definition
+==================
+
 #### What is the purpose of your project?
 To create a small language, with custom parser and lexer,
 than com/transpiles into Python Bytecode

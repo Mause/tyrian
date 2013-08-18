@@ -1,3 +1,6 @@
+Milestones
+==========
+
 Unknown:
  - basic lexer implementation done
  - ported BytecodeAssembler from py2k to py3k
