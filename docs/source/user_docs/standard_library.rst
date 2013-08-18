@@ -7,4 +7,6 @@ Standard Library
 LISP runtime
 ------------
 
+    .. currentmodule:: tyrian.lisp_runtime
     .. automodule:: tyrian.lisp_runtime
+        :members:

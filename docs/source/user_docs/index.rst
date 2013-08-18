@@ -1,4 +1,4 @@
-User documentation
+User Documentation
 ==================
 
 .. toctree::
