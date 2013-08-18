@@ -23,7 +23,7 @@ logger = logger.getChild('GrammarParser')
 class GrammarParser(object):
     """
     Does the grunt work of parsing the Grammar into a usable object;
-    see grammar_nodes.py for more
+    see `grammar_nodes.py` for more
     """
 
     def __init__(self,
@@ -61,19 +61,22 @@ class GrammarParser(object):
         All grammars need not be necessarily be loaded at once,
         but all must be loaded before parse_grammars is called.
 
-        a grammar can be defined like so:
 
+        .. code-block:: none
+
+            a grammar can be defined like so:
             name: <content>;
 
-        whereby within the following constructs are permissible;
+            whereby within the following constructs are permissible;
 
-        OR, which can be nested, is denoted by a pipe character:
+            OR, which can be nested, is denoted by a pipe character:
             <token> | <token>
 
-        many of a particular token:
+            many of a particular token:
             <token>+
 
-        a subgrammar is simply specified by name
+            a subgrammar or token is simply specified by name;
+            NAME
         """
 
         logger.info('Loading grammar')
@@ -129,14 +132,20 @@ class GrammarParser(object):
         Loads token definitions.
 
         expected to be formatted as follows;
-        {
-            'literal': {
-                '<content>': '<name>'
-            },
-            'regex': {
-                '<regex_expr>': '<name>'
+
+        .. code-block:: json
+
+            {
+                'literal': {
+                    '<content>': '<name>',
+                    ...
+                },
+                'regex': {
+                    '<regex_expr>': '<name>',
+                    ...
+                }
             }
-        }
+
         """
 
         token_defs = {}

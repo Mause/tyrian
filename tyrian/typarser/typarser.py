@@ -4,6 +4,8 @@ from .grammar_parser import GrammarParser
 from ..nodes import ParseTree, ContainerNode, ListNode
 from ..exceptions import TyrianSyntaxError, NoSuchGrammar
 
+__all__ = ['Parser']
+
 
 class Parser(object):
     """
@@ -13,6 +15,11 @@ class Parser(object):
         self.grammar_parser = GrammarParser(**kwargs)
 
     def parse(self, lexed: list) -> ParseTree:
+        """
+        given a list of tokens, returns a ParseTree
+        """
+
+        # grab the start token from the settings
         start_token = self.grammar_parser.settings['start_token'].upper()
 
         if start_token not in self.grammar_parser.grammars:
