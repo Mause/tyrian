@@ -8,7 +8,9 @@ Basic usage is as follows;
 $ python cli.py <options> <input_filename> <output_filename>
 ```
 
-Documentation source is available in docs/, and can be generated like so under *nix;
+Documentation is available here (hopefully): http://tyrian.readthedocs.org
+
+Documentation source is also available in docs/, and can be generated like so under *nix;
 
 ```sh
 $ cd docs
