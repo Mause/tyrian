@@ -55,6 +55,19 @@ class GrammarParser(object):
             self.load_grammar(raw_grammar)
             self.parse_grammars()
 
+    def handle_setting(self, line):
+        """
+        handle settings
+        """
+
+        line = line[1:]
+
+        assert '=' in line, 'Invalid setting'
+        key, value = line.split('=')
+        key, value = key.strip(), value.strip()
+
+        self.settings[key] = value
+
     def load_grammar(self, content: str) -> None:
         """
         Load grammars from a string.
@@ -80,6 +93,7 @@ class GrammarParser(object):
         """
 
         logger.info('Loading grammar')
+        rules = ' '.join(content.split('\n'))
         rules = content.split(';')
         rules = map(str.strip, rules)
         rules = filter(bool, rules)
@@ -88,14 +102,7 @@ class GrammarParser(object):
 
         for line in rules:
             if line.startswith('%'):
-                # handle settings
-                line = line[1:]
-
-                assert '=' in line, 'Invalid setting'
-                key, value = line.split('=')
-                key, value = key.strip(), value.strip()
-
-                self.settings[key] = value
+                self.handle_setting(line)
                 continue
             elif line.startswith('//'):
                 # ignore comments
@@ -107,6 +114,7 @@ class GrammarParser(object):
             assert key not in self.token_defs, (
                 'Do not name grammars the same as tokens')
 
+            # reassemble the value
             value = ':'.join(value)
 
             # clean up the value a bit
