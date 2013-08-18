@@ -9,4 +9,3 @@ tyrian.exceptions
         .. autoexception:: InvalidToken
         .. autoexception:: GrammarDefinitionError
         .. autoexception:: NoSuchGrammar
-
