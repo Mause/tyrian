@@ -7,7 +7,6 @@ LISP runtime
 ------------
 
     .. automodule:: tyrian.lisp_runtime
-        :members:
 
         .. automodule:: tyrian.lisp_runtime.misc
             :members:
