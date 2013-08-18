@@ -2,7 +2,7 @@ Developer Documentation
 =======================
 
     .. toctree::
+        lexer.rst
         parser.rst
         compiler.rst
-        lexer.rst
         grammar_utils.rst

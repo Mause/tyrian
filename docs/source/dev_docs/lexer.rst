@@ -2,4 +2,9 @@ tyrian.lexer.Lexer
 ==================
 
     .. autoclass:: tyrian.lexer.Lexer
-        :members: match_with, load_token_definitions, lex
+
+        .. currentmodule:: tyrian.lexer
+        .. automethod:: match_with(left: str)
+        .. automethod:: load_token_definitions(defs: dict)
+        .. automethod:: lex(content: str, filename: str) -> list
+
