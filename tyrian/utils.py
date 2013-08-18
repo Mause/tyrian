@@ -54,6 +54,9 @@ def check_type(name, *args):
 
 
 def enforce_types(func):
+    """
+    checks supplied argument types against the annotations
+    """
     @wraps(func)
     def newf(*args, **kwargs):
         name = func.__name__

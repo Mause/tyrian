@@ -30,7 +30,7 @@ logger = logger.getChild('Compiler')
 
 class Compiler(object):
     """
-    Handles compilation of ParseTree's
+    Handles compilation of :py:class:`ParseTree <tyrian.nodes.ParseTree>`'s
     """
 
     def __init__(self):

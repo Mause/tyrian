@@ -15,7 +15,7 @@ logger = logger.getChild('Lexer')
 
 class Lexer(object):
     """
-    Code to perform lexing accourding to token definitions
+    Code to perform lexing according to token definitions
     """
     def __init__(self, token_defs: dict):
         self.tokens = {}
@@ -49,7 +49,7 @@ class Lexer(object):
         Iterates through the supplied token_defs dictionary, creates wrappers
         for literals and compiles regex's
 
-        See GrammarParser.load_token_definitions for format
+        See :py:meth:`GrammarParser.load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>` for format
         """
 
         for k, v in token_defs['literal'].items():
@@ -65,7 +65,7 @@ class Lexer(object):
     @enforce_types
     def lex(self, content: str, filename: str=None) -> list:
         """
-        Takes a string to lex accourding to token definition loaded
+        Takes a string to lex according to token definition loaded
         via load_token_definitions
         """
 

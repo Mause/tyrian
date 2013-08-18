@@ -63,7 +63,7 @@ class ListNode(Node):
 
 class ContainerNode(ListNode):
     """
-    Although being functionally identical to ListNode,
+    Although being functionally identical to :py:class:`ListNode`,
     this Node does not represent anything in the AST,
     it simply serves as a container; hence the name
     """

@@ -8,6 +8,9 @@ from .utils import logger
 from .typarser import Parser
 from .compiler import Compiler
 
+# third party
+from peak.util.assembler import Code
+
 
 class Tyrian(object):
     """
@@ -49,7 +52,7 @@ class Tyrian(object):
             else default
         )
 
-    def compile(self, input_filename: str):
+    def compile(self, input_filename: str) -> Code:
         """
         Compile a file into python bytecode
         """

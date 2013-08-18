@@ -23,7 +23,7 @@ logger = logger.getChild('GrammarParser')
 class GrammarParser(object):
     """
     Does the grunt work of parsing the Grammar into a usable object;
-    see `grammar_nodes.py` for more
+    see :file:`grammar_nodes.py` for more
     """
 
     def __init__(self,
@@ -57,7 +57,7 @@ class GrammarParser(object):
 
     def handle_setting(self, line):
         """
-        handle settings
+        handles settings
         """
 
         line = line[1:]
@@ -88,7 +88,7 @@ class GrammarParser(object):
         """
         Load grammars from a string.
         All grammars need not be necessarily be loaded at once,
-        but all must be loaded before parse_grammars is called.
+        but all must be loaded before :py:meth:`parse_grammars` is called.
 
 
         .. code-block:: none
@@ -216,9 +216,11 @@ class GrammarParser(object):
         """
         Parses loaded grammars into "check trees"
 
-        These check trees consist of a root ContainerNode, where a list
-        of tokens can be passed into the root GrammarNode.check(<args>) function
-        and validated according to the loaded grammars.
+        These check trees consist of a root \
+        :py:class:`ContainerNode <tyrian.typarser.grammar_parser.grammar_nodes.ContainerNode>`, \
+        where a list of tokens can be passed into the root \
+        :py:class:`GrammarNode <tyrian.typarser.grammar_parser.grammar_nodes.GrammarNode>` \
+        function and validated according to the loaded grammars.
         """
         assert self.grammar_loaded, 'Please load a grammar before calling this'
         assert self.tokens_loaded, 'Please load some tokens before calling this'
@@ -260,7 +262,7 @@ class GrammarParser(object):
                       grammar_key: str,
                       settings: dict) -> ContainerNode:
         """
-        See self.parse_grammars
+        See :py:meth:`parse_grammars`
         """
         assert self.grammar_loaded, 'Please load a grammar before calling this'
         assert self.tokens_loaded, 'Please load some tokens before calling this'

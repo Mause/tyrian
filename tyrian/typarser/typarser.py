@@ -16,7 +16,7 @@ class Parser(object):
 
     def parse(self, lexed: list) -> ParseTree:
         """
-        given a list of tokens, returns a ParseTree
+        given a list of tokens, returns a :py:class:`ParseTree <tyrian.nodes.ParseTree>`
         """
 
         # grab the start token from the settings
