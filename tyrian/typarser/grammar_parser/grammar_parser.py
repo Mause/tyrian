@@ -68,6 +68,22 @@ class GrammarParser(object):
 
         self.settings[key] = value
 
+    def cleanup_value(self, value):
+        """
+        cleans up the supplied value
+        """
+
+        value = (value.translate(self.VALUE_CLEANUP_TRANSFORM)
+                      .replace('/*', ' /* ')
+                      .replace('*/', ' */ ')
+                      .strip()
+                      .split(' '))
+        # strip each segment, filters for empty fragments
+        value = map(str.strip, value)
+        value = list(filter(bool, value))
+
+        return value
+
     def load_grammar(self, content: str) -> None:
         """
         Load grammars from a string.
@@ -117,15 +133,7 @@ class GrammarParser(object):
             # reassemble the value
             value = ':'.join(value)
 
-            # clean up the value a bit
-            value = (value.translate(self.VALUE_CLEANUP_TRANSFORM)
-                          .replace('/*', ' /* ')
-                          .replace('*/', ' */ ')
-                          .strip()
-                          .split(' '))
-            # strip each segment, filters for empty fragments
-            value = map(str.strip, value)
-            value = list(filter(bool, value))
+            value = self.cleanup_value(value)
 
             loaded_grammars[key] = value
 
