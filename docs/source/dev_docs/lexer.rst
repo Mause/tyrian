@@ -1,4 +1,4 @@
-tyrian.lexer.Lexer
+tyrian.lexer
 ==================
 
     .. autoclass:: tyrian.lexer.Lexer

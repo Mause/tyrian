@@ -1,5 +1,5 @@
-tyrian.typarser.Parser
-======================
+tyrian.typarser
+===============
 
     .. automodule:: tyrian.typarser
 
