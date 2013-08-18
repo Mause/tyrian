@@ -2,6 +2,7 @@ Developer Documentation
 =======================
 
     .. toctree::
+        utils.rst
         lexer.rst
         nodes.rst
         parser.rst
