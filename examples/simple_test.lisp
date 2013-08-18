@@ -1,22 +1,17 @@
-(defparameter "five" 5)
-(print "five," 5)
+(defparameter five 5)
+(print "five:" five)
 
-(print "result:" (+ five 5))
-
-(defun ppprint (arg)
-    (print five)
-    (let non_exis "world")
-    (print "non_exis" non_exis)
+(defun ppprint (arg numb)
     (print arg)
+    (print five)
+    (print numb)
+    (let non_exis "world")
+    (let numberz (+ 5 5 numb))
+    (print "non_exis" non_exis)
 )
 
+(ppprint "bgggg" 20)
 
+(defun function () ())
 
-
-(defun test ()
-    (print (list (range 0 10)))
-)
-
-(test)
-
-(ppprint "world")
+(callfunc function)
