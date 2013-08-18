@@ -1,23 +1,25 @@
-## Language Rundown
+Language Rundown
+================
 
 LISP (LISP Is Syntactically Pure) is what is referred to as a functional
 language, in that all data manipulation is done via functions;
 
-```lisp
-(defvar word "word")
+.. code-block:: lisp
 
-(print word (+ 5 5))
+    (defvar word "word")
 
-(defun add_five (num)
-    (return (+ num 5))
-)
+    (print word (+ 5 5))
 
-(print (add_five 5))
+    (defun add_five (num)
+        (return (+ num 5))
+    )
 
-(let q 5)
-(let q (add_five q))
+    (print (add_five 5))
 
-```
+    (let q 5)
+    (let q (add_five q))
+
+    (print q)
 
 functions are called via the Polish notation, er, notation.
 
