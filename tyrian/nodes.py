@@ -111,7 +111,10 @@ class SymbolNode(Node):
         return '<SymbolNode content="{}">'.format(self.content)
 
 
-class QuotedSexpr(Node):
+class QuotedNode(Node):
+    """
+    Represents a quoted token
+    """
     def __init__(self, *args, **kwargs):
         raise NotImplementedError()
 
@@ -122,5 +125,5 @@ grammar_mapping = {
     "number": NumberNode,
     "id": IDNode,
     "symbol": SymbolNode,
-    "quoted_sexpr": QuotedSexpr
+    "quoted_sexpr": QuotedNode
 }
