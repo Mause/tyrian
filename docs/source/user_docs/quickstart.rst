@@ -3,7 +3,7 @@ Quickstart
 
 This article will allow you to get started with Tyrian quickly. Ease is not guarenteed.
 
-.. code-block:: none
+.. code-block:: common-lisp
 
     (print "Hello World")
 

@@ -4,7 +4,7 @@ Language Rundown
 LISP (LISP Is Syntactically Pure) is what is referred to as a functional
 language, in that all data manipulation is done via functions;
 
-.. code-block:: none
+.. code-block:: common-lisp
 
     (defvar word "word")
 
