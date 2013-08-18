@@ -2,5 +2,5 @@ User documentation
 ==================
 
 .. toctree::
-    language_rundown.rst
     quickstart.rst
+    language_rundown.rst
