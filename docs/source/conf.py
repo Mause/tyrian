@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 #
 # tyrian documentation build configuration file, created by
 # sphinx-quickstart on Sun Aug 18 12:19:24 2013.

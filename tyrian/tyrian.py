@@ -66,6 +66,8 @@ class Tyrian(object):
 
         parse_tree = self.parser.parse(lexed)
 
+        logger.info('### kettle of fish ###')
+
         bytecode = self.compiler.compile(input_filename, parse_tree)
 
         return bytecode
