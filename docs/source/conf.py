@@ -24,10 +24,16 @@ import os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 cur_dir = os.path.abspath(os.path.dirname(__file__))
-raise Exception((cur_dir, os.getcwd()))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..\..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '.')))
+print((cur_dir, os.getcwd()))
+print(sys.path)
+try:
+    import tyrian
+    tyrian
+except ImportError as e:
+    print('Unable:', e)
 
 # -- General configuration -----------------------------------------------------
 
