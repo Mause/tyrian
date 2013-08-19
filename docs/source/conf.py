@@ -3,6 +3,8 @@
 
 from __future__ import unicode_literals
 
+import os
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 #
 # tyrian documentation build configuration file, created by
 # sphinx-quickstart on Sun Aug 18 12:19:24 2013.
@@ -21,9 +23,10 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..\..'))
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('.'))
+cur_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..\..')))
+sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '.')))
 
 # -- General configuration -----------------------------------------------------
 
@@ -118,7 +121,8 @@ html_theme_options = {
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = 'tyrian'
+if not on_rtd:
+    html_title = 'tyrian'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
