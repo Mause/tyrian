@@ -27,11 +27,11 @@ cur_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..', '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '.')))
-print((cur_dir, os.getcwd()))
+print(sys.version)
 print(sys.path)
 try:
     import tyrian
-    tyrian
+    print(tyrian, sys.version)
 except ImportError as e:
     print('Unable:', e)
 
