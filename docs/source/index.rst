@@ -1,9 +1,4 @@
-.. tyrian documentation master file, created by
-   sphinx-quickstart on Sun Aug 18 12:19:24 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to tyrian's documentation!
+Welcome to tyrian's writeup!
 ==================================
 
 Tyrian is a simplistic `LISP`_ to python bytecode implementation.
