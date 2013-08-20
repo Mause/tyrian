@@ -1,1 +1,2 @@
-jinja2==2.7.1
+# need to use 2.6 because readthedocs only has python 3.2, which jinja2 2.7+ does not support
+jinja2==2.6
