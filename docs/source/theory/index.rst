@@ -10,3 +10,6 @@ user documentation.
     milestones.rst
     project_definition.rst
     system_development.rst
+
+    speed_bumps.rst
+
