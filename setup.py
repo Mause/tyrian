@@ -38,7 +38,7 @@ setup(
     platforms='any',
     # test_suite='sandman.test.test_sandman',
     classifiers=[
-        'Programming Language :: Python 3',
+        'Programming Language :: Python :: 3.3',
         # 'Development Status :: 4 - Beta',
         'Natural Language :: English',
         # 'Environment :: Web Environment',

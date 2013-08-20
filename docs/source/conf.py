@@ -4,11 +4,9 @@
 from __future__ import unicode_literals
 
 import os
+import sys
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-#
-# tyrian documentation build configuration file, created by
-# sphinx-quickstart on Sun Aug 18 12:19:24 2013.
-#
+
 # This file is execfile()d with the current directory set to its containing dir.
 #
 # Note that not all possible configuration values are present in this
@@ -17,8 +15,6 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
-import os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -26,9 +22,7 @@ import os
 cur_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..', '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
-sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '.')))
 print(sys.version)
-print(sys.path)
 try:
     import tyrian
     print(tyrian, sys.version)
