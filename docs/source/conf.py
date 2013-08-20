@@ -8,9 +8,6 @@ import sys
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 
-def setup(app):
-    app.add_config_value('READTHEDOCS', False, True)
-
 # This file is execfile()d with the current directory set to its containing dir.
 #
 # Note that not all possible configuration values are present in this
@@ -119,9 +116,10 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 # html_theme = 'haiku'
-if not on_rtd:
-    html_theme = 'sphinxdoc'
+# if not on_rtd:
+#     html_theme = 'sphinxdoc'
 # html_theme = 'pydoctheme'
+html_theme = "armstrong"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -132,6 +130,9 @@ html_theme_options = {
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
+html_theme_path = [
+    os.path.abspath(os.path.join(cur_dir, '..', "_themes"))
+]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
