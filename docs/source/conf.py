@@ -7,6 +7,10 @@ import os
 import sys
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
+
+def setup(app):
+    app.add_config_value('READTHEDOCS', False, True)
+
 # This file is execfile()d with the current directory set to its containing dir.
 #
 # Note that not all possible configuration values are present in this
@@ -22,12 +26,12 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 cur_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..', '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
-print(sys.version)
-try:
-    import tyrian
-    print(tyrian, sys.version)
-except ImportError as e:
-    print('Unable:', e)
+# print(sys.version)
+# try:
+#     import tyrian
+#     print(tyrian, sys.version)
+# except ImportError as e:
+#     print('Unable:', e)
 
 # -- General configuration -----------------------------------------------------
 
@@ -36,8 +40,16 @@ except ImportError as e:
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.viewcode']
-# , 'sphinx.ext.mathjax',
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.pngmath',
+    # 'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.ifconfig'
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
