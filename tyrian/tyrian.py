@@ -15,6 +15,16 @@ from peak.util.assembler import Code
 class Tyrian(object):
     """
     Primary interface to tyrian
+
+    :param token_defs_filename: name of file containing token_defs, see \
+    :py:meth:`GrammarParser.load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>` \
+    for definition
+
+    :param grammar_filename: name of file containing the grammar, see \
+    :py:meth:`GrammarParser.load_grammar <tyrian.typarser.grammar_parser.GrammarParser.load_grammar>` \
+    for definition
+
+    :param settings: dictionary containing settings
     """
 
     def __init__(self,
@@ -25,12 +35,12 @@ class Tyrian(object):
             os.path.dirname(__file__), 'resources\\Grammar')
 
         # read in the tokens
-        token_defs_filename = self.resource(token_defs_filename, 'tokens.json')
+        token_defs_filename = self._resource(token_defs_filename, 'tokens.json')
         with open(token_defs_filename) as fh:
             token_defs = json.load(fh)
 
         # read in the Grammar
-        grammar_filename = self.resource(grammar_filename, 'Grammar')
+        grammar_filename = self._resource(grammar_filename, 'Grammar')
         with open(grammar_filename) as fh:
             raw_grammar = fh.read()
 
@@ -46,7 +56,7 @@ class Tyrian(object):
         )
         self.compiler = Compiler()
 
-    def resource(self, default, supplied):
+    def _resource(self, default, supplied):
         return (
             os.path.join(self.resources, supplied) if supplied
             else default
@@ -55,6 +65,8 @@ class Tyrian(object):
     def compile(self, input_filename: str) -> Code:
         """
         Compile a file into python bytecode
+
+        :param input_filename: path to file containing lisp code
         """
 
         with open(input_filename) as fh:
