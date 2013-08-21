@@ -1,6 +1,7 @@
 # standard library
 import os
 import json
+import pkg_resources
 
 # application specific
 from .lexer import Lexer
@@ -16,31 +17,22 @@ class Tyrian(object):
     """
     Primary interface to tyrian
 
-    :param token_defs_filename: name of file containing token_defs, see \
-    :py:meth:`GrammarParser.load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>` \
-    for definition
-
-    :param grammar_filename: name of file containing the grammar, see \
-    :py:meth:`GrammarParser.load_grammar <tyrian.typarser.grammar_parser.GrammarParser.load_grammar>` \
-    for definition
-
     :param settings: dictionary containing settings
     """
 
-    def __init__(self,
-                 token_defs_filename=None,
-                 grammar_filename=None,
-                 settings=None):
+    def __init__(self, settings=None):
         self.resources = os.path.join(
             os.path.dirname(__file__), 'Grammar')
 
         # read in the tokens
-        token_defs_filename = self._resource(token_defs_filename, 'tokens.json')
+        token_defs_filename = pkg_resources.resource_filename(
+            __name__, 'Grammar\\tokens.json')
         with open(token_defs_filename) as fh:
             token_defs = json.load(fh)
 
         # read in the Grammar
-        grammar_filename = self._resource(grammar_filename, 'Grammar')
+        grammar_filename = pkg_resources.resource_filename(
+            __name__, 'Grammar\\Grammar')
         with open(grammar_filename) as fh:
             raw_grammar = fh.read()
 
@@ -55,12 +47,6 @@ class Tyrian(object):
             settings=settings
         )
         self.compiler = Compiler()
-
-    def _resource(self, default, supplied):
-        return (
-            os.path.join(self.resources, supplied) if supplied
-            else default
-        )
 
     def compile(self, input_filename: str) -> Code:
         """
