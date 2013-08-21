@@ -26,16 +26,17 @@ def flatten(obj, can_return_single=False):
     """
     Flattens nested lists, like so;
 
-    >>> flatten([[[[[[[None]]]]]]], can_return_single=True)
-    None
+    >>> from tyrian.utils import flatten
+    >>> flatten([[[[[[['value']]]]]]], can_return_single=True)
+    'value'
 
-    >>> flatten([[[[[[[None]]]]]]], can_return_single=False)
-    [None]
+    >>> flatten([[[[[[['value']]]]]]], can_return_single=False)
+    ['value']
 
     """
 
     if type(obj) == list and len(obj) == 1 and type(obj[0]) == list:
-        return flatten(obj[0])
+        return flatten(obj[0], can_return_single)
     elif type(obj) == list and len(obj) == 1 and can_return_single:
         return obj[0]
     else:

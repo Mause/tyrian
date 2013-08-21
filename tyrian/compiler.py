@@ -46,13 +46,12 @@ class Compiler(object):
         :param parse_tree: parse_tree to compile
         """
 
-        self.called = True
         filename = os.path.abspath(filename)
 
         line_no = -1
 
         code = Code()
-        code.set_line_no(line_no)
+        code.set_lineno(line_no)
         code = self.bootstrap_obj(code)
         line_no += 1
 
@@ -64,7 +63,7 @@ class Compiler(object):
             filename=filename)
 
         line_no += 1
-        code.set_line_no(line_no)
+        code.set_lineno(line_no)
 
         code.return_(None)
         return code
@@ -87,7 +86,7 @@ class Compiler(object):
         for element in parse_tree.content:
             line_no += 1
 
-            codeobject.set_line_no(line_no)
+            codeobject.set_lineno(line_no)
 
             line_no, codeobject = self.compile_single(
                 codeobject=codeobject,
