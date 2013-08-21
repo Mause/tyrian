@@ -55,7 +55,7 @@ class Lexer(object):
         Iterates through the supplied token_defs dictionary, creates wrappers
         for literals and compiles regex's
 
-        See \
+        :param token_defs: contains token definitions; see \
         :py:meth:`GrammarParser.load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>` \
         for format
         """
@@ -75,6 +75,9 @@ class Lexer(object):
         """
         Takes a string to lex according to token definition loaded
         via load_token_definitions
+
+        :param content: content of file being lexed
+        :param filename: name of file being lexed
         """
 
         assert self.tokens_loaded, (
@@ -93,6 +96,10 @@ class Lexer(object):
     def _lex(self, line: str, line_no: int, filename: str):
         """
         used internally by lex, does actual lexing
+
+        :param line: line from source file
+        :param line_no: line number of provided line
+        :param filename: name of file from which the line originates
         """
 
         line = (line.translate(self.TRANS)
