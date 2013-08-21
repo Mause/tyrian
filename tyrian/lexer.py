@@ -5,6 +5,8 @@ Code to perform lexing accourding to token definitions
 # standard library
 import re
 import logging
+import operator
+import functools
 
 # application specific
 from .utils import logger, enforce_types
@@ -16,7 +18,11 @@ logger = logger.getChild('Lexer')
 class Lexer(object):
     """
     Code to perform lexing according to token definitions
+
+    :param token_defs: dictionary containing token definitions, see \
+    :py:meth:`Lexer.load_token_definitions <tyrian.lexer.Lexer.load_token_definitions>`
     """
+
     def __init__(self, token_defs: dict):
         self.tokens = {}
         self.TRANS = str.maketrans({
@@ -35,15 +41,13 @@ class Lexer(object):
         """
         Convenience function.
 
-        returns an obj with a match function that compares left with
-        the supplied right
+        returns an object with a match attribute partial'ed operator.eq,
+        configured to match `left` with the supplied `right`
         """
 
-        # todo; funtools.partial :D
+        match = functools.partial(operator.eq, left)
 
-        def internal(right):
-            return left == right
-        return type('obj', (object,), {'match': internal})
+        return type('obj', (object,), {'match': match})
 
     @enforce_types
     def load_token_definitions(self, token_defs: dict):
