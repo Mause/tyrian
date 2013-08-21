@@ -40,6 +40,10 @@ setup(
         'tyrian.typarser.grammar_parser',
         'peak.util'
     ],
+    package_data={
+        'peak.util': ['code.h'],
+        'tyrian': ['Grammar\\Grammar', 'Grammar\\tokens.json']
+    },
     include_package_data=True,
     platforms='any',
     # test_suite='sandman.test.test_sandman',
