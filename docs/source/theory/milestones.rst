@@ -18,6 +18,7 @@ Known:
  - 08/08           - Got basic function definitions working :D
  - 11/08 : 11:12PM - Got lisp function arguments working, afaict
  - 14/08 : 07:30PM - Got a basic command line interface implemented
+ - 21/08           - Documentation now hosted on ReadTheDocs :D
 
 Future milestones
 -----------------
