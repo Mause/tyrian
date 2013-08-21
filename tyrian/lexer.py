@@ -37,7 +37,7 @@ class Lexer(object):
         else:
             self.tokens_loaded = False
 
-    def match_with(self, left: str) -> tuple:
+    def match_with(self, left) -> object:
         """
         Convenience function.
 
