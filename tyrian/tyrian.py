@@ -32,7 +32,7 @@ class Tyrian(object):
                  grammar_filename=None,
                  settings=None):
         self.resources = os.path.join(
-            os.path.dirname(__file__), 'resources\\Grammar')
+            os.path.dirname(__file__), 'Grammar')
 
         # read in the tokens
         token_defs_filename = self._resource(token_defs_filename, 'tokens.json')
