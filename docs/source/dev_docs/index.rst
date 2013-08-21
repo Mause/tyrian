@@ -5,8 +5,8 @@ Developer Documentation
         utils.rst
         lexer.rst
         nodes.rst
-        parser.rst
         tyrian.rst
         compiler.rst
         exceptions.rst
+        typarser.rst
         grammar_utils.rst
