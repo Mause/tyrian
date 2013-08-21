@@ -42,7 +42,7 @@ setup(
     ],
     package_data={
         'peak.util': ['code.h'],
-        'tyrian': ['Grammar\\Grammar', 'Grammar\\tokens.json']
+        'tyrian': ['Grammar/Grammar', 'Grammar/tokens.json']
     },
     include_package_data=True,
     platforms='any',
