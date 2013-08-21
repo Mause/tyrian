@@ -39,17 +39,9 @@ setup(
     # test_suite='sandman.test.test_sandman',
     classifiers=[
         'Programming Language :: Python :: 3.3',
-        # 'Development Status :: 4 - Beta',
+        'Development Status :: 1 - Beta',
         'Natural Language :: English',
-        # 'Environment :: Web Environment',
-        # 'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        # 'Topic :: Software Development :: Libraries :: Python Modules',
-        # 'Topic :: Software Development :: Libraries :: Application Frameworks',
-        # 'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        ],
-    extras_require={
-        # 'testing': ['pytest'],
-    }
+    ]
 )
