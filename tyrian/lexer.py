@@ -39,6 +39,8 @@ class Lexer(object):
         the supplied right
         """
 
+        # todo; funtools.partial :D
+
         def internal(right):
             return left == right
         return type('obj', (object,), {'match': internal})
@@ -49,7 +51,9 @@ class Lexer(object):
         Iterates through the supplied token_defs dictionary, creates wrappers
         for literals and compiles regex's
 
-        See :py:meth:`GrammarParser.load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>` for format
+        See \
+        :py:meth:`GrammarParser.load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>` \
+        for format
         """
 
         for k, v in token_defs['literal'].items():

@@ -28,7 +28,7 @@ class GrammarParser(object):
     def __init__(self,
                  raw_grammar: dict=None,
                  token_defs: dict=None,
-                 grammar_mapping=None,
+                 grammar_mapping: dict=None,
                  settings: dict=None):
 
         self.settings = {}
@@ -188,7 +188,7 @@ class GrammarParser(object):
         Load in a mapping between grammars and Nodes
 
         Supply a dictionary with a mapping between subgrammar names and \
-        namedtuple instances with the signature
+        Node objects
         """
 
         logger.info('Loading grammar mappings')
