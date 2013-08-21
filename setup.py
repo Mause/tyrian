@@ -33,7 +33,13 @@ setup(
     author_email='me@mause.me',
     # description='Automated REST APIs for existing database-driven systems',
     long_description=long_description,
-    packages=['tyrian'],
+    packages=[
+        'tyrian',
+        'tyrian.lisp_runtime',
+        'tyrian.typarser',
+        'tyrian.typarser.grammar_parser',
+        'peak.util'
+    ],
     include_package_data=True,
     platforms='any',
     # test_suite='sandman.test.test_sandman',
