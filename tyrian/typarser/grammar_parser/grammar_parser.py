@@ -2,7 +2,6 @@
 Defines the GrammarParser
 """
 # standard library
-import inspect
 from copy import copy
 
 # application specific
@@ -23,13 +22,13 @@ logger = logger.getChild('GrammarParser')
 class GrammarParser(object):
     """
     Does the grunt work of parsing the Grammar into a usable object;
-    see :file:`grammar_nodes.py` for more
+    see :py:class:`grammar_nodes <tyrian.typarser.grammar_parser.grammar_nodes>` for more
     """
 
     def __init__(self,
                  raw_grammar: dict=None,
                  token_defs: dict=None,
-                 nodes=None,
+                 grammar_mapping=None,
                  settings: dict=None):
 
         self.settings = {}
@@ -45,8 +44,8 @@ class GrammarParser(object):
             '\n': ' '
         })
 
-        if nodes:
-            self.load_grammar_mapping(nodes)
+        if grammar_mapping:
+            self.load_grammar_mapping(grammar_mapping)
 
         if token_defs:
             self.load_token_definitions(token_defs)
@@ -89,7 +88,6 @@ class GrammarParser(object):
         Load grammars from a string.
         All grammars need not be necessarily be loaded at once,
         but all must be loaded before :py:meth:`parse_grammars` is called.
-
 
         .. code-block:: none
 
@@ -185,30 +183,21 @@ class GrammarParser(object):
         self.tokens_loaded = True
         self.token_defs = token_defs
 
-    def load_grammar_mapping(self, nodes):
+    def load_grammar_mapping(self, grammar_mapping):
         """
         Load in a mapping between grammars and Nodes
+
+        Supply a dictionary with a mapping between subgrammar names and \
+        namedtuple instances with the signature
         """
+
         logger.info('Loading grammar mappings')
 
-        grammar_mapping = {}
-        raw_grammar_mapping = nodes.grammar_mapping
-
-        for k, v in raw_grammar_mapping.items():
-            k = k.upper()
-
-            if not inspect.isclass(v):
-                if type(nodes) == dict and v in nodes:
-                    v = nodes[v]
-                elif hasattr(nodes, v):
-                    v = getattr(nodes, v)
-
-            grammar_mapping[k] = v
-
-            logger.debug('{}: {}'.format(k, grammar_mapping[k]))
-
+        self.grammar_mapping = {
+            k.upper(): v
+            for k, v in grammar_mapping.items()
+        }
         self.grammar_mapping_loaded = True
-        self.grammar_mapping = grammar_mapping
 
         logger.info('{} grammar mappings loaded'.format(len(grammar_mapping)))
 

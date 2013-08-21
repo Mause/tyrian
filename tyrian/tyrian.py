@@ -41,7 +41,7 @@ class Tyrian(object):
         self.parser = Parser(
             token_defs=token_defs,
             raw_grammar=raw_grammar,
-            nodes=nodes,
+            grammar_mapping=nodes.grammar_mapping,
             settings=settings
         )
         self.compiler = Compiler()
