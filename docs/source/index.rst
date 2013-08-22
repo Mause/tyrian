@@ -24,10 +24,3 @@ Contents
    user_docs/index.rst
 
    dev_docs/index.rst
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
