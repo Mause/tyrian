@@ -24,4 +24,5 @@ Future milestones
 -----------------
 
  * proper scope! atm locals can "carry over"... or can they? i don't know, will have to test
+ * proper lambda's!
  * importing?

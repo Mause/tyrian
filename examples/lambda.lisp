@@ -1,1 +1,1 @@
-((lambda (a) ((lambda (b) (b a)) "b")) "a")
+(callfunc (lambda (a) (callfunc (lambda (b) (b a)) "b")) "a")
