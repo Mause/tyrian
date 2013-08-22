@@ -212,7 +212,10 @@ latex_elements = {
     #'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
-    #'preamble': '',
+    'preamble': '\
+        \\usepackage{enumitem}\
+        \\setlistdepth{200}\
+    ',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -287,7 +290,6 @@ class DecoratorDocumenter(autodoc.FunctionDocumenter):
     Specialized Documenter subclass for decorator functions.
     """
     objtype = 'decorator'
-
 
 def setup(app):
     app.add_autodocumenter(DecoratorDocumenter)
