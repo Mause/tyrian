@@ -6,13 +6,27 @@ Standard Library
 LISP runtime
 ------------
 
-    .. automodule:: tyrian.lisp_runtime
+.. automodule:: tyrian.lisp_runtime
 
-        .. automodule:: tyrian.lisp_runtime.misc
-            :members:
-            :undoc-members:
+    tyrian.lisp_runtime.registry
+    ============================
+
+    .. automodule:: tyrian.lisp_runtime.registry
+
+        .. autodecorator:: lisp_function(name:str=None)
+
+    tyrian.lisp_runtime.misc
+    ========================
+
+    .. automodule:: tyrian.lisp_runtime.misc
+        :members:
+        :undoc-members:
 
 
-        .. automodule:: tyrian.lisp_runtime.simple_math
-            :members:
-            :undoc-members:
+
+    tyrian.lisp_runtime.simple_math
+    ===============================
+
+    .. automodule:: tyrian.lisp_runtime.simple_math
+        :members:
+        :undoc-members:

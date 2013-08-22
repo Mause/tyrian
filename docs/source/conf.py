@@ -277,3 +277,17 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+from sphinx.ext import autodoc
+
+
+class DecoratorDocumenter(autodoc.FunctionDocumenter):
+    """
+    Specialized Documenter subclass for decorator functions.
+    """
+    objtype = 'decorator'
+
+
+def setup(app):
+    app.add_autodocumenter(DecoratorDocumenter)
