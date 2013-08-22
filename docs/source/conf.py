@@ -23,12 +23,6 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 cur_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..', '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
-# print(sys.version)
-# try:
-#     import tyrian
-#     print(tyrian, sys.version)
-# except ImportError as e:
-#     print('Unable:', e)
 
 # -- General configuration -----------------------------------------------------
 
@@ -42,7 +36,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.pngmath',
+    # 'sphinx.ext.pngmath',
     # 'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig'

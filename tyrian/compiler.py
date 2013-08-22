@@ -37,13 +37,14 @@ class Compiler(object):
         self.locals = set()
 
     @enforce_types
-    def compile(self, filename: str, parse_tree) -> Code:
+    def compile_parse_tree(self, filename: str, parse_tree) -> Code:
         """
         Takes a filename and a parse_tree and returns a BytecodeAssembler
         Code object
 
         :param filename: filename of file to compile
         :param parse_tree: parse_tree to compile
+        :rtype: Code
         """
 
         filename = os.path.abspath(filename)
@@ -56,7 +57,7 @@ class Compiler(object):
         line_no += 1
 
         code.co_filename = filename
-        line_no, code = self.compile_parse_tree(
+        line_no, code = self.compile_parse_tree_internal(
             codeobject=code,
             parse_tree=parse_tree,
             line_no=line_no,
@@ -69,17 +70,17 @@ class Compiler(object):
         return code
 
     @enforce_types
-    def compile_parse_tree(self,
-                           codeobject: Code,
-                           parse_tree: ParseTree,
-                           line_no: int,
-                           filename: str) -> tuple:
+    def compile_parse_tree_internal(self,
+                                    codeobject: Code,
+                                    parse_tree: ParseTree,
+                                    line_no: int,
+                                    filename: str) -> tuple:
         """
         Compiles a single ParseTree
 
         :param codeobject: Code instance to output opcodes to
         :param parse_tree: parse_tree to compile
-        :param line_no
+        :param line_no: current line number
         """
         assert isinstance(parse_tree, ParseTree)
 

@@ -4,7 +4,8 @@ from .utils import flatten
 
 class ParseTree(object):
     """
-    Is the overruling object returned from the parser
+    Is the overruling object returned from the \
+    :py:class:`Parser <tyrian.typarser.Parser>`
     """
     def __init__(self, content):
         # lisp is ultimately expression based

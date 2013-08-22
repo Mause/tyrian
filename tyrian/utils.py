@@ -1,3 +1,4 @@
+import types
 import logging
 from functools import wraps
 
@@ -54,9 +55,11 @@ def check_type(name, *args):
     return value
 
 
-def enforce_types(func):
+def enforce_types(func: types.FunctionType):
     """
     checks supplied argument types against the annotations
+
+    :param func: function to enforce argument types for
     """
     @wraps(func)
     def newf(*args, **kwargs):

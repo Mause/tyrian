@@ -20,7 +20,7 @@ class Tyrian(object):
     :param settings: dictionary containing settings
     """
 
-    def __init__(self, settings=None):
+    def __init__(self, settings: dict=None):
         self.resources = os.path.join(
             os.path.dirname(__file__), 'Grammar')
 
@@ -53,6 +53,7 @@ class Tyrian(object):
         Compile a file into python bytecode
 
         :param input_filename: path to file containing lisp code
+        :rtype: Code
         """
 
         with open(input_filename) as fh:
@@ -66,14 +67,6 @@ class Tyrian(object):
 
         logger.info('### kettle of fish ###')
 
-        bytecode = self.compiler.compile(input_filename, parse_tree)
+        bytecode = self.compiler.compile_parse_tree(input_filename, parse_tree)
 
         return bytecode
-
-
-def main():
-    import doctest
-    doctest.testmod()
-
-if __name__ == '__main__':
-    main()

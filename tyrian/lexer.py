@@ -20,7 +20,8 @@ class Lexer(object):
     Code to perform lexing according to token definitions
 
     :param token_defs: dictionary containing token definitions, see \
-    :py:meth:`Lexer.load_token_definitions <tyrian.lexer.Lexer.load_token_definitions>`
+    :py:meth:`Lexer.load_token_definitions <tyrian.lexer.Lexer.load_token_definitions>` \
+    for definitions
     """
 
     def __init__(self, token_defs: dict):
@@ -43,6 +44,10 @@ class Lexer(object):
 
         returns an object with a match attribute partial'ed operator.eq,
         configured to match `left` with the supplied `right`
+
+        :param left: const for returned function to be configured to compare \
+        against
+        :rtype: object with `match` attribute
         """
 
         match = functools.partial(operator.eq, left)
