@@ -201,7 +201,7 @@ class GrammarParser(object):
 
         logger.info('{} grammar mappings loaded'.format(len(grammar_mapping)))
 
-    def parse_grammars(self) -> dict:
+    def parse_grammars(self):
         """
         Parses loaded grammars into "check trees".
 
@@ -244,7 +244,6 @@ class GrammarParser(object):
         logger.info('Grammar trees loaded')
 
         self.grammars = parsed_grammars
-        return parsed_grammars
 
     def parse_grammar(self,
                       grammar: str,
