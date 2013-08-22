@@ -6,6 +6,7 @@ python cli.py <options>
 """
 
 # standard library
+import sys
 import logging
 from dis import dis
 
@@ -23,17 +24,23 @@ _verbosity_map = [
 ]
 
 
-def main():
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+
     import argparse
     parser = argparse.ArgumentParser(
-        description='Tyrian is lisp to python bytecode compiler')
+        description='Tyrian is a lisp to python bytecode compiler')
 
     parser.add_argument('input_filename', type=str)
     parser.add_argument('output_filename', type=str)
 
-    parser.add_argument('-v', '--verbose', action='count', default=0)
+    parser.add_argument(
+        '-v', '--verbose', action='count', default=0,
+        help="Controls verbosity. Must be used a few times to lower the \
+              barrier to the interesting stuff")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     verbosity = 5 - args.verbose
 
     assert verbosity in range(0, 6), 'Bad verbosity'
@@ -54,4 +61,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)

@@ -46,6 +46,11 @@ setup(
     },
     include_package_data=True,
     platforms='any',
+    entry_points={
+        'console_scripts': [
+            'tyrian = tyrian.cli:main'
+        ]
+    },
     # test_suite='sandman.test.test_sandman',
     classifiers=[
         'Programming Language :: Python :: 3.3',
