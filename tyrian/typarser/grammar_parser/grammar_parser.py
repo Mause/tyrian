@@ -326,10 +326,9 @@ class GrammarParser(object):
                 raise Exception('In "{}" token "{}"'.format(
                     grammar_key, token))
 
-            out_tokens.append(node)
-
             if not comment:
-                logger.debug(out_tokens[-1])
+                out_tokens.append(node)
+                logger.debug(node)
             else:
                 comment = False
 
