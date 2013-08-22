@@ -5,4 +5,4 @@ tyrian.compiler
         :members: write_code_to_file
 
         .. currentmodule:: tyrian.compiler
-        .. automethod:: compile(filename: str, parse_tree) -> Code
+        .. automethod:: compile_parse_tree(filename: str, parse_tree) -> Code

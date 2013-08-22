@@ -203,12 +203,12 @@ class GrammarParser(object):
 
     def parse_grammars(self) -> dict:
         """
-        Parses loaded grammars into "check trees"
+        Parses loaded grammars into "check trees".
 
-        These check trees consist of a root \
+        These "check trees" consist of a root \
         :py:class:`ContainerNode <tyrian.typarser.grammar_parser.grammar_nodes.ContainerNode>`, \
         where a list of tokens can be passed into the root \
-        :py:class:`GrammarNode <tyrian.typarser.grammar_parser.grammar_nodes.GrammarNode>` \
+        :py:class:`GrammarNode <tyrian.typarser.grammar_parser.grammar_nodes.GrammarNode>`'s `check()`  \
         function and validated according to the loaded grammars.
         """
         assert self.grammar_loaded, 'Please load a grammar before calling this'

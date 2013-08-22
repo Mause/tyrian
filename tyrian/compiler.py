@@ -81,6 +81,7 @@ class Compiler(object):
         :param codeobject: Code instance to output opcodes to
         :param parse_tree: parse_tree to compile
         :param line_no: current line number
+        :rtype: tuple
         """
         assert isinstance(parse_tree, ParseTree)
 
