@@ -12,4 +12,5 @@ user documentation.
     system_development.rst
 
     speed_bumps.rst
+    charts.rst
 

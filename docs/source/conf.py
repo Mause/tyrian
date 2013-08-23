@@ -39,7 +39,8 @@ extensions = [
     # 'sphinx.ext.pngmath',
     # 'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'sphinx.ext.ifconfig'
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.graphviz'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -285,5 +286,11 @@ class DecoratorDocumenter(autodoc.FunctionDocumenter):
     """
     objtype = 'decorator'
 
+
 def setup(app):
     app.add_autodocumenter(DecoratorDocumenter)
+
+
+if not on_rtd:
+    graphviz_dot = 'C:\\Users\\Mause\\Downloads\\graphviz-2.32\\release\\bin\dot.exe'
+    graphviz_output_format = 'svg'

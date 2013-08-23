@@ -19,7 +19,7 @@ System Development
 
 6. Create a set of Data Flow Diagrams for your project (at least the Context Diagram and Level 0 DFD - Level 1 if required). [10 marks]
 
-    <expand>
+    This is in the form of :doc:`charts`
 
 7. Using your list of features from Part 4, estimate the time it will take to reach them. Create a Gantt or PERT chart for your timeline. Make sure you keep an eye on this, as it will be a significant part of your final presentation. [3 marks]
 

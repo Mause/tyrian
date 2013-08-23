@@ -1,0 +1,38 @@
+    digraph {
+        node [style=filled,color="#5D8AA8", fillcolor="#5D8AA8"];
+
+        subgraph files {
+            node [shape="diamond"];
+            "program.lisp";
+            "compiled.pyc";
+            "tokens.json";
+            "Grammar";
+        }
+
+        subgraph processes {
+            GrammarParser;
+            Lexer;
+            Parser;
+            Compiler;
+        }
+
+        "\"check tree\"" [shape="rectangle"];
+
+        "program.lisp" -> Lexer
+        "tokens.json" -> Lexer
+
+        "tokens.json" -> GrammarParser
+        Grammar -> GrammarParser
+        GrammarParser -> "\"check tree\""
+
+        Lexer -> "\"check tree\"" [label="tokens"]
+
+        "\"check tree\"" -> Parser [label="Grammar nodes"]
+        Grammar -> Parser
+
+        Parser -> Compiler [label="ParseTree"]
+
+        "lisp_runtime" -> Compiler
+        Compiler -> "compiled.pyc" [label="Bytecode"]
+
+    }
