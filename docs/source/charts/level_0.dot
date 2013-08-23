@@ -1,5 +1,7 @@
 digraph {
     node [style=filled,color="#5D8AA8", fillcolor="#5D8AA8"];
+    splines=spline;
+    nodesep=1;
 
     subgraph files {
         node [shape="diamond"];
@@ -28,7 +30,7 @@ digraph {
     Lexer -> "\"check tree\"" [label="tokens"]
 
     "\"check tree\"" -> Parser [label="Grammar nodes"]
-    Grammar -> Parser
+    Grammar -> Parser [label="Grammar"]
 
     Parser -> Compiler [label="ParseTree"]
 

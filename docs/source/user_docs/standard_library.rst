@@ -12,6 +12,7 @@ LISP runtime
     ============================
 
         .. automodule:: tyrian.lisp_runtime.registry
+            :members:
 
             .. autodecorator:: lisp_function(name:str=None)
 
