@@ -292,5 +292,6 @@ def setup(app):
 
 
 if not on_rtd:
-    graphviz_dot = 'C:\\Users\\Mause\\Downloads\\graphviz-2.32\\release\\bin\dot.exe'
+    if 'windows' in sys.plaform:
+        graphviz_dot = 'C:\\Users\\Mause\\Downloads\\graphviz-2.32\\release\\bin\dot.exe'
     graphviz_output_format = 'svg'
