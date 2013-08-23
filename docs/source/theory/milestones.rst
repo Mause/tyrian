@@ -19,6 +19,7 @@ Known:
  - 11/08 : 11:12PM - Got lisp function arguments working, afaict
  - 14/08 : 07:30PM - Got a basic command line interface implemented
  - 21/08           - Documentation now hosted on ReadTheDocs :D
+ - 22/08           - added entry point for tyrian
 
 Future milestones
 -----------------
