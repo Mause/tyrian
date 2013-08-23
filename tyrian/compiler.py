@@ -112,6 +112,9 @@ class Compiler(object):
         compiles a single Node
         """
 
+        # if not element.content:
+        #     return line_no, codeobject
+
         if isinstance(element.content[0], (IDNode, SymbolNode)):
             if element.content[0].content == 'defun':
                 # wahey! creating a function!
@@ -120,6 +123,9 @@ class Compiler(object):
                     filename,
                     element,
                     line_no)
+
+            elif element.content[0].content == 'lambda':
+                raise Exception((element, element.content))
 
             elif element.content[0].content in ('let',
                                                 'defparameter',
