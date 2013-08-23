@@ -4,7 +4,7 @@ digraph {
     subgraph files {
         node [shape="diamond"];
         "program.lisp";
-        "compiled.pyc";
+        "program.pyc";
         "tokens.json";
         "Grammar";
     }
@@ -33,6 +33,6 @@ digraph {
     Parser -> Compiler [label="ParseTree"]
 
     "lisp_runtime" -> Compiler
-    Compiler -> "compiled.pyc" [label="Bytecode"]
+    Compiler -> "program.pyc" [label="Bytecode"]
 
 }
