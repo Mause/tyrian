@@ -24,10 +24,7 @@ _verbosity_map = [
 ]
 
 
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-
+def main():
     import argparse
     parser = argparse.ArgumentParser(
         description='Tyrian is a lisp to python bytecode compiler')
@@ -40,7 +37,7 @@ def main(argv=None):
         help="Controls verbosity. Must be used a few times to lower the \
               barrier to the interesting stuff")
 
-    args = parser.parse_args(argv)
+    args = parser.parse_args()
     verbosity = 5 - args.verbose
 
     assert verbosity in range(0, 6), 'Bad verbosity'
