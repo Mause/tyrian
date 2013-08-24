@@ -51,9 +51,13 @@ extensions = [
     # 'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig',
-    # 'sphinx.ext.graphviz'
-    'graphviz'
 ]
+# if on_rtd:
+import graphviz
+graphviz
+extensions.append('docs.source.graphviz')
+# else:
+#     extensions.append('sphinx.ext.graphviz')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
