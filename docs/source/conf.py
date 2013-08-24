@@ -23,8 +23,8 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 cur_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..', '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
-# sys.path.insert(0, cur_dir)
-# sys.path.insert(0, '.')
+sys.path.insert(0, cur_dir)
+sys.path.insert(0, '.')
 # # assert False, os.getcwd()
 # assert os.path.exists('compat.py'), os.getcwd()
 # import compat
@@ -53,6 +53,7 @@ extensions = [
     'sphinx.ext.ifconfig',
 ]
 # if on_rtd:
+print(os.getcwd())
 import graphviz
 graphviz
 extensions.append('docs.source.graphviz')
