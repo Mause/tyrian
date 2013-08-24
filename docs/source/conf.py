@@ -23,6 +23,17 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 cur_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..', '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
+sys.path.insert(0, cur_dir)
+sys.path.insert(0, '.')
+# assert False, os.getcwd()
+assert os.path.exists('compat.py'), os.getcwd()
+import compat
+
+compat.mend()
+
+import sphinx.ext.graphviz
+assert (hasattr(sphinx.ext.graphviz.render_dot, '__mended__') and
+        sphinx.ext.graphviz.render_dot.__mended__), 'render_dot not mended'
 
 # -- General configuration -----------------------------------------------------
 
