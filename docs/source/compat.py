@@ -6,9 +6,15 @@ import sphinx.ext.graphviz
 def mend_render_dot(func):
     func.__mended__ = True
 
+    def mend(s):
+        if type(s) == bytes:
+            return s.encode('utf-8')
+        else:
+            return s
+
     @wraps(func)
     def wrapper(code, *args, **kwargs):
-        code = code.encode('utf-8')
+        code = mend(code)
         return func(code, *args, **kwargs)
 
 
