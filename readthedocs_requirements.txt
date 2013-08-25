@@ -1,5 +1,0 @@
-# need to use 2.6 because readthedocs only has python 3.2, which jinja2 2.7+ does not support
-jinja2==2.6
-
-# we dont need it, but it is installed by default, so we downgrade to one that is python 3.2 compatible
-markupsafe==0.14
