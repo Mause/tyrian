@@ -1,17 +1,17 @@
 %start_token=list;
 
-list: OPEN_BRACKET CLOSE_BRACKET | OPEN_BRACKET members CLOSE_BRACKET;
+list ::= OPEN_BRACKET CLOSE_BRACKET | OPEN_BRACKET members CLOSE_BRACKET;
 
-members: (member)+;
+members ::= (member)+;
 
-member: quoted_sexpr | sexpr;
+member ::= quoted_sexpr | sexpr;
 
-quoted_sexpr: ACCENT sexpr;
-sexpr: list | atom;
+quoted_sexpr ::= ACCENT sexpr;
+sexpr ::= list | atom;
 
-atom: string | id | symbol | number;
+atom ::= string | id | symbol | number;
 
-number: NUMBER_RE;
-symbol: SYMBOL_RE;
-id: ID_RE;
-string: (DOUBLE_QUOTE STRING_RE DOUBLE_QUOTE);
+number ::= NUMBER_RE;
+symbol ::= SYMBOL_RE;
+id ::= ID_RE;
+string ::= (DOUBLE_QUOTE STRING_RE DOUBLE_QUOTE);
