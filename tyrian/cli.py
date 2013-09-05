@@ -29,12 +29,14 @@ def main():
     parser = argparse.ArgumentParser(
         description='Tyrian is a lisp to python bytecode compiler')
 
-    parser.add_argument('input_filename', type=str)
-    parser.add_argument('output_filename', type=str)
+    parser.add_argument(
+        'input_filename', type=str, help="input filename containing LISP")
+    parser.add_argument(
+        'output_filename', type=str, help="file to write bytecode to")
 
     parser.add_argument(
         '-v', '--verbose', action='count', default=0,
-        help="Controls verbosity. Must be used a few times to lower the \
+        help="controls verbosity. Must be used a few times to lower the \
               barrier to the interesting stuff")
 
     args = parser.parse_args()
