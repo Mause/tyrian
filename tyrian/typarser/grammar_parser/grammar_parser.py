@@ -49,6 +49,8 @@ class GrammarParser(object):
 
         if token_defs:
             self.load_token_definitions(token_defs)
+        else:
+            self.token_defs = []
 
         if raw_grammar:
             self.load_grammar(raw_grammar)
@@ -122,8 +124,8 @@ class GrammarParser(object):
                 # ignore comments
                 continue
 
-            key, *value = line.split(':')
-            key = key.upper()
+            key, *value = line.split('::=')
+            key = key.upper().strip()
 
             assert key not in self.token_defs, (
                 'Do not name grammars the same as tokens')
@@ -316,13 +318,26 @@ class GrammarParser(object):
                 if token:
                     node = MultiNode(settings=settings, sub=token)
 
-            elif token == '/*':
-                while token != '*/' and grammar:
-                    token = grammar.pop(0)
-                comment = True
+            # elif token[0] == '"' == token[-1]:
+            #     node = LiteralNode(settings=settings, content=token[1:-1])
+
+            # elif token[0] == '"':
+            #     contained = [token]
+            #     while token[-1] != '"' and grammar:
+            #         token = grammar.pop(0)
+
+            #         logger.debug('token: {}'.format(token))
+            #         contained.append(token)
+            #     node = LiteralNode(
+            #         settings=settings, content=' '.join(contained)[1:-1])
+
+            # elif token == '/*':
+            #     while token != '*/' and grammar:
+            #         token = grammar.pop(0)
+            #     comment = True
 
             else:
-                raise Exception('In "{}" token "{}"'.format(
+                raise GrammarDefinitionError('In "{}" token "{}"'.format(
                     grammar_key, token))
 
             if not comment:

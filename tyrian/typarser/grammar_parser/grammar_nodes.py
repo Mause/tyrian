@@ -158,7 +158,7 @@ class LiteralNode(GrammarNode):
         logger.debug(path + '.LN<' + self.content + '>')
 
         if tokens:
-            token = tokens[0]['token']
+            token = tokens[0]['token'] if 'token' in tokens[0] else tokens[0]
             result = token == self.content
         else:
             result = False

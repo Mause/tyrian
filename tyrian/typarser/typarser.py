@@ -31,13 +31,17 @@ class Parser(object):
         results = []
 
         while index < len(lexed):
-            result = base_grammar.check(lexed[index:], '<list>')
+            result = base_grammar.check(
+                lexed[index:], '<{}>'.format(start_token))
 
             if not result['result']:
-                raise TyrianSyntaxError(
-                    'error found near line {} in file {}'.format(
-                        lexed[index]['line_no'],
-                        lexed[index]['filename']))
+                if type(lexed[index]) == dict:
+                    raise TyrianSyntaxError(
+                        'error found near line {} in file {}'.format(
+                            lexed[index]['line_no'],
+                            lexed[index]['filename']))
+                else:
+                    raise TyrianSyntaxError('Near: {}'.format(lexed[index:]))
 
             results.append(result)
 
