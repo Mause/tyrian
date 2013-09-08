@@ -25,15 +25,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..', '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(cur_dir, '..')))
 sys.path.insert(0, cur_dir)
 sys.path.insert(0, '.')
-# # assert False, os.getcwd()
-# assert os.path.exists('compat.py'), os.getcwd()
-# import compat
-
-# compat.mend()
-
-# import sphinx.ext.graphviz
-# assert (hasattr(sphinx.ext.graphviz.render_dot, '__mended__') and
-#         sphinx.ext.graphviz.render_dot.__mended__), 'render_dot not mended'
 
 # -- General configuration -----------------------------------------------------
 
@@ -50,12 +41,9 @@ extensions = [
     # 'sphinx.ext.pngmath',
     # 'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'sphinx.ext.ifconfig',
+    # 'sphinx.ext.ifconfig',
 ]
-# if on_rtd:
-print(os.getcwd())
-import graphviz
-graphviz
+
 extensions.append('docs.source.graphviz')
 # else:
 #     extensions.append('sphinx.ext.graphviz')
