@@ -10,7 +10,7 @@ Basic usage is as follows;
 
 .. code-block:: sh
 
-    $ python cli.py <options> <input_filename> <output_filename>
+    $ python tyrian.py <options> <input_filename> <output_filename>
 
 
 Contents
