@@ -11,6 +11,6 @@ user documentation.
     project_definition.rst
     system_development.rst
 
-    speed_bumps.rst
+    hurdles.rst
     charts.rst
 
