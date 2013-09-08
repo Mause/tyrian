@@ -35,13 +35,10 @@ class Parser(object):
                 lexed[index:], '<{}>'.format(start_token))
 
             if not result['result']:
-                if type(lexed[index]) == dict:
-                    raise TyrianSyntaxError(
-                        'error found near line {} in file {}'.format(
-                            lexed[index]['line_no'],
-                            lexed[index]['filename']))
-                else:
-                    raise TyrianSyntaxError('Near: {}'.format(lexed[index:]))
+                raise TyrianSyntaxError(
+                    'error found near line {} in file {}'.format(
+                        lexed[index]['line_no'],
+                        lexed[index]['filename']))
 
             results.append(result)
 

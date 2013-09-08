@@ -57,7 +57,11 @@ class SubGrammarWrapper(GrammarNode):
 
         if key in grammar_mapping:
             if token:
-                return grammar_mapping[key](token)
+                try:
+                    return grammar_mapping[key](token)
+                except TypeError:
+                    raise TypeError('{} accepts no arguments'.format(
+                        grammar_mapping[key].__qualname__))
             else:
                 logger.debug(
                     'Mapping found for {}, '
