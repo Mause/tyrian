@@ -8,7 +8,6 @@ class ParseTree(object):
     :py:class:`Parser <tyrian.typarser.Parser>`
     """
     def __init__(self, content):
-        # lisp is ultimately expression based
         self.content = content
 
     def __repr__(self):
@@ -27,14 +26,18 @@ class ParseTree(object):
         cur_lines.append('{}{}'.format('\t' * indent, name))
 
         if type(node) in [ListNode, ContainerNode, list]:
-            iterable = node.content if issubclass(type(node), Node) else node
+        # if not (hasattr(node, '__qualname__') and ('RENode' in node.__qualname__ or 'LiteralNode' in node.__qualname__)):
+            try:
+                iterable = node.content if issubclass(type(node), Node) else node
 
-            for sub_node in iterable:
-                cur_lines += self._pprint(sub_node, indent + 1)
+                for sub_node in iterable:
+                    if sub_node == node:
+                        continue
+                    cur_lines += self._pprint(sub_node, indent + 1)
 
-            cur_lines.append('{}</{}>'.format(
-                '\t' * indent,
-                name[1:-1]))
+                cur_lines.append('{}</{}>'.format('\t' * indent, name[1:-1]))
+            except TypeError:
+                cur_lines += self._pprint(iterable, indent + 1)
 
         return cur_lines
 
@@ -52,8 +55,7 @@ class ListNode(Node):
     __spec_name = 'LN'
 
     def __init__(self, content, strip=True):
-        if strip:
-            content = content[1:-1]
+        content = content[1:-1]
         self.content = flatten(content)
 
     def __repr__(self):
