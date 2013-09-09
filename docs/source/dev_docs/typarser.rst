@@ -5,4 +5,4 @@ tyrian.typarser
 
         .. autoclass:: tyrian.typarser.Parser
 
-            .. automethod:: parse(lexer:list) -> ParseTree
+            .. automethod:: parse(lexer:list) -> AST

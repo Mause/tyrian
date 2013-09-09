@@ -2,7 +2,7 @@
 from .utils import flatten
 
 
-class ParseTree(object):
+class AST(object):
     """
     Is the overruling object returned from the \
     :py:class:`Parser <tyrian.typarser.Parser>`
@@ -11,7 +11,7 @@ class ParseTree(object):
         self.content = content
 
     def __repr__(self):
-        return '<ParseTree len(content)=={}>'.format(len(self.content))
+        return '<AST len(content)=={}>'.format(len(self.content))
 
     def pprint(self):
         return '\n'.join(self._pprint(self.content))

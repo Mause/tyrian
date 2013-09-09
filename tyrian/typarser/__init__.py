@@ -1,5 +1,5 @@
 """
-Contains code for parsing and for building the ParseTree
+Contains code for parsing and for building the AST
 """
 
 from .typarser import Parser

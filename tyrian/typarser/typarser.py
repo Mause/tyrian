@@ -1,7 +1,7 @@
 # application specific
 from ..utils import flatten
 from .grammar_parser import GrammarParser
-from ..nodes import ParseTree, ContainerNode, ListNode
+from ..nodes import AST, ContainerNode, ListNode
 from ..exceptions import TyrianSyntaxError, NoSuchGrammar
 
 __all__ = ['Parser']
@@ -14,9 +14,9 @@ class Parser(object):
     def __init__(self, **kwargs):
         self.grammar_parser = GrammarParser(**kwargs)
 
-    def parse(self, lexed: list) -> ParseTree:
+    def parse(self, lexed: list) -> AST:
         """
-        given a list of tokens, returns a :py:class:`ParseTree <tyrian.nodes.ParseTree>`
+        given a list of tokens, returns a :py:class:`AST <tyrian.nodes.AST>`
         """
 
         # grab the start token from the settings
@@ -45,7 +45,7 @@ class Parser(object):
             index += result['consumed']
 
         processed = self._process(results)
-        return ParseTree(processed)
+        return AST(processed)
 
     def _process(self, parsed: list) -> ContainerNode:
         processed = []

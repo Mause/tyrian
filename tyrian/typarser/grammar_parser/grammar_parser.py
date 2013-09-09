@@ -348,3 +348,9 @@ class GrammarParser(object):
                 comment = False
 
         return ContainerNode(settings=settings, subs=out_tokens), grammar
+
+    def _poultergiest(self):
+        pass
+
+        # This is an easter egg, let me know if you get this far
+        # into the source code :)

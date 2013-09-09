@@ -13,7 +13,7 @@ from .nodes import (
     ListNode,
     NumberNode,
     StringNode,
-    ParseTree
+    AST
 )
 from .utils import logger, enforce_types
 
@@ -30,7 +30,7 @@ logger = logger.getChild('Compiler')
 
 class Compiler(object):
     """
-    Handles compilation of :py:class:`ParseTree <tyrian.nodes.ParseTree>`'s
+    Handles compilation of :py:class:`AST <tyrian.nodes.AST>`'s
     """
 
     def __init__(self):
@@ -72,18 +72,18 @@ class Compiler(object):
     @enforce_types
     def compile_parse_tree_internal(self,
                                     codeobject: Code,
-                                    parse_tree: ParseTree,
+                                    parse_tree: AST,
                                     line_no: int,
                                     filename: str) -> tuple:
         """
-        Compiles a single ParseTree
+        Compiles a single AST
 
         :param codeobject: Code instance to output opcodes to
         :param parse_tree: parse_tree to compile
         :param line_no: current line number
         :rtype: tuple
         """
-        assert isinstance(parse_tree, ParseTree)
+        assert isinstance(parse_tree, AST)
 
         for element in parse_tree.content:
             line_no += 1

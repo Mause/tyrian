@@ -4,7 +4,7 @@ tyrian.nodes
     .. automodule:: tyrian.nodes
 
         .. currentmodule:: tyrian.nodes
-        .. autoclass:: ParseTree
+        .. autoclass:: AST
         .. autoclass:: Node
         .. autoclass:: ListNode
         .. autoclass:: ContainerNode

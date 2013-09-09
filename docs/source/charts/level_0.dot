@@ -28,7 +28,7 @@ digraph {
     Lexer -> Parser [label="tokens"]
     Grammar -> Parser [labeldistance=20]
 
-    Parser -> Compiler [label="ParseTree"]
+    Parser -> Compiler [label="AST"]
 
     "lisp_runtime" -> Compiler
     Compiler -> "program.pyc" [label="Bytecode"]
