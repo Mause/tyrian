@@ -1,0 +1,59 @@
+digraph {
+    node [style=filled,color="#5D8AA8", fillcolor="#5D8AA8"];
+    nodesep=1;
+
+    subgraph terminal {
+        node [shape="ellipse"];
+        "exit";
+        "entry";
+    }
+
+    subgraph process {
+        node [shape="box"];
+        "assign the slot key in the hash loaded_grammars to value";
+        "handle line as setting";
+        "key <- key upper and stripped of spaces";
+        "replace all newlines in rules with a single space";
+        "split line by ::= into key and value";
+        "split rules by semicolon";
+        "value <- value cleaned";
+        "value <- value joined with \"::=\"";
+        "remove empty rules";
+        "line <- first rule from rules";
+    }
+
+    subgraph flow_control {
+        node [shape="diamond"];
+        "if line starts with \"%\"";
+        "if line starts with //";
+//        "if rules empty";
+    }
+
+
+    "entry" ->
+    "replace all newlines in rules with a single space" ->
+    "split rules by semicolon" ->
+    "remove excess whitespace from rules" ->
+    "remove empty rules" -> "if rules empty";
+
+    "if rules empty" -> "line <- first rule from rules" [label="false"]
+
+    "line <- first rule from rules" -> "if line starts with \"%\""
+    "if line starts with \"%\"" -> "handle line as setting" [label="true"]
+    "handle line as setting" -> "if rules empty"
+
+    "if line starts with \"%\"" -> "if line starts with //" [label="false"]
+    "if line starts with //" -> "if rules empty" [label="true"]
+
+    "if line starts with //" -> "split line by ::= into key and value" [label="false"]
+
+    "split line by ::= into key and value" ->
+    "key <- key upper and stripped of spaces" ->
+    "value <- value joined with \"::=\"" ->
+    "value <- value cleaned" ->
+    "assign the slot key in the hash loaded_grammars to value" ->
+    "if rules empty"
+
+
+    "if rules empty" -> "exit" [label="true"]
+}
