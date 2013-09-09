@@ -106,10 +106,11 @@ class GrammarParser(object):
 
             a subgrammar or token is simply specified by name;
             NAME
+
         """
 
         logger.info('Loading grammar')
-        rules = ' '.join(content.split('\n'))
+        rules = content.replace('\n', ' ')
         rules = content.split(';')
         rules = map(str.strip, rules)
         rules = filter(bool, rules)
@@ -128,10 +129,10 @@ class GrammarParser(object):
             key = key.upper().strip()
 
             assert key not in self.token_defs, (
-                'Do not name grammars the same as tokens')
+                'Do not name grammars the same as tokens: {}'.format(key))
 
             # reassemble the value
-            value = ':'.join(value)
+            value = '::='.join(value)
 
             value = self.cleanup_value(value)
 
