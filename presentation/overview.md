@@ -6,13 +6,13 @@ Example;
 
 This LISP code;
 
-```
+```lisp
 (print "world")
 ```
 
 is translated into this python bytecode;
 
-```
+```bytecode
 <snip>
 LOAD_GLOBAL              6 (print)
 LOAD_CONST              13 ('world')
@@ -29,7 +29,7 @@ The Compiler subsection of tyrian makes heavy use of module known as
 Quick explanation;
 in c, you write this;
 
-```
+```c
 int main(int argc, char *argv[]) {
     printf("%s", "String!");
     return 0;
