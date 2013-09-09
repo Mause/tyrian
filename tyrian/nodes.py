@@ -55,7 +55,9 @@ class ListNode(Node):
     __spec_name = 'LN'
 
     def __init__(self, content, strip=True):
+        # strip away the brackets
         content = content[1:-1]
+
         self.content = flatten(content)
 
     def __repr__(self):
@@ -66,7 +68,7 @@ class ListNode(Node):
 
 class ContainerNode(ListNode):
     """
-    Although being functionally identical to :py:class:`ListNode`,
+    Aside from being functionally identical to :py:class:`ListNode`,
     this Node does not represent anything in the AST,
     it simply serves as a container; hence the name
     """
