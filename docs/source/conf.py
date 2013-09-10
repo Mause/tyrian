@@ -282,18 +282,18 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 
-from sphinx.ext import autodoc
+# from sphinx.ext import autodoc
 
 
-class DecoratorDocumenter(autodoc.FunctionDocumenter):
-    """
-    Specialized Documenter subclass for decorator functions.
-    """
-    objtype = 'decorator'
+# class DecoratorDocumenter(autodoc.FunctionDocumenter):
+#     """
+#     Specialized Documenter subclass for decorator functions.
+#     """
+#     objtype = 'decorator'
 
 
-def setup(app):
-    app.add_autodocumenter(DecoratorDocumenter)
+# def setup(app):
+#     app.add_autodocumenter(DecoratorDocumenter)
 
 
 if not on_rtd:
