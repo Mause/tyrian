@@ -23,10 +23,15 @@ class GrammarParser(object):
     """
     Does the grunt work of parsing the Grammar into a usable object;
     see :py:class:`grammar_nodes <tyrian.typarser.grammar_parser.grammar_nodes>` for more
+
+    :param raw_grammar: single string containing raw grammar definitions, see \
+    :func:`load_grammar <tyrian.typarser.grammar_parser.GrammarParser.load_grammar>`
+    :param token_defs: dictionary of token definitions, see \
+    :func:`load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>`
     """
 
     def __init__(self,
-                 raw_grammar: dict=None,
+                 raw_grammar: str=None,
                  token_defs: dict=None,
                  grammar_mapping: dict=None,
                  settings: dict=None):
@@ -56,7 +61,7 @@ class GrammarParser(object):
             self.load_grammar(raw_grammar)
             self.parse_grammars()
 
-    def handle_setting(self, line):
+    def handle_setting(self, line: str):
         """
         handles settings
         """
@@ -69,7 +74,7 @@ class GrammarParser(object):
 
         self.settings[key] = value
 
-    def cleanup_value(self, value):
+    def cleanup_value(self, value: str):
         """
         cleans up the supplied value
         """
@@ -90,6 +95,8 @@ class GrammarParser(object):
         Load grammars from a string.
         All grammars need not be necessarily be loaded at once,
         but all must be loaded before :py:meth:`parse_grammars` is called.
+
+        :param content: single string containing raw grammar definitions
 
         .. code-block:: none
 
@@ -150,6 +157,8 @@ class GrammarParser(object):
 
         expected to be formatted as follows;
 
+        :param defs: dictionary containing token definitions
+
         .. code-block:: json
 
             {
@@ -192,6 +201,8 @@ class GrammarParser(object):
 
         Supply a dictionary with a mapping between subgrammar names and \
         Node objects
+
+        :param grammar_mapping: dictionary mapping subgrammars to appropriate Nodes
         """
 
         logger.info('Loading grammar mappings')
@@ -254,6 +265,11 @@ class GrammarParser(object):
                       settings: dict) -> ContainerNode:
         """
         See :py:meth:`parse_grammars`
+
+        :param grammar: single string containing a single raw grammar definition, see \
+        :func:`parse_grammars <tyrian.typarser.grammar_parser.GrammarParser.parse_grammars>`
+        :param grammar_key: key for grammar, aka name of grammar
+        :param settings: dictionary of settings for Nodes
         """
         assert self.grammar_loaded, 'Please load a grammar before calling this'
         assert self.tokens_loaded, 'Please load some tokens before calling this'

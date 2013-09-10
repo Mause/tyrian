@@ -23,7 +23,7 @@ if 'logger' not in globals():
         logger.addHandler(hdlr)
 
 
-def flatten(obj, can_return_single=False):
+def flatten(obj, can_return_single: bool=False):
     """
     Flattens nested lists, like so;
 
@@ -34,6 +34,8 @@ def flatten(obj, can_return_single=False):
     >>> flatten([[[[[[['value']]]]]]], can_return_single=False)
     ['value']
 
+    :param obj: nested list of lists, depth uncertain
+    :param can_return_single: see above
     """
 
     if type(obj) == list and len(obj) == 1 and type(obj[0]) == list:

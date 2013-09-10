@@ -17,6 +17,8 @@ class Parser(object):
     def parse(self, lexed: list) -> AST:
         """
         given a list of tokens, returns a :py:class:`AST <tyrian.nodes.AST>`
+
+        :param lexed: list of tokens to parse
         """
 
         # grab the start token from the settings
@@ -48,6 +50,9 @@ class Parser(object):
         return AST(processed)
 
     def _process(self, parsed: list) -> ContainerNode:
+        """
+        :param parsed: list of Nodes to process
+        """
         processed = []
         for result in parsed:
             parse_tree = result['parse_tree']

@@ -34,10 +34,12 @@ class GrammarNode(object):
 
 class SubGrammarWrapper(GrammarNode):
     """
-    Acts as proxy for subgrammar.
+    Acts as proxy for subgrammar, ensuring that we need not copy the subgrammar,
+    nor that we need parse the grammars in any particular order.
 
-    Serves to ensure that we need not copy the subgrammar,
-    and that we need not parse the grammars in any particular order.
+    :param grammar_parser_inst: an instance of the \
+    :py:class:`GrammarParser <tyrian.typarser.grammar_parser.GrammarParser>`, used to \
+    access subgrammars
     """
     def __init__(self, settings: dict, key: str, grammar_parser_inst) -> None:
         # these setting are for the grammar mappings and such
@@ -92,6 +94,8 @@ class SubGrammarWrapper(GrammarNode):
 class ContainerNode(GrammarNode):
     """
     Serves as a container for one or more sub Nodes
+
+    :param subs: subnodes to contain
     """
     def __init__(self, settings: dict, subs: list) -> None:
         # these setting are for the grammar mappings and such
@@ -146,6 +150,8 @@ class ContainerNode(GrammarNode):
 class LiteralNode(GrammarNode):
     """
     Compares a token directly against a string
+
+    :param content: content against which to test
     """
     def __init__(self, settings: dict, content):
         # these setting are for the grammar mappings and such
@@ -176,6 +182,12 @@ class LiteralNode(GrammarNode):
 
 
 class RENode(GrammarNode):
+    """
+    Matches a token against a regular expression
+
+    :param regex: regular expression to match against
+    :param name: name of what the regular expression tests for
+    """
     def __init__(self, settings: dict, regex, name):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
@@ -219,6 +231,9 @@ class RENode(GrammarNode):
 class ORNode(GrammarNode):
     """
     checks between two possible sets of subnodes
+
+    :param left: node on left side of OR symbol
+    :param right: node on right side of OR symbol
     """
     def __init__(self, settings: dict, left, right):
         # these setting are for the grammar mappings and such
@@ -265,7 +280,9 @@ class ORNode(GrammarNode):
 
 class MultiNode(GrammarNode):
     """
-    Checks for multiple instances of a set of subnodes
+    Checks for multiple instances of a set of subnode
+
+    :param sub: node to checks for multiple instances of
     """
     def __init__(self, settings: dict, sub):
         # these setting are for the grammar mappings and such

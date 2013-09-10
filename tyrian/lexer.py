@@ -105,6 +105,17 @@ class Lexer(object):
         :param line: line from source file
         :param line_no: line number of provided line
         :param filename: name of file from which the line originates
+
+        yields tokens of format
+
+        .. code-block:: json
+
+            {
+                "name": str,
+                "token": str,
+                "line_no": int,
+                'filename': str
+            }
         """
 
         line = (line.translate(self.TRANS)
