@@ -1,5 +1,5 @@
 Welcome to tyrian's writeup!
-==================================
+============================
 
 Tyrian is a simplistic `LISP`_ to python bytecode implementation.
 
