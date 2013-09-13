@@ -1,7 +1,7 @@
 Quickstart
 ==========
 
-This article will allow you to get started with Tyrian quickly. Ease is not guarenteed.
+This article will allow you to get started with Tyrian quickly. Ease is not guaranteed.
 
 .. code-block:: common-lisp
 
