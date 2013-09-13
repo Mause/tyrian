@@ -39,32 +39,33 @@ See the System Development flow chart on the :doc:`charts` page
 
 And Pseudocode;
 
-.. code-block:: none
+.. code-block:: pascal
 
-    rules <- rules.replace('\n', ' ')
-    rules <- rules.split(';')
-    rules <- remove excess whitespace
+    rules <- in rules replace "\n" with " "
+    rules <- rules split by ";"
+    rules <- remove excess whitespace from rules
     rules <- remove empty rules
 
     while rules do
         rule <- pop from rules
 
-        if rule starts with % then
+        if rule starts with "%" then
             handle_setting
-        else if rule starts with // then
+        else if rule starts with "//" then
             continue
         else then
-            key, *value <- rule split by ::=
+            value <- rule split by "::="
+            key <- first from value
 
-            key <- key uppercased and stripped of spaces
+            key <- key uppercased and stripped of excess whitespace
 
-            value <- value joined with ::=
+            value <- value joined with "::="
 
             value <- value cleaned
 
             loaded_grammars[key] <- value
-        end
-    end
+        end if
+    end while
 
 Test data for the grammar_parser is available in the tyrian/Grammar folder,
 test data for the project in general is available in the examples folder.
