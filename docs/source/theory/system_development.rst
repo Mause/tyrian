@@ -33,11 +33,13 @@ System Development
 
 9. Develop and test your project. You must include:
 
+
+
+Pseudocode
+----------
 Pseudocode and a flow chart for one small module of code (must include loops and conditional branching [if statement]) [4 marks]
 
-See the System Development flow chart on the :doc:`charts` page
-
-And Pseudocode;
+See the System Development flow chart on the :doc:`charts` page for the flow chart
 
 .. code-block:: pascal
 
@@ -67,8 +69,46 @@ And Pseudocode;
         end if
     end while
 
+Test data
+---------
 Test data for the grammar_parser is available in the tyrian/Grammar folder,
 test data for the project in general is available in the examples folder.
-Trace table was deemed to expensive to complete within time remaining, for not
-enough marks.
-Source code should be included.
+
+Trace table
+-----------
+.. image:: ../assets/trace_table.png
+
+for code
+
+.. code-block:: python
+
+    rules = rules.replace("\n", " ")
+    rules = rules.split(";")
+    rules = map(str.rstrip, rules)
+    rules = list(filter(bool, rules))
+
+    while rules:
+        rule = rules.pop(0)
+
+        if rule.startswith("%"):
+            handle_setting()
+        elif rule.startswith("//"):
+            continue
+        else:
+            value = rule.split("::=")
+            key = value.pop(0)
+
+            key = key.upper().strip()
+
+            value = "::=".join(value)
+
+            value = clean(value)
+
+            loaded_grammars[key] = value
+
+
+
+Source code
+-----------
+
+Source code should be included... somewhere.
