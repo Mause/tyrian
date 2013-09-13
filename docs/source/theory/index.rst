@@ -13,4 +13,5 @@ user documentation.
 
     hurdles.rst
     charts.rst
+    assets.rst
 

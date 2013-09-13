@@ -5,7 +5,7 @@ rules = '''\
 word ::= words words words;
 words ::= "blah" "blah" "blah";
 '''
-##### code that we a tracing follows
+# code that we are tracing follows
 
 
 rules = rules.replace("\n", " ")

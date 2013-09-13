@@ -23,7 +23,7 @@ System Development
 
 7. Using your list of features from Part 4, estimate the time it will take to reach them. Create a Gantt or PERT chart for your timeline. Make sure you keep an eye on this, as it will be a significant part of your final presentation. [3 marks]
 
-    <expand>
+    See :doc:`assets`
 
 8. Describe at least two areas which could be used to extend your project in future revisions and provide some discussion on what would be required to pursue them. [4 marks]
 
@@ -76,7 +76,8 @@ test data for the project in general is available in the examples folder.
 
 Trace table
 -----------
-.. image:: ../assets/trace_table.png
+
+See :doc:`assets` for image
 
 for code
 
