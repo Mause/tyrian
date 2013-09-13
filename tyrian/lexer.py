@@ -20,7 +20,7 @@ class Lexer(object):
     Code to perform lexing according to token definitions
 
     :param token_defs: dictionary containing token definitions, see \
-    :py:meth:`Lexer.load_token_definitions <tyrian.lexer.Lexer.load_token_definitions>` \
+    :py:meth:`load_token_definitions <tyrian.lexer.Lexer.load_token_definitions>` \
     for definitions
     """
 
