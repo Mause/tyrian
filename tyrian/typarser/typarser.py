@@ -34,13 +34,16 @@ class Parser(object):
 
         while index < len(lexed):
             result = base_grammar.check(
-                lexed[index:], '<{}>'.format(start_token))
+                lexed[index:], '<{}>'.format(start_token)
+            )
 
             if not result['result']:
                 raise TyrianSyntaxError(
                     'error found near line {} in file {}'.format(
                         lexed[index]['line_no'],
-                        lexed[index]['filename']))
+                        lexed[index]['filename']
+                    )
+                )
 
             results.append(result)
 

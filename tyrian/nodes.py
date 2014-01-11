@@ -26,9 +26,11 @@ class AST(object):
         cur_lines.append('{}{}'.format('\t' * indent, name))
 
         if type(node) in [ListNode, ContainerNode, list]:
-        # if not (hasattr(node, '__qualname__') and ('RENode' in node.__qualname__ or 'LiteralNode' in node.__qualname__)):
             try:
-                iterable = node.content if issubclass(type(node), Node) else node
+                iterable = (
+                    node.content if issubclass(type(node), Node)
+                    else node
+                )
 
                 for sub_node in iterable:
                     if sub_node == node:

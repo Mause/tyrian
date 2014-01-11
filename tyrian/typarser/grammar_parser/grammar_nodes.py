@@ -34,12 +34,12 @@ class GrammarNode(object):
 
 class SubGrammarWrapper(GrammarNode):
     """
-    Acts as proxy for subgrammar, ensuring that we need not copy the subgrammar,
-    nor that we need parse the grammars in any particular order.
+    Acts as proxy for subgrammar, ensuring that we need not copy the
+    subgrammar, nor that we need parse the grammars in any particular order.
 
     :param grammar_parser_inst: an instance of the \
-    :py:class:`GrammarParser <tyrian.typarser.grammar_parser.GrammarParser>`, used to \
-    access subgrammars
+    :py:class:`GrammarParser <tyrian.typarser.grammar_parser.GrammarParser>`, \
+    used to access subgrammars
     """
     def __init__(self, settings: dict, key: str, grammar_parser_inst) -> None:
         # these setting are for the grammar mappings and such
@@ -63,7 +63,8 @@ class SubGrammarWrapper(GrammarNode):
                     return grammar_mapping[key](token)
                 except TypeError:
                     raise TypeError('{} accepts no arguments'.format(
-                        grammar_mapping[key].__qualname__))
+                        grammar_mapping[key].__qualname__
+                    ))
             else:
                 logger.debug(
                     'Mapping found for {}, '
@@ -85,7 +86,7 @@ class SubGrammarWrapper(GrammarNode):
         grammar = self.grammar_parser_inst.grammars[key]
 
         result = grammar.check(tokens, path)
-        if result['result'] is True:
+        if result['result']:
             result['parse_tree'] = self.build_parse_tree(result['parse_tree'])
 
         return result
@@ -105,7 +106,7 @@ class ContainerNode(GrammarNode):
 
         if len(subs) == 1 and type(subs[0]) == ContainerNode:
             subs = subs[0].subs
-        elif len(subs) == 1 and type(subs[0]) == ContainerNode and len(subs[0]) == 0:
+        elif len(subs) == 1 and type(subs[0]) == ContainerNode:
             subs = []
 
         my_subs = []
@@ -307,7 +308,7 @@ class MultiNode(GrammarNode):
         while len(tokens) > consumed and tokens[consumed:]:
             r = self.subs.check(tokens[consumed:], path)
 
-            if r['result'] is True:
+            if r['result']:
                 response['result'] = True
                 response['parse_tree'].append(r['parse_tree'])
             else:

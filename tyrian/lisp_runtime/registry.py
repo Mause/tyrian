@@ -34,8 +34,8 @@ def lisp_function(**kwargs):
     """
 
     def decorator(func):
-        logger.debug('Registering function with name: {}'.format(kwargs['name']))
         name = kwargs['name']
+        logger.debug('Registering function with name: {}'.format(name))
 
         assert name not in lisp_registry, (
             'Function "{}" already exists'.format(name))

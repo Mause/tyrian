@@ -61,8 +61,9 @@ class Lexer(object):
         for literals and compiles regex's
 
         :param token_defs: contains token definitions; see \
-        :py:meth:`GrammarParser.load_token_definitions <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>` \
-        for format
+        :py:meth:`GrammarParser.load_token_definitions \
+        <tyrian.typarser.grammar_parser.GrammarParser.load_token_definitions>`\
+         for format
         """
 
         for k, v in token_defs['literal'].items():

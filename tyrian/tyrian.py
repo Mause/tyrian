@@ -26,13 +26,15 @@ class Tyrian(object):
 
         # read in the tokens
         token_defs_filename = pkg_resources.resource_filename(
-            __name__, 'Grammar\\tokens.json')
+            __name__, 'Grammar\\tokens.json'
+        )
         with open(token_defs_filename) as fh:
             token_defs = json.load(fh)
 
         # read in the Grammar
         grammar_filename = pkg_resources.resource_filename(
-            __name__, 'Grammar\\Grammar')
+            __name__, 'Grammar\\Grammar'
+        )
         with open(grammar_filename) as fh:
             raw_grammar = fh.read()
 

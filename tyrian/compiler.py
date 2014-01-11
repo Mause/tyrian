@@ -61,7 +61,8 @@ class Compiler(object):
             codeobject=code,
             parse_tree=parse_tree,
             line_no=line_no,
-            filename=filename)
+            filename=filename
+        )
 
         line_no += 1
         code.set_lineno(line_no)
@@ -96,7 +97,8 @@ class Compiler(object):
                 element=element,
                 line_no=line_no,
                 result_required=False,
-                scope=[])
+                scope=[]
+            )
 
         return line_no, codeobject
 
@@ -122,7 +124,8 @@ class Compiler(object):
                     codeobject,
                     filename,
                     element,
-                    line_no)
+                    line_no
+                )
 
             elif element.content[0].content == 'lambda':
                 raise Exception((element, element.content))
@@ -136,7 +139,8 @@ class Compiler(object):
                     filename,
                     element,
                     line_no,
-                    scope)
+                    scope
+                )
 
             else:
                 # whahey! calling a function!
@@ -145,7 +149,8 @@ class Compiler(object):
                     filename,
                     element,
                     line_no,
-                    scope)
+                    scope
+                )
 
                 if not result_required:
                     # if the result aint required, clean up the stack
@@ -168,6 +173,7 @@ class Compiler(object):
 
         function_name, name, args = element.content
         name = name.content
+
         if isinstance(args, ListNode):
             # if it has to evaluated first, do so
             logger.debug('subcall: {} -> {}, with scope {}'.format(
@@ -178,7 +184,9 @@ class Compiler(object):
                 element=args,
                 line_no=line_no,
                 result_required=True,
-                scope=scope)
+                scope=scope
+            )
+
         elif isinstance(args, (NumberNode, StringNode)):
             # if it is simply a literal, treat it as such
             codeobject.LOAD_CONST(args.content)
@@ -187,8 +195,10 @@ class Compiler(object):
         if function_name.content == 'let':
             codeobject.STORE_FAST(name)
             self.locals.add(name)
+
         elif function_name.content in ('defparameter', 'defvar'):
             codeobject.STORE_GLOBAL(name)
+
         else:
             raise Exception(function_name)
 
@@ -219,18 +229,24 @@ class Compiler(object):
                     codeobject(Local(arg.content))
                 else:
                     codeobject.LOAD_GLOBAL(arg.content)
+
             elif isinstance(arg, ListNode):
                 logger.debug('subcall -> {}, with scope {}'.format(
-                    arg.content, scope))
+                    arg.content, scope)
+                )
+
                 line_no, codeobject = self.compile_single(
                     codeobject=codeobject,
                     filename=filename,
                     element=arg,
                     line_no=line_no,
                     result_required=True,
-                    scope=scope)
+                    scope=scope
+                )
+
             elif isinstance(arg, (NumberNode, StringNode)):
                 codeobject(Const(arg.content))
+
             else:
                 raise Exception(arg)
 
@@ -260,7 +276,7 @@ class Compiler(object):
         if body and any(el.content for el in body):
             *body, return_func = [el for el in body if el.content]
 
-            # compile all but the last statement
+            # compile all bar the last statement
             for body_frag in body:
                 line_no, func_code = self.compile_single(
                     codeobject=func_code,
@@ -268,7 +284,8 @@ class Compiler(object):
                     element=body_frag,
                     line_no=line_no,
                     result_required=False,
-                    scope=args)
+                    scope=args
+                )
 
             # compile the last statement, and ask for the result value
             line_no, func_code = self.compile_single(
@@ -277,7 +294,8 @@ class Compiler(object):
                 element=return_func,
                 line_no=line_no,
                 result_required=True,
-                scope=args)
+                scope=args
+            )
             func_code.RETURN_VALUE()
 
         else:
@@ -287,7 +305,8 @@ class Compiler(object):
         codeobject = self.inject_function_code(
             codeobject=codeobject,
             function_codeobj=func_code.code(codeobject),
-            name=name)
+            name=name
+        )
 
         return line_no, codeobject
 
@@ -304,7 +323,8 @@ class Compiler(object):
         codeobject = self.inject_function_code(
             codeobject=codeobject,
             function_codeobj=function.__code__,
-            name=name)
+            name=name
+        )
 
         return codeobject
 
