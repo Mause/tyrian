@@ -160,7 +160,7 @@ class LiteralNode(GrammarNode):
 
         self.content = content
 
-        self.LiteralNode = namedtuple('LiteralNode', 'content')
+        self.LiteralNode = namedtuple('LiteralNode', 'content,line_no')
 
     def __repr__(self) -> str:
         return '<LiteralNode content={}>'.format(repr(self.content))
@@ -178,7 +178,7 @@ class LiteralNode(GrammarNode):
             'result': result,
             'consumed': 1 if result else 0,
             'tokens': [token] if result else [],
-            'parse_tree': self.LiteralNode(token)
+            'parse_tree': self.LiteralNode(token, tokens[0]['line_no'])
         }
 
 
@@ -197,7 +197,7 @@ class RENode(GrammarNode):
         self.raw_re = regex
         self.RE = re.compile(regex)
 
-        self.RENode = namedtuple('RENode', 'content,name')
+        self.RENode = namedtuple('RENode', 'content,name,line_no')
 
     def __repr__(self) -> str:
         return '<RENode regex="{}">'.format(self.raw_re)
@@ -217,7 +217,7 @@ class RENode(GrammarNode):
             except:
                 pass
         parse_tree = (
-            self.RENode(match, self.name)
+            self.RENode(match, self.name, tokens[0]['line_no'])
             if result else None
         )
 

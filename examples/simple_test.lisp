@@ -15,3 +15,4 @@
 (defun function () ())
 
 (callfunc function)
+(function "world")

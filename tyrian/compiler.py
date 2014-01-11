@@ -64,8 +64,6 @@ class Compiler(object):
             filename=filename
         )
 
-        line_no += 1
-        code.set_lineno(line_no)
 
         code.return_(None)
         return code
@@ -87,10 +85,6 @@ class Compiler(object):
         assert isinstance(parse_tree, AST)
 
         for element in parse_tree.content:
-            line_no += 1
-
-            codeobject.set_lineno(line_no)
-
             line_no, codeobject = self.compile_single(
                 codeobject=codeobject,
                 filename=filename,
@@ -114,9 +108,7 @@ class Compiler(object):
         compiles a single Node
         """
 
-        # if not element.content:
-        #     return line_no, codeobject
-
+        codeobject.set_lineno(element.content[0].line_no)
         if isinstance(element.content[0], (IDNode, SymbolNode)):
             if element.content[0].content == 'defun':
                 # wahey! creating a function!

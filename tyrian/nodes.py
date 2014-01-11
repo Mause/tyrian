@@ -80,6 +80,8 @@ class ContainerNode(ListNode):
 class IDNode(Node):
     "Represents an ID"
     def __init__(self, content):
+        self.line_no = content.line_no
+
         content = content.content
         self.content = content
 
@@ -90,8 +92,9 @@ class IDNode(Node):
 class NumberNode(Node):
     "Represents a number"
     def __init__(self, content):
-        content = content.content
-        self.content = int(content)
+        self.line_no = content.line_no
+
+        self.content = int(content.content)
 
     def __repr__(self):
         return '<NumberNode content={}>'.format(self.content)
@@ -102,8 +105,9 @@ class StringNode(Node):
     def __init__(self, content):
         # remove the quotes, grab the content
         content = content[1:-1][0]
-
         self.content = content.content
+
+        self.line_no = content.line_no
 
     def __repr__(self):
         return '<StringNode content="{}">'.format(self.content)
@@ -112,6 +116,8 @@ class StringNode(Node):
 class SymbolNode(Node):
     "Represents a mathematical symbol"
     def __init__(self, content):
+        self.line_no = content.line_no
+
         self.content = content.content
 
     def __repr__(self):
