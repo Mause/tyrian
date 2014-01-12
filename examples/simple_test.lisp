@@ -15,4 +15,12 @@
 (defun function () ())
 
 (callfunc function)
-(function "world")
+
+(defun golden_ratio ()
+    (let res (sqrt 5))
+    (let res (+ 1 res))
+    (let res (/ res 2))
+    (return res)
+)
+
+(print (golden_ratio))
