@@ -53,37 +53,31 @@ class SubGrammarWrapper(GrammarNode):
 
     def build_parse_tree(self, token: str):
         token = flatten(token)
+        assert token
 
         key = self.key.upper()
         grammar_mapping = self.settings['grammar_mapping']
 
         if key in grammar_mapping:
-            if token:
-                try:
-                    return grammar_mapping[key](token)
-                except TypeError:
-                    raise TypeError('{} accepts no arguments'.format(
-                        grammar_mapping[key].__qualname__
-                    ))
-            else:
-                logger.debug(
-                    'Mapping found for {}, '
-                    'but token is empty: "{}"'.format(key, token))
+            try:
+                return grammar_mapping[key](token)
+            except TypeError:
+                raise TypeError('{} accepts no arguments'.format(
+                    grammar_mapping[key].__qualname__
+                ))
         else:
             logger.debug('No mapping found for {}'.format(key))
             return token
 
     def check(self, tokens: list, path: str) -> dict:
-        path += '.' + '<' + self.key + '>'
-
+        path += '.<{}>'.format(self.key)
         logger.debug(path)
 
         key = self.key.upper()
-
-        if key not in self.grammar_parser_inst.grammars:
+        try:
+            grammar = self.grammar_parser_inst.grammars[key]
+        except KeyError:
             raise NoSuchGrammar('No such grammar as "{}"'.format(key))
-
-        grammar = self.grammar_parser_inst.grammars[key]
 
         result = grammar.check(tokens, path)
         if result['result']:
@@ -103,11 +97,6 @@ class ContainerNode(GrammarNode):
         self.settings = copy(settings)
         if 'grammar_definition' in settings:
             del settings['grammar_definition']
-
-        if len(subs) == 1 and type(subs[0]) == ContainerNode:
-            subs = subs[0].subs
-        elif len(subs) == 1 and type(subs[0]) == ContainerNode:
-            subs = []
 
         my_subs = []
         for sub in subs:
@@ -141,10 +130,15 @@ class ContainerNode(GrammarNode):
                 logger.debug(path + ' failed')
                 break
 
-        response['result'] = result
-        response['consumed'] = consumed if result else 0
-        response['parse_tree'] = flatten(
-            response['parse_tree'], can_return_single=True)
+        response.update({
+            'result': result,
+            'consumed': consumed if result else 0,
+            'parse_tree': flatten(
+                response['parse_tree'],
+                can_return_single=True
+            )
+        })
+
         return response
 
 
@@ -154,13 +148,13 @@ class LiteralNode(GrammarNode):
 
     :param content: content against which to test
     """
+    LiteralNode = namedtuple('LiteralNode', 'content,line_no')
+
     def __init__(self, settings: dict, content):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
 
         self.content = content
-
-        self.LiteralNode = namedtuple('LiteralNode', 'content,line_no')
 
     def __repr__(self) -> str:
         return '<LiteralNode content={}>'.format(repr(self.content))
@@ -169,7 +163,7 @@ class LiteralNode(GrammarNode):
         logger.debug(path + '.LN<' + self.content + '>')
 
         if tokens:
-            token = tokens[0]['token'] if 'token' in tokens[0] else tokens[0]
+            token = tokens[0]['token']
             result = token == self.content
         else:
             result = False
@@ -189,6 +183,8 @@ class RENode(GrammarNode):
     :param regex: regular expression to match against
     :param name: name of what the regular expression tests for
     """
+    RENode = namedtuple('RENode', 'content,name,line_no')
+
     def __init__(self, settings: dict, regex, name):
         # these setting are for the grammar mappings and such
         self.settings = copy(settings)
@@ -196,8 +192,6 @@ class RENode(GrammarNode):
 
         self.raw_re = regex
         self.RE = re.compile(regex)
-
-        self.RENode = namedtuple('RENode', 'content,name,line_no')
 
     def __repr__(self) -> str:
         return '<RENode regex="{}">'.format(self.raw_re)
@@ -216,10 +210,14 @@ class RENode(GrammarNode):
                 match = float(match)
             except:
                 pass
-        parse_tree = (
-            self.RENode(match, self.name, tokens[0]['line_no'])
-            if result else None
-        )
+
+            parse_tree = self.RENode(
+                match,
+                self.name,
+                tokens[0]['line_no']
+            )
+        else:
+            parse_tree = None
 
         return {
             'result': result,
